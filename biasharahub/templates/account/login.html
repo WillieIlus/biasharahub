@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+{% load account %}
+{% load socialaccount %}
+
+
+
+{% block title %} Login  | {{ block.super }} {% endblock %}
+{% block breadcrumb %}
+{% endblock  %}
+
+
+{% block content %}
+
+
+
+<div class="" id="signup_modal" tabindex="-1" role="dialog" aria-labelledby="signup_modal_label"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="signup_modal_label"><i class="la la-lock"></i> Login</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                    <form class="login-form" method='POST' action='' enctype='multipart/form-data' novalidate>
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        {% crispy form %}
+    </form>
+                <div class="form-excerpts">
+                    <ul class="list-unstyled">
+                        <li>Not a member? <a href="{% url 'account_signup' %}">Sign Up</a></li>
+                        <li><a href="{% url 'account_reset_password' %}">Recover Password</a></li>
+                    </ul>
+                    <div class="social-login">
+                        <span>Or Signup with</span>
+                        <p><a class="btn btn-outline-secondary"
+                  href="{% provider_login_url "facebook" method="oauth2" %}"><i class="fab fa-facebook-f"></i> Facebook</a>
+              <a class="btn btn-outline-danger"
+                 href="{% provider_login_url "google" method="oauth2" %}"><i class="fab fa-google-plus-g"></i> Google</a></p>
+              <a class="btn btn-outline-warning" href=""><i class="fab fa-twitter"></i> Twitter</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

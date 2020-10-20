@@ -1,0 +1,275 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block title %}  {{ user }}  | {{ block.super }} {% endblock %}
+
+{% block bg-image-holder %}
+<div class="bg_image_holder"><img alt="" src='{% static "img/breadcrumb1.jpg" %}'></div>
+{% endblock %}
+
+{% block page-title %}
+<h1 class="page-title">{{ user }}</h1>
+{% endblock %}
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href=''><i class="fa fa-plus"></i>list</a></li>
+<li aria-current="page" class="breadcrumb-item active">{{ user.username }}</li>
+{% endblock %}
+
+{% block content %}
+<section class="author-info-area section-padding-strict section-bg">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="atbd_auhor_profile_area">
+          <div class="atbd_author_avatar">
+            <img alt="Author Image"
+                 src='{% if user.photo %}
+                          {{ user.photo }} {% else %} {% static "img/author-profile.jpg" %} {% endif %}'>
+            <div class="atbd_auth_nd">
+              <h2>{{ user.get_full_name }}</h2>
+              <p>Joined in {{ user.date_joined|date }}</p>
+            </div>
+          </div><!-- ends: .atbd_author_avatar -->
+          <div class="atbd_author_meta">
+            <div class="atbd_listing_meta">
+              <span class="atbd_meta atbd_listing_rating">{{ user.average_rating | floatformat }}
+                <i class="la la-star"></i></span>
+              <p class="meta-info"><span>{{ user.review_set.count }}</span>Review{{ user.review_set.count|pluralize }}
+              </p>
+            </div>
+            <p class="meta-info"><span>{{ user.added_by.count }}</span>Listing{{ user.added_by.count|pluralize }}</p>
+          </div><!-- ends: .atbd_author_meta -->
+        </div><!-- ends: .atbd_auhor_profile_area -->
+      </div><!-- ends: .col-lg-12 -->
+      <div class="col-lg-8 col-md-7 m-bottom-30">
+        <div class="atbd_author_module">
+          <div class="atbd_content_module">
+            <div class="atbd_content_module__tittle_area">
+              <div class="atbd_area_title">
+                <h4><span class="la la-user"></span>About {{ user.get_full_name }}</h4>
+              </div>
+            </div>
+            <div class="atbdb_content_module_contents">
+              <p>{{ user.bio }}</p>
+            </div>
+          </div>
+        </div><!-- ends: .atbd_author_module -->
+      </div><!-- ends: .col-md-8 -->
+      <div class="col-lg-4 col-md-5 m-bottom-30">
+        <div class="widget atbd_widget widget-card">
+          <div class="atbd_widget_title">
+            <h4><span class="la la-phone"></span>Contact Info</h4>
+          </div><!-- ends: .atbd_widget_title -->
+          <div class="widget-body atbd_author_info_widget">
+            <div class="atbd_widget_contact_info">
+              <ul>
+                {% if user.address %}
+                <li>
+                  <span class="la la-map-marker"></span>
+                  <span class="atbd_info">{{ user.address }}, {{ user.location }}, {{ user.location.country }}</span>
+                </li>
+                {% endif %}
+                {% if user.phone %}
+                <li>
+                  <span class="la la-phone"></span>
+                  <span class="atbd_info">(+254) {{ user.phone }}</span>
+                </li>
+                {% endif %}
+                {% if user.email %}
+                <li>
+                  <span class="la la-envelope"></span>
+                  <span class="atbd_info">{{ user.email }}</span>
+                </li>
+                {% endif %}
+                {% if user.website %}
+                <li>
+                  <span class="la la-globe"></span>
+                  <a class="atbd_info" href="{{ user.website }}">{{ user.website }}</a>
+                </li>
+                {% endif %}
+              </ul>
+            </div><!-- ends: .atbd_widget_contact_info -->
+            <div class="atbd_social_wrap">
+              {% if user.facebook %}
+              <p><a href="{{ user.facebook }}"><span class="fab fa-facebook-f"></span></a></p>
+              {% endif %}
+              {% if user.twitter %}
+              <p><a href="{{ user.twitter }}"><span class="fab fa-twitter"></span></a></p>
+              {% endif %}
+              {% if user.google %}
+              <p><a href="{{ user.google }}"><span class="fab fa-google-plus-g"></span></a></p>
+              {% endif %}
+              {% if user.linkedin %}
+              <p><a href="{{ user.linkedin }}"><span class="fab fa-linkedin-in"></span></a></p>
+              {% endif %}
+              {% if user.youtube %}
+              <p><a href="{{ user.youtube }}"><span class="fab fa-youtube"></span></a></p>
+              {% endif %}
+            </div><!-- ends: .atbd_social_wrap -->
+          </div><!-- ends: .widget-body -->
+        </div><!-- ends: .widget -->
+      </div><!-- ends: .col-lg-4 -->
+      <div class="col-lg-12">
+        <div class="atbd_author_listings_area m-bottom-30">
+          {% if business.all %}
+          <h1>{{ user.get_full_name }} Biasharas.</h1>
+          {% endif %}
+          <div class="atbd_author_filter_area">
+            <!--            add something here-->
+          </div>
+        </div><!-- ends: .atbd_author_listings_area -->
+        <div class="row">
+          {% if business.all %}
+          {% for business in business.all %}
+          <div class="col-lg-4 col-sm-6">
+            <div class="atbd_single_listing ">
+              <article class="atbd_single_listing_wrapper">
+                <figure class="atbd_listing_thumbnail_area">
+                  <div class="atbd_listing_image">
+                    <a href="{{ business.get_absolute_url }}">
+                      <img alt="listing image"
+                           src='{% if business.featured_image %}
+                          {{ business.featured_image }} {% else %} {% static "img/p1.jpg" %} {% endif %}'>
+                    </a>
+                  </div><!-- ends: .atbd_listing_image -->
+                  <div class="atbd_author atbd_author--thumb">
+                    <a href="{{ business.get_absolute_url }}">
+                      <img alt="Logo" class="img-fluid" width="50px" src='{% if business.logo %}
+                          {{ business.logo.url }} {% else %} {% endif %}'>
+                      <span class="custom-tooltip">{{ business.name }}</span>
+                    </a>
+                  </div>
+                  <div class="atbd_thumbnail_overlay_content">
+                    <ul class="atbd_upper_badge">
+                      {% if business.featured %}
+                      <li><span class="atbd_badge atbd_badge_featured">Featured</span></li>
+                      {% endif %}
+                      {% if business.verified %}
+                      <li><span class="atbd_badge atbd_badge_popular">Verified</span></li>
+                      {% endif %}
+                    </ul><!-- ends .atbd_upper_badge -->
+                  </div><!-- ends: .atbd_thumbnail_overlay_content -->
+                </figure><!-- ends: .atbd_listing_thumbnail_area -->
+                <div class="atbd_listing_info">
+                  <div class="atbd_content_upper">
+                    <h4 class="atbd_listing_title">
+                      <a href="{{ business.get_absolute_url }}">{{ business.name }}</a>
+                    </h4>
+                    <div class="atbd_listing_meta">
+                      <span class="atbd_meta atbd_listing_rating">{{ business.average_rating | floatformat }}
+                        <i class="la la-star"></i></span>
+                      {% comment %}
+                      <span class="atbd_meta atbd_listing_price">$55.00</span>
+                      <span class="atbd_meta atbd_badge_open">Open Now</span>
+                      {% endcomment %}
+                    </div><!-- End atbd listing meta -->
+                    <div class="atbd_listing_data_list">
+                      <ul>
+                        <li>
+                          <p><span class="la la-map-marker"></span>{{ business.address }},
+                            {{ business.location }}, {{ business.location.country }}</p>
+                        </li>
+                        <li>
+                          <p><span class="la la-phone"></span>(+254) {{ business.phone }}</p>
+                        </li>
+                        <li>
+                          <p><span class="la la-calendar-check-o"></span>
+                            Posted {{ business.publish|timesince }} ago</p>
+                        </li>
+                      </ul>
+                    </div><!-- End atbd listing meta -->
+                  </div><!-- end .atbd_content_upper -->
+                  <div class="atbd_listing_bottom_content">
+                    <div class="atbd_content_left">
+                      <div class="atbd_listing_category">
+                        <a href="{{ business.category.get_absolute_url }}">
+                          <span class="{{ business.category.icon }}"></span>{{ business.category }}</a>
+                      </div>
+                    </div>
+                    <ul class="atbd_content_right">
+                      <li class="atbd_count"><span class="fa fa-inbox"></span>{{ business.reviews.count }}+</li>
+                      <li class="atbd_save">
+                        <span class="la la-heart-o"></span>
+                      </li>
+                    </ul>
+                  </div><!-- end .atbd_listing_bottom_content -->
+                </div><!-- ends: .atbd_listing_info -->
+              </article><!-- atbd_single_listing_wrapper -->
+            </div>
+          </div><!-- ends: .col-md-6 -->
+          {% endfor %}
+          {% else %}
+          <div class="col-lg-12">
+            {% if request.user == user %}
+            <p>You haven't added any biashara. <a class="btn btn-primary" href="{% url 'business:new' %}">
+              <span class="la la-plus"></span>Add Here</a></p>
+          </div>
+          {% else %}
+          <p>{{ user.get_full_name }} haven't added any biashara. <a class="btn btn-primary" href="">
+            <span class="la la-plus"></span>Ask in Message</a></p>
+        </div>
+        {% endif %}
+        {% endif %}
+      </div>
+    </div><!-- ends: .col-lg-12 -->
+  </div>
+  </div>
+</section><!-- ends: .author-info-area -->
+<section class="blog-area blog-grid section-padding-strict section-bg">
+  <div class="container">
+    {% if page_obj %}
+    <div class="atbd_author_listings_area m-bottom-30">
+      <h1>{{ user}}'s Reviews</h1>
+      <div class="atbd_author_filter_area">
+        <!--            add something here-->
+      </div>
+    </div><!-- ends: .atbd_author_listings_area -->
+    <div class="row">
+      {% for review in page_obj %}
+      <div class="col-lg-4 col-md-6">
+        <div class="grid-single">
+          <div class="card post--card shadow-sm">
+            <figure>
+              <a href="{{ review.get_absolute_url }}">
+                <img
+                    src='{% if review.featured_image %}
+                          {{ review.featured_image }} {% else %} {% static "img/c4.jpg" %} {% endif %}' alt="" ></a>
+            </figure>
+            <div class="card-body">
+              <h6><a href="{{ review.get_absolute_url }}">{{ review.title }}</a></h6>
+              <ul class="post-meta d-flex list-unstyled">
+                <li>{{ review.publish|date }}</li>
+                <li>to <a href="{{ review.content_object.get_absolute_url }}">{{ review.content_object.name }}</a></li>
+              </ul>
+              <p>{{ review.content|truncatechars:100 }}</p>
+            </div>
+          </div><!-- End: .card -->
+        </div>
+      </div><!-- ends: .col-lg-4 -->
+      {% endfor %}
+    </div>
+    <div class="m-top-20">
+      {% include 'includes/pagination.html' %}
+    </div>
+    {% else %}
+    {% if request.user == user %}
+    <p>You haven't added any reviews. <a class="btn btn-primary" href="{% url 'reviews:list' %}">
+      <span class="la la-plus"></span>browse to add</a></p>
+  </div>
+  {% else %}
+  <div class="row">
+    <div class="col-lg-12">
+      <p>{{ user.get_full_name }} has no reviews yet. <a class="btn btn-primary" href="">
+        <span class=""></span>Ask in Message</a></p>
+    </div>
+  </div>
+  {% endif %}
+  {% endif %}
+  </div>
+</section><!-- ends: .review-area -->
+{% endblock content %}
+
+
+

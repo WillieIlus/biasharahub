@@ -1,0 +1,706 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+{% load biasharahub %}
+{% block head %}
+{{ business.get_meta_description|truncatechars:254 }}
+{{ business.get_meta_keywords }}
+{{ business.get_meta_author }}
+{{ business.get_meta_copyright }}
+{% endblock %}
+<title>{% block title %} {{ business.name }} | {{ block.super }} {% endblock %}</title>
+
+{% block stylesheet %}
+<style>
+      .atbd_listing_image {
+        width: 100%;
+        height: 220px;
+      }
+      .logo {
+        width: 70px;
+        height: 70px;
+      }
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+</style>
+{% endblock %}
+
+{% block headcrumb-wrapper %}
+{% endblock %}
+
+{% block content %}
+<section class="listing-details-wrapper bgimage">
+
+  <div class="bg_image_holder">
+    <img alt="" src='{% if business.featured_image %}  {{ business.featured_image }}
+{% else %} {% static "img/breadcrumb1.jpg" %} {% endif %}'></div>
+  <!--      mainmenu wrapper-->
+  {% include 'includes/menu.html' %}
+  <!-- ends: .mainmenu-wrapper -->
+  <div class="listing-info content_above">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-7">
+          {% if business.featured %}
+          <ul class="list-unstyled listing-info--badges">
+            <li><span class="atbd_badge atbd_badge_featured">Featured</span></li>
+          </ul>
+          {% endif %}
+          <ul class="list-unstyled listing-info--meta">
+            <li>
+
+              <div class="logo-wrapper order-lg-0 order-sm-1">
+                <div class="logo logo-top">
+                  {% if business.logo %}
+                  <img alt="logo image" class="img-fluid"
+                       src='{{ business.logo.url }}'
+                       width="100px">
+                  {% endif %}
+                </div>
+              </div><!-- ends: .logo-wrapper -->
+            </li>
+            <li>
+              {% if business.reviews.count > 3 %}
+              <div class="average-ratings">
+                <span class="atbd_meta atbd_listing_rating">
+                    {{ business.average_rating | floatformat }}
+                    <i class="la la-star"></i></span>
+                <span><strong>{{ business.reviews.count }}</strong>
+                                        Review{{ business.reviews.count|pluralize }}</span>
+              </div>
+              {% else %}
+              <div class="average-rating">
+                <span class="atbd_meta atbd_listing_rating">
+                  Need 3+ Reviews
+                </span>
+              </div>
+              {% endif %}
+            </li>
+            {% if business.category %}
+            <li>
+              <div class="atbd_listing_category">
+                <a href="{% url 'categories:detail' business.category %}">
+                  <span class="{{ business.category.icon }}"></span>{{ business.category }}</a>
+              </div>
+            </li>
+            {% endif %}
+          </ul><!-- ends: .listing-info-meta -->
+          <h1>{{ business.name }} </h1>
+          <div class="atbd_name_time">
+          <span class="verified" data-placement="top" data-toggle="tooltip"
+                title="Verified"></span>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-5 d-flex align-items-end justify-content-start justify-content-md-end">
+          <div class="atbd_listing_action_area">
+            <div class="atbd_action atbd_save">
+              <div class="action_button">
+                <a class="atbdp-favourites" value="{{ business.slug }}"
+                   href="{% url 'business:bookmark' slug=business.slug %}"><span class="la la-heart-o"></span> Save</a>
+              </div>
+            </div>
+            <div class="atbd_action atbd_share dropdown">
+                                <span aria-expanded="false" aria-haspopup="true" class="dropdown-toggle"
+                                      data-toggle="dropdown" id="social-links" role="menu">
+                                    <span class="la la-share"></span>Share
+                                </span>
+              <div aria-labelledby="social-links" class="atbd_director_social_wrap dropdown-menu">
+                <ul class="list-unstyled">
+                  <li>
+                    <a href="" target="_blank"><span
+                        class="fab fa-facebook-f color-facebook"></span>Facebook</a>
+                  </li>
+                  <li>
+                    <a href="" target="_blank"><span class="fab fa-twitter color-twitter"></span>Twitter</a>
+                  </li>
+                  <li>
+                    <a href="" target="_blank"><span
+                        class="fab fa-pinterest-p color-pinterest"></span>Pinterest</a>
+                  </li>
+                  <li>
+                    <a href="" target="_blank"><span
+                        class="fab fa-google-plus-g color-gplus"></span>Google Plus</a>
+                  </li>
+                  <li>
+                    <a href="" target="_blank"><span
+                        class="fab fa-linkedin-in color-linkedin"></span>LinkedIn</a>
+                  </li>
+                  <li>
+                    <a href="" target="_blank"><span class="fab fa-tumblr color-tumblr"></span>Tumblr</a>
+                  </li>
+                  <li>
+                    <a href="" target="_blank"><span class="fab fa-vk color-vk"></span>VKontakte</a>
+                  </li>
+                </ul>
+              </div>
+              <!--Ends social share-->
+            </div>
+            <!-- Report Abuse-->
+            <div class="atbd_action atbd_report">
+              <div class="action_button">
+                <a data-target="#atbdp-report-abuse-modal" data-toggle="modal" href=""><span
+                    class="la la-flag-o"></span> Report</a>
+              </div>
+              <!-- Modal (report abuse form) -->
+            </div>
+          </div><!-- ends: .atbd_listing_action_area -->
+        </div>
+      </div>
+    </div>
+    <div aria-hidden="true" aria-labelledby="atbdp-report-abuse-modal-label" class="modal fade"
+         id="atbdp-report-abuse-modal" role="dialog"
+         tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <form action="/" class="form-vertical" id="atbdp-report-abuse-form">
+            <div class="modal-header">
+              <h3 class="modal-title" id="atbdp-report-abuse-modal-label">Report Abuse</h3>
+              <button class="close" data-dismiss="modal" type="button"><span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <label class="not_empty" for="atbdp-report-abuse-message">Your Complaint<span
+                    class="atbdp-star">*</span></label>
+                <textarea class="form-control" id="atbdp-report-abuse-message" placeholder="Message..."
+                          required="" rows="4"></textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-danger btn-sm" data-dismiss="modal" type="button">Close</button>
+              <button class="btn btn-secondary btn-sm" type="submit">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div aria-hidden="true" aria-labelledby="claim_listing_label" class="modal fade" id="moda_claim_listing"
+         role="dialog" tabindex="-1">
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="claim_listing_label"><i class="la la-check-square"></i> Claim This
+              Business</h5>
+            <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form action="/">
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-md-6">
+                    <input class="form-control" placeholder="Your Name" required type="text">
+                  </div>
+                  <div class="col-md-6">
+                    <input class="form-control" placeholder="Email Address" required type="email">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-md-6">
+                    <input class="form-control" placeholder="Phone Number" required type="text">
+                  </div>
+                  <div class="col-md-6">
+                    <input class="form-control" placeholder="Listing URL" required type="url">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-lg-12">
+                                        <textarea class="form-control" placeholder="Provie Listing Information" required
+                                                  rows="6"></textarea>
+                    <button class="btn btn-secondary" type="submit">Submit Query</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- ends: .listing-info -->
+</section><!-- ends: .card-details-wrapper -->
+<section class="directory_listiing_detail_area single_area section-bg section-padding-strict">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="atbd_content_module atbd_listing_details">
+          <div class="atbd_content_module__tittle_area">
+            <div class="atbd_area_title">
+              <h4><span class="la la-file-text-o"></span>{{ business.name }}</h4>
+            </div>
+          </div>
+          <div class="atbdb_content_module_contents">
+            {% if business.description %}
+            <p>{{ business.get_markdown }}</p>
+            {% else %}
+            <p>{{ business.name }} has decided to put an air of heightened hysteria around them</p>
+            {% endif %}
+            {% if request.user == business.user %}
+            <hr/>
+            <a href="{% url 'business:edit' business.slug %}" class="btn btn-gradient btn-gradient-two">
+              Update Business
+            </a>&nbsp;
+            {% endif %}
+          </div>
+        </div><!-- ends: .atbd_content_module -->
+        <div class="atbd_content_module atbd_listing_gallery">
+          <div class="atbd_content_module__tittle_area">
+            <div class="atbd_area_title">
+              <h4><span class="la la-image"></span>Gallery</h4>
+            </div>
+          </div>
+          <div class="atbdb_content_module_contents">
+            {% if business.photos %}
+            <div class="gallery-wrapper">
+              <div class="gallery-images">
+                {% for image in business.photos.all %}
+                <div class="single-image">
+                  <img alt="{{ image.alt }}" src="{{ image.img.url }}" height="440px"/>
+                </div>
+                {% endfor %}
+              </div>
+              <!-- ends: .gallery-images -->
+              <div class="gallery-thumbs">
+                {% for image in business.photos.all %}
+                <div class="single-thumb">
+                  <img alt="{{ image.alt }}" class="img-responsive"
+                       src="{{ image.img.url }}" width="100%" height="126"/>
+                </div>
+                {% endfor %}
+              </div>
+              <!-- ends: .gallery-thumbs -->
+            </div><!-- ends: .gallery-wrapper -->
+            <a href="{% url 'business:gallery' business.slug %}" class="btn btn-gradient btn-gradient-two">
+              Gallery
+            </a>
+            {% endif %}
+            {% if request.user == business.user %}
+            <a href="{% url 'business:photo_update' business.slug %}" class="btn btn-gradient btn-gradient-one">
+              Update Photos
+            </a>&nbsp;
+            {% endif %}
+          </div>
+        </div><!-- ends: .atbd_content_module -->
+
+
+        <div class="atbd_content_module atbd_contact_information_module">
+          <div class="atbd_content_module__tittle_area">
+            <div class="atbd_area_title">
+              <h4><span class="la la-headphones"></span>Contact Information</h4>
+            </div>
+          </div>
+          <div class="atbdb_content_module_contents">
+            <div class="atbd_contact_info">
+              <ul>
+                {% if business.address %}
+                <li>
+                  <div class="atbd_info_title"><span class="la la-map-marker"></span>Address:</div>
+                  <div class="atbd_info">
+                    {{ business.address }}, {% if business.location %}{{ business.location.name }},
+                    {{ business.location.country.name }}
+                    {% endif %}
+                  </div>
+                </li>
+                {% endif %}
+                {% if business.phone %}
+                <li>
+                  <div class="atbd_info_title"><span class="la la-phone"></span>Phone Number:</div>
+                  <div class="atbd_info">{{ business.phone }}</div>
+                </li>
+                {% endif %}
+                {% if business.email %}
+                <li>
+                  <div class="atbd_info_title"><span class="la la-envelope"></span>Email:</div>
+                  <span class="atbd_info">{{ business.email }}</span>
+                </li>
+                {% endif %}
+                {% if business.website %}
+                <li>
+                  <div class="atbd_info_title"><span class="la la-globe"></span>Website:</div>
+                  <a class="atbd_info" href="{{ business.website }}">{{ business.website }}</a>
+                </li>
+                {% endif %}
+              </ul>
+            </div>
+            <div class="atbd_director_social_wrap">
+              {% for network in business.network.all %}
+              <a class="atbd_info" href="{{ network.url }}"><span class="{{ network.network.icon }}"></span></a>
+              <span class="custom-tooltip" >{{ network.name }}</span>
+              {% endfor %}
+            </div>
+          </div>
+        </div><!-- ends: .atbd_content_module -->
+        <div class="atbd_content_module atbd_review_module">
+          <div class="atbd_content_module__tittle_area">
+            <div class="atbd_area_title">
+              <h4><span class="la la-star-o"></span>{{ business.reviews.count }}
+                Review{{ business.reviews.count|pluralize }}</h4>
+              {% if not request.user == business.user %}
+              <label class="btn btn-secondary btn-icon-left btn-sm not_empty" for="review_content"><span
+                  class="la la-star-o"></span> Add a review</label>
+              {% endif %}
+            </div>
+          </div>
+          <div class="atbdb_content_module_contents">
+            <div id="client_review_list">
+              {% for review in page_obj %}
+              <div class="atbd_single_review atbdp_static">
+                <div class="atbd_review_top">
+                  <div class="atbd_avatar_wrapper">
+                    <div class="atbd_review_avatar"><img alt="" class="avatar avatar-32 photo"
+                                                         {% if review.user.user.photo %}
+                                                         src="img/review-author-thumb.jpg"
+                                                         {% endif %}></div>
+                    <div class="atbd_name_time">
+                      <p>{{ review.user.username }}</p>
+                      <span class="review_time">{{ review.publish|timesince }} ago</span>
+                    </div>
+                  </div>
+                  <div class="atbd_rated_stars">
+                    <ul>
+                      <li id="rev">
+                                                <span class="{% if review.rating >= 1 %} rate_active
+                                                {% else %} rate_disable {% endif %}"></span>
+                        <span class="{% if review.rating >= 2 %} rate_active
+                                                {% else %} rate_disable {% endif %}"></span>
+                        <span class="{% if review.rating >= 3 %} rate_active
+                                                {% else %} rate_disable {% endif %}"></span>
+                        <span class="{% if review.rating >= 4 %} rate_active
+                                                {% else %} rate_disable {% endif %}"></span>
+                        <span class="{% if review.rating >= 5 %} rate_active
+                                                {% else %} rate_disable {% endif %}"></span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="review_content">
+                  <p>{{ review.content|truncatechars:1000 }}</p>
+                  <br/>
+                  <a class="reply" href="#"><span class="la la-mail-reply-all"></span>Reply</a>
+                  {% if review.content.chars > 1000 %}
+                  <a class="btn btn-xs btn-gradient btn-gradient-two" href="{{ review.get_absolute_url }}">
+                    Thread<span class="la la-mail-reply-all"></span></a>
+                  {% endif %}
+                  <div class="action_button pull-right">
+                    <a class=" btn btn-xs btn-secondary" href="{% url 'reviews:vote_up' slug=review.slug %}"></span>
+                      Like |
+                      <span>{{ review.votes.likes.count }}</span></a>
+                    <a class=" btn btn-xs btn-danger" href="{% url 'reviews:vote_down' slug=review.slug %}"></span>
+                      Dislike |
+                      <span>{{ review.votes.dislikes.count }}</span></a>
+                  </div>
+                </div>
+                <div class="review_reply_form">
+                  <div class="atbd_review_avatar"><img alt=""
+                                                       class="avatar avatar-32 photo"
+                                                       {% if review.review.user.photo %}
+                                                       src="static/img/review-author-thumb2.jpg"
+                                                       {% endif %}></div>
+                  <form action="{% url 'comments:new_comment' review.slug %}"
+                        enctype="multipart/form-data"
+                        id="atbdp_review_form"
+                        method="post">
+                    {% csrf_token %}
+                    {% crispy comment_form %}
+                  </form>
+                </div>
+                <!-- comment depth 2 -->
+                {% for comment in review.comments.all %}
+                <div class="media-depth2">
+                  <div class="atbd_single_review">
+                    <div class="atbd_review_top">
+                      <div class="atbd_avatar_wrapper">
+                        <div class="atbd_review_avatar"><img alt=""
+                                                             class="avatar avatar-32 photo"
+                                                             {% if comment in comment.user.photo %}
+                                                             src="static/img/review-author-thumb2.jpg"
+                                                             {% endif %}>
+                        </div>
+                        <div class="atbd_name_time">
+                          <p>{{ comment.user }}</p>
+                          <span class="review_time">{{ comment.publish|timesince}} ago</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="review_content">
+                      <p>{{ comment.content }}</p>
+                      <a class="reply" href="#"><span
+                          class="la la-mail-reply-all"></span>Reply</a>
+                    </div>
+                    <div class="review_reply_form">
+                      <div class="atbd_review_avatar"><img alt=""
+                                                           class="avatar avatar-32 photo"
+                                                           src="img/review-author-thumb.jpg"></div>
+                      <form action="{% url 'comments:new_comment' review.slug %}"
+                            enctype="multipart/form-data"
+                            id="atbdp_review_form"
+                            method="post">
+                        {% csrf_token %}
+                        {% crispy comment_form %}
+                        <input name='parent_id' type='hidden' value='{{ comment.id }}'>
+                      </form>
+                    </div>
+                    <!-- comment depth 2 -->
+                    {% for reply in comment.replies.all %}
+                    <div class="media-depth3">
+                      <div class="atbd_single_review">
+                        <div class="atbd_review_top">
+                          <div class="atbd_avatar_wrapper">
+                            <div class="atbd_review_avatar"><img alt=""
+                                                                 class="avatar avatar-32 photo"
+                                                                 src="static/img/review-author-thumb2.jpg">
+                            </div>
+                            <div class="atbd_name_time">
+                              <p>{{ reply.user }}</p>
+                              <span class="review_time">{{ reply.publish|timesince}} ago</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="review_content">
+                          <p>{{ reply.content }}</p>
+                          <a class="reply" href="#"><span
+                              class="la la-mail-reply-all"></span>Reply</a>
+                        </div>
+                        <div class="review_reply_form">
+                          <div class="atbd_review_avatar"><img alt=""
+                                                               class="avatar avatar-32 photo"
+                                                               src="img/review-author-thumb.jpg"></div>
+                          <form action="{% url 'comments:new_comment' review.slug %}"
+                                enctype="multipart/form-data" id="atbdp_review_form" method="post">
+                            {% csrf_token %}
+                            <input name='parent_id' type='hidden' value='{{ comment.id }}'>
+                            {% crispy comment_form %}
+                          </form>
+                        </div>
+                      </div><!-- ends: .atbd_single_review -->
+                    </div>
+                    {% endfor %}
+                    <!-- ends: .media-depth2 -->
+
+                  </div><!-- ends: .atbd_single_review -->
+                </div>
+                {% endfor %}
+                <!-- ends: .media-depth2 -->
+              </div>
+              {% endfor %}
+              <!-- ends:.atbd_single_review -->
+
+            </div><!-- ends: .client_review_list -->
+            {% include 'includes/pagination.html' %}
+          </div>
+        </div><!-- ends: .atbd_content_module -->
+        {% if request.user == business.user %}
+        <div class="col-lg-8 mt-5 mt-lg-0">
+          <div class="widget atbd_widget widget-card">
+            <div class="atbd_widget_title">
+              <p>You can't review this biashara <strong> but you can reply to reviews</strong></p>
+
+            </div>
+          </div>
+        </div>
+        {% else %}
+        <div class="atbd_content_module atbd_review_form">
+          <div class="atbd_content_module__tittle_area">
+            <div class="atbd_area_title">
+              <h4><span class="la la-star"></span>Add a Review</h4>
+            </div>
+          </div>
+          <div class="atbdb_content_module_contents atbd_give_review_area">
+            {% if not request.user.is_authenticated %}
+            <div class="atbd_notice alert alert-info" role="alert">
+              <span aria-hidden="true" class="la la-info"></span>
+              You need to <a href="{% url 'account_login' %}">Login</a> or <a
+                href="{% url 'account_signup' %}">Register</a>
+              to submit a review
+            </div><!-- ends: .atbd_notice -->
+            {% else %}
+            <form action="{% url 'reviews:new' business.slug %}"
+                  enctype="multipart/form-data"
+                  id="atbdp_review_form"
+                  method="post">
+              {% csrf_token %}
+              {% crispy form %}
+            </form>
+            {% endif %}
+          </div><!-- ends: .atbd_give_review_area -->
+        </div><!-- ends: .atbd_content_module -->
+        {% endif %}
+      </div>
+      <div class="col-lg-4 mt-5 mt-lg-0">
+        <div class="widget atbd_widget widget-card">
+          <div class="atbd_widget_title">
+            <h4><span class="la la-user"></span>Added by</h4>
+          </div><!-- ends: .atbd_widget_title -->
+          <div class="widget-body atbd_author_info_widget">
+            <div class="atbd_avatar_wrapper">
+              <div class="atbd_review_avatar">
+                <img alt="Avatar Image" src='{% if business.user.photo %}
+                          {{ user.photo.url }} {% else %} {% static "img/avatar-60x60.jpg" %} {% endif %}'>
+              </div>
+              <div class="atbd_name_time">
+                <h4>{% if not business.user.get_full_name %}
+                  {{ business.user.username }} {% else %}
+                  {{ business.user.get_full_name }} {% endif %} </h4>
+                <span class="review_time">Posted {{ business.publish.date|timesince }} ago</span>
+              </div>
+            </div><!-- ends: .atbd_avatar_wrapper -->
+            <div class="atbd_widget_contact_info">
+              <ul>
+                {% if business.address %}
+                <li>
+                  <span class="la la-map-marker"></span>
+                  <span class="atbd_info">{{ business.address }}, {{ business.location }}</span>
+                </li>
+                {% endif %}
+                {% if business.phone %}
+                <li>
+                  <span class="la la-phone"></span>
+                  <span class="atbd_info">(+254) {{ business.phone }}</span>
+                </li>
+                {% endif %}
+                {% if business.email %}
+                <li>
+                  <span class="la la-envelope"></span>
+                  <span class="atbd_info">{{ business.email }}</span>
+                </li>
+                {% endif %}
+                {% if business.website %}
+                <li>
+                  <span class="la la-globe"></span>
+                  <a class="atbd_info" href="{{ business.website }}">{{ business.website }}</a>
+                </li>
+                {% endif %}
+              </ul>
+            </div><!-- ends: .atbd_widget_contact_info -->
+            <div class="atbd_social_wrap">
+              {% if business.facebook %}
+              <p><a href="{{ business.facebook }}"><span class="fab fa-facebook-f"></span></a></p>
+              {% endif %}
+              {% if business.twitter %}
+              <p><a href="{{ business.twitter }}"><span class="fab fa-twitter"></span></a></p>
+              {% endif %}
+              {% if business.google %}
+              <p><a href="{{ business.google }}"><span class="fab fa-google-plus-g"></span></a></p>
+              {% endif %}
+              {% if business.linkedin %}
+              <p><a href="{{ business.linkedin }}"><span class="fab fa-linkedin-in"></span></a></p>
+              {% endif %}
+              {% if business.youtube %}
+              <p><a href="{{ business.youtube }}"><span class="fab fa-youtube"></span></a></p>
+              {% endif %}
+            </div><!-- ends: .atbd_social_wrap -->
+            <a class="btn btn-outline-primary btn-block" href="{% url 'accounts:detail' business.user.pk %}">View
+              Profile</a>
+          </div><!-- ends: .widget-body -->
+        </div><!-- ends: .widget -->
+        <div class="widget atbd_widget widget_claim_listing">
+          <a class="btn btn-block btn-gradient btn-gradient-two btn-lg claim-btn" data-target="#moda_claim_listing"
+             data-toggle="modal"
+             href="">Claim This Business</a>
+        </div><!-- ends: .widget -->
+
+
+        <div class="widget atbd_widget widget-card">
+          <div class="atbd_widget_title">
+            <h4><span class="la la-clock-o"></span> Business Hours</h4>
+            {% comment %}
+            {% if business.is_open == True %}
+            <span class="badge badge-success">Open Now</span>
+            {% else %}
+            <span class="badge badge-warning">Closed</span>
+            {% endif %}
+            {% endcomment %}
+
+          </div><!-- ends: .atbd_widget_title -->
+          <div class="directory_open_hours">
+            {% if business.opening_hours %}
+            <ul>
+              {% for obj in business.opening_hours.all %}
+              <li class="atbd_open {% if obj.weekday == date.today.isoweekday  %} atbd_today {% endif %}">
+                <span class="day">{{ obj.get_weekday_display }}</span>
+                <div class="{% if obj.closed == False %} atbd_open_close_time {% else %} atbd_closed {% endif %}">
+                  {% if obj.closed == False %}
+                  <span class="time">{{ obj.start }}-{{ obj.end }}</span>
+                  {% else %}
+                  <span>Closed</span>
+                  {% endif %}
+                </div>
+              </li>
+              {% endfor %}
+            </ul>
+            {% else %}
+            <p> Opening hours not added yet</p>
+            {% endif %}
+            <hr/>
+            {% if request.user == business.user %}
+
+            <a href="{% url 'openinghours:update' business.slug %}" class="btn btn-gradient btn-gradient-one">
+              Edit Business Hours
+            </a>
+            {% endif %}
+          </div>
+        </div><!-- ends: .widget -->
+
+
+        {% get_categories %}
+
+        <div class="widget atbd_widget widget-card">
+          <div class="atbd_widget_title">
+            <h4><span class="la la-tags"></span> Tag Style</h4>
+          </div>
+          <div class="widget-body atbdp-widget-tags">
+            <ul class="list-unstyled">
+              {% for service in business.services.all %}
+              <li><a href="">{{ service }}</a></li>
+              {% endfor %}
+            </ul>
+          </div><!-- ends: .widget-body -->
+        </div><!-- ends: .widget -->
+        <div class="widget atbd_widget widget-card">
+          <div class="atbd_widget_title">
+            <h4><span class="la la-envelope"></span></h4>Inbox User
+          </div><!-- ends: .atbd_widget_title -->
+          <div class="atbdp-widget-listing-contact">
+            <form class="form-vertical" id="atbdp-contact-form" role="form">
+              <div class="form-group">
+                <input class="form-control" id="atbdp-contact-name" placeholder="Name" required=""
+                       type="text">
+              </div>
+              <div class="form-group">
+                <input class="form-control" id="atbdp-contact-email" placeholder="Email" required=""
+                       type="email">
+              </div>
+              <div class="form-group">
+                                <textarea class="form-control" id="atbdp-contact-message" placeholder="Message"
+                                          required=""
+                                          rows="3"></textarea>
+              </div>
+              <button class="btn btn-outline-secondary btn-block" type="submit">Message User</button>
+            </form>
+          </div><!-- ends: .atbdp-widget-listing-contact -->
+        </div><!-- ends: .widget -->
+        <!--similar business widget-->
+        {% get_related_business %}
+        <!-- ends: .widget -->
+        <!--popular business widget-->
+        <!-- ends: .widget -->
+      </div>
+    </div>
+  </div>
+</section><!-- ends: .directory_listiing_detail_area -->
+{% endblock %}
+
+{% block javascript %}
+<script>
+
+</script>
+
+{% endblock %}

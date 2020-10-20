@@ -1,0 +1,142 @@
+{% load staticfiles %}
+<!--mainmenu wrapper-->
+<div class="mainmenu-wrapper">
+  <div class="menu-area menu1 menu--light">
+    <div class="top-menu-area">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="menu-fullwidth">
+              <div class="logo-wrapper order-lg-0 order-sm-1">
+                <div class="logo logo-top">
+                  <a href='{% url "home" %}'><img alt="logo image" class="img-fluid"
+                                                  src='{% static "img/logo-white.png" %}'></a>
+                </div>
+              </div><!-- ends: .logo-wrapper -->
+              <div class="menu-container order-lg-1 order-sm-0">
+                <div class="d_menu">
+                  <nav class="navbar navbar-expand-lg mainmenu__menu">
+                    <button aria-controls="direo-navbar-collapse" aria-expanded="false" aria-label="Toggle navigation"
+                            class="navbar-toggler" data-target="#direo-navbar-collapse"
+                            data-toggle="collapse" type="button">
+                      <span class="navbar-toggler-icon icon-menu"><i class="la la-reorder"></i></span>
+                    </button>
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="direo-navbar-collapse">
+                      <ul class="navbar-nav">
+                        <li>
+                          <a href='{% url "home" %}'>Home</a>
+                        </li>
+                        <li class="dropdown has_dropdown">
+                          <a aria-expanded="false" aria-haspopup="true" class="dropdown-toggle" data-toggle="dropdown"
+                             href="#"
+                             id="drop3" role="button">Biashara</a>
+                          <ul aria-labelledby="drop3" class="dropdown-menu">
+                            <li><a href='{% url "business:list" %}'>Biasharas</a></li>
+                            <li><a href='{% url "business:new" %}'>Add Biashara</a></li>
+                          </ul>
+                        </li>
+                        <li class="dropdown has_dropdown">
+                          <a aria-expanded="false" aria-haspopup="true" class="dropdown-toggle" data-toggle="dropdown"
+                             href="#"
+                             id="drop4" role="button">Categories</a>
+                          <ul aria-labelledby="drop4" class="dropdown-menu">
+                            <li><a href='{% url "categories:list" %}'>All Categories</a></li>
+                            <li><a href='{% url "locations:list" %}'>All Locations</a></li>
+                          </ul>
+                        </li>
+                        <li class="dropdown has_dropdown">
+                          <a aria-expanded="false" aria-haspopup="true" class="dropdown-toggle" data-toggle="dropdown"
+                             href="#"
+                             id="drop2" role="button">
+                            Reviews
+                          </a>
+                          <ul aria-labelledby="drop2" class="dropdown-menu">
+                            <li><a href='{% url "reviews:list" %}'>Reviews</a></li>
+                            <li><a href='{% url "reviews:list" %}'>Add Reviews</a></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </div>
+                    <!-- /.navbar-collapse -->
+                  </nav>
+                </div>
+              </div>
+              <div class="menu-right order-lg-2 order-sm-2">
+                <div class="search-wrapper">
+                  <div class="nav_right_module search_module">
+                    <span class="icon-left" id="basic-addon9"><i class="la la-search"></i></span>
+                    <div class="search_area">
+                      <form action="/">
+                        <div class="input-group input-group-light">
+                          <input autocomplete="off" class="form-control search_field top-search-field"
+                                 placeholder="What are you looking for?" type="text">
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div><!-- ends: .search-wrapper -->
+
+
+                <!-- start .author-area -->
+                <div class="author-area">
+                  <div class="author__access_area">
+                    <ul class="d-flex list-unstyled align-items-center">
+                      <li>
+                        <a class="btn btn-xs btn-gradient btn-gradient-two"
+                           data-target="#category_modal" data-toggle="modal"
+                           href='{% url "business:new" %}'>
+                          <span class="la la-plus"></span> Add Biashara
+                        </a>
+                      </li>
+                      {% if not request.user.is_authenticated %}
+                      <li>
+                        <a class="access-link" data-target="#login_modal" data-toggle="modal"
+                           href='{% url "account_login" %}'><i class="fa fa-lock"></i> Login</a>
+                        <span>or</span>
+                        <a class="access-link" data-target="#signup_modal" data-toggle="modal"
+                           href="{% url 'account_signup' %}"><i class="fa fa-pencil"></i> Register</a>
+                      </li>
+                    </ul>
+                    {% else %}
+
+
+                    <nav class="navbar navbar-expand-lg mainmenu__menu">
+                      <div class="collapse navbar-collapse" id="direo-navbar-collapse">
+                        <ul class="navbar-nav">
+                          <li class="dropdown has_dropdown">
+                            <a aria-expanded="false" aria-haspopup="true" class="dropdown-toggle" data-toggle="dropdown"
+                               href="#"
+                               id="drop5" role="button"><i class="la la-user"></i>
+                              Welcome {{ request.user.get_short_name }}
+                            </a>
+                            <ul aria-labelledby="drop4" class="dropdown-menu">
+                              <li><a href="{% url 'accounts:dashboard' %}">Dashboard</a></li>
+                              <li><a href="{% url 'accounts:detail' request.user.pk %}">My Profile</a></li>
+                              <li><a href="{% url 'account_reset_password' %}">Change Password</a></li>
+                              <li><a href="{% url 'accounts:account_edit' %}">Edit Profile</a></li>
+                              <li><a href="{% url 'account_logout' %}">Logout</a></li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </div>
+                    </nav>
+
+                    {% endif %}
+                  </div>
+                </div>
+                <!-- end .author-area -->
+
+
+              </div><!-- ends: .menu-right -->
+            </div>
+          </div>
+        </div>
+        <!-- end /.row -->
+      </div>
+      <!-- end /.container -->
+    </div>
+    <!-- end  -->
+  </div>
+</div>
+<!-- ends: .mainmenu-wrapper -->

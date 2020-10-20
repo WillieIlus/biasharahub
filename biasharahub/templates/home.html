@@ -1,0 +1,316 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block title %}  home | {{ block.super }} {% endblock %}
+{% block stylesheet %}
+
+<style>
+      .atbd_listing_image {
+        width: 100%;
+        height: 220px;
+      }
+      .atbd_author {
+        width: 40px;
+        height: 40px;
+      }
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+</style>
+{% endblock %}
+
+{% block headcrumb-wrapper %}
+{% endblock %}
+
+{% block content %}
+
+<section class="intro-wrapper bgimage overlay overlay--dark">
+  <div class="bg_image_holder"><img alt="" src="static/img/intro.jpg"></div>
+  <!--      menu  -->
+  {% include 'includes/menu.html' %}
+
+  <!-- ends: .mainmenu-wrapper -->
+  <div class="directory_content_area">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-10 offset-lg-1">
+          <div class="search_title_area">
+            <h2 class="title">Find the Best Services in Kenya</h2>
+            <p class="sub_title">From photographers and singers, to printers, famous lawyers and
+              more..</p>
+          </div><!-- ends: .search_title_area -->
+          {% include "includes/search.html" %}
+          <div class="directory_home_category_area">
+            <ul class="categories">
+              {% for category in category %}
+              <li>
+                <a href="{{ category.get_absolute_url }}">
+                  <span class="{% cycle 'color-success' 'color-primary' 'color-warning' 'color-danger' as rowcolorsv%}" >
+                    <i class="{{ category.icon }}"></i></span>
+                  {{ category.name }}
+                </a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div><!-- ends: .directory_home_category_area -->
+        </div><!-- ends: .col-lg-10 -->
+      </div>
+    </div>
+  </div><!-- ends: .directory_search_area -->
+</section><!-- ends: .intro-wrapper -->
+
+{% if business %}
+<section class="listing-cards section-bg section-padding">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="section-title">
+          <h2>Latest Entries</h2>
+          <p>Explore listings in Nairobi and other counties</p>
+        </div>
+      </div>
+      <div class="listing-cards-wrapper col-lg-12">
+        <div class="row">
+          {% for business in business %}
+          <div class="col-lg-4 col-sm-6">
+            <div class="atbd_single_listing ">
+              <article class="atbd_single_listing_wrapper">
+                {% if business.featured_image %}
+                <figure class="atbd_listing_thumbnail_area">
+                  <div class="atbd_listing_image">
+                    <a href="{{ business.get_absolute_url }}"><img alt="" src='
+                {{ business.featured_image }}'></a>
+                  </div><!-- ends: .atbd_listing_image -->
+                  <div class="atbd_author atbd_author--thumb">
+                    <a href="{{ business.get_absolute_url }}">
+                      <img alt="Logo" class="center-cropped" src='{% if business.logo %}
+                          {{ business.logo.url }} {% else %} {% static "img/author-thumb2.jpg" %} {% endif %}'>
+                      <span class="custom-tooltip">{{ business.name }}</span>
+                    </a>
+                  </div>
+                  <div class="atbd_thumbnail_overlay_content">
+                    <ul class="atbd_upper_badge">
+                      {% if business.featured %}
+                      <li><span class="atbd_badge atbd_badge_featured">Featured</span></li>
+                      {% endif %}
+                      {% if business.verified %}
+                      <li><span class="atbd_badge atbd_badge_popular">Verified</span></li>
+                      {% endif %}
+                    </ul><!-- ends .atbd_upper_badge -->
+                  </div><!-- ends: .atbd_thumbnail_overlay_content -->
+                </figure><!-- ends: .atbd_listing_thumbnail_area -->
+                {% endif %}
+                <div class="atbd_listing_info">
+                  <div class="atbd_content_upper">
+                    <h4 class="atbd_listing_title">
+                      <a href="{{ business.get_absolute_url }}">{{ business.name }}</a>
+                    </h4>
+                    <div class="atbd_listing_meta">
+                      <span class="atbd_meta atbd_listing_rating">{{ business.average_rating | floatformat }}
+                        <i class="la la-star"></i></span>
+                      {% comment %}
+                      {% if business.is_open == True %}
+                      <span class="atbd_meta atbd_badge_open">Open Now</span>
+                      {% else %}
+                      <span class="atbd_meta atbd_badge_closed">Closed</span>
+                      {% endif %}
+                      {% endcomment %}
+                    </div><!-- End atbd listing meta -->
+                    {% if business.description %}
+                    <div><p>{{ business.get_markdown|truncatewords:"25" }}</p></div>
+                    {% else %}
+                    <p>{{ business.name }} has decided to put an air of heightened hysteria around them</p>
+                    {% endif %}
+                    <div class="atbd_listing_data_list">
+                      <ul>
+                        <li>
+                          <p><span class="la la-map-marker"></span>{% if business.address %}{{ business.address }},
+                            {% if business.location %}
+                            {{ business.location }}, {{ business.location.country }}
+                            {% endif %}
+                            {% endif %}</p>
+                        </li>
+                        {% if business.phone %}
+                        <li>
+                          <p><span class="la la-phone"></span>(+254) {{ business.phone }}</p>
+                        </li>
+                        {% endif %}
+                        <li>
+                          <p><span class="la la-calendar-check-o"></span>
+                            Posted {{ business.publish|date }} ( {{ business.publish|timesince }} ago )</p>
+                        </li>
+                      </ul>
+                    </div><!-- End atbd listing meta -->
+                  </div><!-- end .atbd_content_upper -->
+                  <div class="atbd_listing_bottom_content">
+                    <div class="atbd_content_left">
+                      {% if business.category %}
+                      <div class="atbd_listing_category">
+                        <a href="{{ business.category.get_absolute_url }}">
+                          <span class="{{ business.category.icon }}"></span>{{ business.category }}
+                        </a>
+                      </div>
+                      {% endif %}
+                    </div>
+                    <ul class="atbd_content_right">
+                      <li class="atbd_count"><span class="la la-eye"></span>10+</li>
+                      <li class="atbd_save">
+                        <span class="la la-heart-o"></span>
+                      </li>
+                    </ul>
+                  </div><!-- end .atbd_listing_bottom_content -->
+                </div><!-- ends: .atbd_listing_info -->
+              </article><!-- atbd_single_listing_wrapper -->
+            </div>
+          </div><!-- ends: .col-md-6 -->
+          {% endfor %}
+          <div class="col-lg-12 text-center m-top-20">
+            <a class="btn btn-gradient btn-gradient-two" href='{% url "business:list" %}'>
+              Explore All {{ business.count }}+
+            </a>
+          </div>
+        </div>
+      </div><!-- ends: .listing-cards-wrapper -->
+    </div>
+  </div>
+</section><!-- ends: .listing-cards -->
+{% endif %}
+
+
+{% if review %}
+<section class="blog-area blog-grid section-padding-strict section-bg">
+  <div class="container">
+    <div class="atbd_author_listings_area m-bottom-30">
+      <h1> Top Reviews</h1>
+      <div class="atbd_author_filter_area">
+        <!-- add something here-->
+      </div>
+    </div><!-- ends: .atbd_author_listings_area -->
+
+    <div class="row">
+      {% for review in review %}
+      <div class="col-lg-4 col-md-6">
+        <div class="grid-single">
+          <div class="card post--card shadow-sm">
+            {% if review.featured_image %}
+            <figure class="box">
+              <a href="{{ review.get_absolute_url }}"><img alt="" src='
+                {{ review.featured_image }}'></a>
+            </figure>
+            {% endif %}
+            <div class="card-body">
+              <h6><a href="{{ review.get_absolute_url }}">
+                {{ review.user.first_name }} reviewed {{ review.content_object.name }}
+              </a></h6>
+              <ul class="post-meta d-flex list-unstyled">
+                <li>{{ review.publish|date }}</li>
+                <li>to <a href="{{ review.content_object.get_absolute_url }}">{{ review.content_object.name }}</a></li>
+              </ul>
+              <p>{{ review.content|truncatechars:100 }}</p>
+            </div>
+          </div><!-- End: .card -->
+        </div>
+      </div><!-- ends: .col-lg-4 -->
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+{% if category %}
+<section class="categories-cards section-padding-two">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="section-title">
+          <h2>From which service would you want to get?</h2>
+          <p>Discover experts, tour guide, safaris, painters, graphic designers, and barbers in Kenya by
+            categories.</p>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      {% for category in category %}
+      <div class="col-lg-4 col-sm-6">
+        <div class="category-single category--img">
+          <figure class="category--img4">
+            <img alt="" src="static/img/cat1.jpg">
+            <figcaption class="overlay-bg">
+              <a class="cat-box" href="{{ category.get_absolute_url }}">
+                <div>
+                  <div class="icon">
+                    <span class="{{ category.icon }}"></span>
+                  </div>
+                  <h4 class="cat-name">{{ category.name }}</h4>
+                  <span class="badge badge-pill badge-success">
+                    {{ category.company.count }} Biashara{{ category.company.count|pluralize }}
+                  </span>
+                </div>
+              </a>
+            </figcaption>
+          </figure>
+        </div><!-- ends: .category-single -->
+      </div><!-- ends: .col -->
+      {% endfor %}
+    </div>
+  </div>
+</section><!-- ends: .categories-cards -->
+{% endif %}
+{% comment %}
+<section class="subscribe-wrapper">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 offset-md-2">
+        <h1>Subscribe to Newsletter</h1>
+        <p>Subscribe to get update and information. Don't worry, we won't send spam!</p>
+        <form action="/" class="subscribe-form m-top-40">
+          <div class="form-group">
+            <span class="la la-envelope-o"></span>
+            <input placeholder="Enter your email" required type="text">
+          </div>
+          <button class="btn btn-gradient btn-gradient-one">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section><!-- ends: .subscribe-wrapper -->
+
+
+<div class="well">
+  <h1><a href="http://jquery2dotnet.com">Vote up and down script using bootstrap</a></h1>
+
+  <div class="row">
+    <div class="col-sm-2">
+      <div class="input-group"><span class="input-group-btn"><button type="button" id="increaseButton"
+                                                                     class="btn btn-success">+</button></span>
+
+        <input type="text" class="form-control" id="vote" placeholder="Vote"/> <span class="input-group-btn"><button
+            type="button" id="decreaseButton" class="btn btn-danger">-</button></span>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endcomment %}
+
+
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+$("#vote").val('0');
+// Create a click handler for your increment button
+$("#increaseButton").click(function () {
+    var newValue = 1 + parseInt($("#vote").val());
+    $("#vote").val(newValue);
+});
+// .. and your decrement button
+$("#decreaseButton").click(function () {
+    var newValue = parseInt($("#vote").val()) - 1;
+    $("#vote").val(newValue);
+});
+</script>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% load account %}
+{% load crispy_forms_tags %}
+{% load socialaccount %}
+<div aria-hidden="true" aria-labelledby="signup_modal_label" class="modal fade" id="signup_modal" role="dialog"
+     tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="signup_modal_label"><i class="la la-lock"></i> Sign Up</h5>
+        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="{% url 'account_signup' %}" enctype='multipart/form-data'
+              id="login-form" method='POST' novalidate>
+          {% csrf_token %}
+          <input name="next" type="hidden" value="{{ next }}">
+          {% crispy signup %}
+        </form>
+        <div class="form-excerpts">
+          <ul class="list-unstyled">
+            <li>Already a member? <a href="{% url 'account_login' %}">login</a></li>
+            <li><a href="">Recover Password</a></li>
+          </ul>
+          <div class="social-login">
+            <span>Or Signup with</span>
+            <p><a class="btn btn-outline-secondary"
+                  href="{% provider_login_url "facebook" method="oauth2" %}"><i class="fab fa-facebook-f"></i> Facebook</a>
+              <a class="btn btn-outline-danger"
+                 href="{% provider_login_url "google" method="oauth2" %}"><i class="fab fa-google-plus-g"></i> Google</a></p>
+              <a class="btn btn-outline-warning" href=""><i class="fab fa-twitter"></i> Twitter</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    

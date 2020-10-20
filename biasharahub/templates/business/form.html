@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block title %}  Form  | {{ block.super }} {% endblock %}
+
+  {% block stylesheet %}
+<style>
+
+.wmd-panel{
+    margin-right: 0px !important;
+    margin-left: 0px !important;
+}
+
+.wmd-input pagedownwidget form-control{
+    margin-right: 0px !important;
+    margin-left: 0px !important;
+}
+
+</style>
+{% endblock %}
+
+{% block bg-image-holder %}
+<div class="bg_image_holder"><img alt="" src='{% static "img/breadcrumb1.jpg" %}'></div>
+{% endblock %}
+
+{% block page-title %}
+<h1 class="page-title">Form</h1>
+{% endblock %}
+
+{% block breadcrumb_item %}
+<li aria-current="page" class="breadcrumb-item active">Form</li>
+{% endblock %}
+
+{% block content %}
+<div class="container">&nbsp;
+
+  <div class="row">
+    <div class="col-lg-8 offset-lg-2 col-sm-10 offset-sm-1">
+      <div class="atbd_content_module">
+        <div class="atbd_content_module__tittle_area">
+          <div class="atbd_area_title">
+            <h4><span class="la la-calendar-check-o"></span> Form </h4>
+          </div>
+        </div>
+        <div class="atbdb_content_module_contents">
+
+          <form action="." class="uniForm" enctype="multipart/form-data" method="POST">
+            <div class="form-group is-empty">
+              {% csrf_token %}
+              {% crispy form %}
+              <fieldset>
+                <legend>Social Profile</legend>
+                {{ social_form.management_form|crispy }}
+                {{ social_form.non_form_errors }}
+                {% for form in social_form %}
+                {{ form.id }}
+                <div class="form-row">
+                  <div class="mt-10 form-group col-md-3 mb-0">
+                    {{ form.network|as_crispy_field }}
+                  </div>
+                  <div class="mt-10 form-group col-md-3 mb-0">
+                    {{ form.username|as_crispy_field }}
+                  </div>
+                  <div class="mt-10 form-group col-md-3 mb-0">
+                    {{ form.url|as_crispy_field }}
+                  </div>
+                  <div class="mt-10 form-group col-md-3 mb-0">
+                  {% if social_form.can_delete %}
+                  {{ form.DELETE|as_crispy_field }}
+                  {% endif %}
+                  </div>
+                </div>
+                {% endfor %}
+              </fieldset>&nbsp;
+              <div class="clearfix">
+                <div class=" pull-right">
+                  <a role="button" class="btn btn-lg btn-danger" href="{% url 'home' %}">Cancel</a>
+                  <input type="submit" class="btn btn-lg btn-success" value="Submit"
+                         name="submit">
+                </div>
+              </div>
+            </div>
+          </form>
+
+        </div><!-- ends: .atbdb_content_module_contents -->
+      </div><!-- ends: .atbd_content_module -->
+    </div><!-- ends: .col-lg-10 -->
+  </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block title %}  Form  | {{ block.super }} {% endblock %}
+
+{% block bg-image-holder %}
+<div class="bg_image_holder"><img alt="" src='{% static "img/breadcrumb1.jpg" %}'></div>
+{% endblock %}
+
+{% block page-title %}
+<h1 class="page-title">Form</h1>
+{% endblock %}
+
+{% block breadcrumb_item %}
+<li aria-current="page" class="breadcrumb-item active">Form</li>
+{% endblock %}
+
+{% block content %}
+
+
+<div class="col-lg-10 offset-lg-1">
+    <div class="atbd_content_module">
+        <div class="atbd_content_module__tittle_area">
+            <div class="atbd_area_title">
+                <h4><span class="la la-calendar-check-o"></span> Subscribe to our Newsletter</h4>
+            </div>
+        </div>
+        <div class="atbdb_content_module_contents">
+            <div id="faqs_info_sortable_container" class="ui-sortable">
+
+                    <form enctype="multipart/form-data" class="form-ad" action="." method="POST">
+                        <div class="form-group is-empty">
+                            {% csrf_token %}
+                            {% crispy subscribe_form %}
+                        </div>
+                    </form>
+
+            </div>
+        </div><!-- ends: .atbdb_content_module_contents -->
+    </div><!-- ends: .atbd_content_module -->
+</div><!-- ends: .col-lg-10 -->
+
+
+{% endblock content %}

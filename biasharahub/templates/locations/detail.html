@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block title %}  {{ location.name }}  | {{ block.super }} {% endblock %}
+
+{% block bg-image-holder %}
+<div class="bg_image_holder"><img alt="" src='{% static "img/breadcrumb1.jpg" %}'></div>
+{% endblock %}
+
+{% block page-title %}
+<h1 class="page-title">{{ location.name }}</h1>
+{% endblock %}
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href='{% url "locations:list" %}'><i class="fa fa-list"></i>List</a></li>
+<li aria-current="page" class="breadcrumb-item active">{{ location.name }}</li>
+<li class="breadcrumb-item"><a href='{% url "locations:edit" location.slug %}'><i class="fa fa-plus"></i>Edit</a></li>
+
+{% endblock %}
+
+
+{% block content %}
+<section class="author-info-area section-padding-strict section-bg">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 col-md-7 m-bottom-30">
+        <div class="atbd_author_module">
+          <div class="atbd_content_module">
+            <div class="atbd_content_module__tittle_area">
+              <div class="atbd_area_title">
+                <h4><span class="fa fa-location"></span>{{ location.name }}</h4>
+              </div>
+            </div>
+            <div class="atbdb_content_module_contents">
+              <p>{{ location.description }}</p>
+            </div>
+          </div>
+        </div><!-- ends: .atbd_author_module -->
+      </div><!-- ends: .col-md-8 -->
+      <div class="col-lg-12">
+        <div class="row">
+          {% for business in page_obj %}
+          <div class="col-lg-4 col-sm-6">
+            <div class="atbd_single_listing ">
+              <article class="atbd_single_listing_wrapper">
+                <figure class="atbd_listing_thumbnail_area">
+                  <div class="atbd_listing_image">
+                    <a href="">
+                      <img alt="listing image" src="img/p1.jpg">
+                    </a>
+                  </div><!-- ends: .atbd_listing_image -->
+                  <div class="atbd_author atbd_author--thumb">
+                    <a href="{{ business.get_absolute_url }}">
+                      <img alt="Logo" class="center-cropped" src='{% if business.logo %}
+                          {{ business.logo3.url }} {% else %} {% static "img/author-thumb2.jpg" %} {% endif %}'>
+                      <span class="custom-tooltip">{{ business.name }}</span>
+                    </a>
+                  </div>
+                  <div class="atbd_thumbnail_overlay_content">
+                    <ul class="atbd_upper_badge">
+                      {% if business.featured %}
+                      <li><span class="atbd_badge atbd_badge_featured">Featured</span></li>
+                      {% endif %}
+                      {% if business.verified %}
+                      <li><span class="atbd_badge atbd_badge_popular">Verified</span></li>
+                      {% endif %}
+                    </ul><!-- ends .atbd_upper_badge -->
+                  </div><!-- ends: .atbd_thumbnail_overlay_content -->
+                </figure><!-- ends: .atbd_listing_thumbnail_area -->
+                <div class="atbd_listing_info">
+                  <div class="atbd_content_upper">
+                    <h4 class="atbd_listing_title">
+                      <a href="">{{ business.name }}</a>
+                    </h4>
+                    <div class="atbd_listing_meta">
+                      <span class="atbd_meta atbd_listing_rating">{{ business.average_rating | floatformat }}
+                        <i class="la la-star"></i></span>
+                      <span class="atbd_meta atbd_listing_price">$55.00</span>
+                      <span class="atbd_meta atbd_badge_open">Open Now</span>
+                    </div><!-- End atbd listing meta -->
+                    <div class="atbd_listing_data_list">
+                      <ul>
+                        <li>
+                          <p><span class="la la-map-marker"></span>{{ business.address }},
+                            {{ business.location }}, {{ business.location.country }}</p>
+                        </li>
+                        <li>
+                          <p><span class="la la-phone"></span>(+254) {{ business.phone }}</p>
+                        </li>
+                        <li>
+                          <p><span class="la la-calendar-check-o"></span>
+                            Posted {{ business.publish|timesince }} ago</p>
+                        </li>
+                      </ul>
+                    </div><!-- End atbd listing meta -->
+                  </div><!-- end .atbd_content_upper -->
+                  <div class="atbd_listing_bottom_content">
+                    <div class="atbd_content_left">
+                      <div class="atbd_listing_category">
+                        <a href=""><span class="la la-glass"></span>{{ business.category }}</a>
+                      </div>
+                    </div>
+                    <ul class="atbd_content_right">
+                      <li class="atbd_count"><span class="la la-eye"></span>900+</li>
+                      <li class="atbd_save">
+                        <span class="la la-heart-o"></span>
+                      </li>
+                    </ul>
+                  </div><!-- end .atbd_listing_bottom_content -->
+                </div><!-- ends: .atbd_listing_info -->
+              </article><!-- atbd_single_listing_wrapper -->
+            </div>
+          </div><!-- ends: .col-md-6 -->
+          {% endfor %}
+        </div>
+        {% include 'includes/pagination.html' %}
+      </div><!-- ends: .col-lg-12 -->
+    </div>
+  </div>
+</section><!-- ends: .author-info-area -->
+{% endblock content %}
+
+
+

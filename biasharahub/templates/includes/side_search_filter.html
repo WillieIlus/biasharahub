@@ -1,0 +1,48 @@
+<div class="col-lg-4 order-1 order-lg-0 mt-5 mt-lg-0">
+  <div class="listings-sidebar">
+    <div class="search-area default-ad-search">
+      <form action="." class="search-form-container" method="get">
+        <div class="form-group">
+          <input autocomplete="off" class="form-control" class="form-control" id="q" name="q"
+                 placeholder="What are you looking for?">
+        </div><!-- ends: .form-group -->
+        {% if facets.fields.category %}
+        <div class="filter-checklist">
+          <h5>Filter by Features</h5>
+          <div class="checklist-items feature-checklist hideContent">
+            {% for category in facets.fields.category %}
+            {% if category.1 != 0 %}
+            <div class="custom-control custom-checkbox checkbox-outline checkbox-outline-primary">
+              <input checked class="custom-control-input" id='{{category.0|cut:" "}}' name="category"
+                     type="checkbox" value="{{ category.0 }}">
+              <label class="custom-control-label">{{ category.0 }} ({{ category.1 }})</label>
+            </div>
+            {% endif %}
+            {% endfor %}
+          </div>
+        </div><!-- ends: .filter-checklist -->
+        {% endif %}
+
+        {% if facets.fields.location %}
+        <div class="filter-checklist">
+          <h5>search location</h5>
+          <div class="checklist-items feature-checklist hideContent">
+            {% for category in facets.fields.location %}
+            {% if category.1 != 0 %}
+            <div class="custom-control custom-checkbox checkbox-outline checkbox-outline-primary">
+              <input checked class="custom-control-input" id='{{location.0|cut:" "}}' name="location"
+                     type="checkbox" value="{{ location.0 }}">
+              <label class="custom-control-label">{{ location.0 }} ({{ location.1 }})</label>
+            </div>
+            {% endif %}
+            {% endfor %}
+          </div>
+        </div><!-- ends: .filter-checklist -->
+        {% endif %}
+        <a class="btn btn-gradient btn-gradient-two btn-block btn-icon icon-right m-top-40" href="">Search
+          <span class="la la-long-arrow-right"></span>
+        </a>
+      </form><!-- ends: form -->
+    </div><!-- ends: .default-ad-search -->
+  </div>
+</div><!-- ends: .col-lg-4 -->

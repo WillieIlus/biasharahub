@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block title %}  {{ user }}  | {{ block.super }} {% endblock %}
+
+{% block bg-image-holder %}
+<div class="bg_image_holder"><img alt="" src='{% static "img/breadcrumb1.jpg" %}'></div>
+{% endblock %}
+
+{% block page-title %}
+<h1 class="page-title">404 page not found</h1>
+{% endblock %}
+
+{% block breadcrumb_item %}
+<li aria-current="page" class="breadcrumb-item active">404</li>
+{% endblock %}
+
+{% block content %}
+
+
+
+    <!--================================
+            START 404 AREA
+    =================================-->
+    <section class="four_o_four_area section--padding2">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 offset-md-3 text-center">
+                    <img src="images/404.png" alt="404 page">
+                    <div class="not_found">
+                        <h3>Oops! Page Not Found</h3>
+                        <a href="{% url 'home' %}" class="btn btn--round btn--default">Back to Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--================================
+            END 404 AREA
+    =================================-->
+
+
+
+{% endblock content %}
+
+
+

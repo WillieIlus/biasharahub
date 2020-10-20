@@ -1,0 +1,16 @@
+<!-- category widget -->
+<div class="widget atbd_widget widget-card">
+  <div class="atbd_widget_title">
+    <h4><span class="la la-bookmark"></span> Categories</h4>
+  </div><!-- ends: /.atbd_widget_title -->
+  <div class="widget-body atbdp-widget-categories">
+    <ul class="atbdp_parent_category">
+      {% for category in categories %}
+      <li>
+        <a href="{{ category.get_absolute_url }}"><span class="{{ category.icon }}"></span>{{ category.name }}</a>
+        <span class="cat-trigger"></span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div><!-- ends: .atbdp -->
+</div><!-- ends: .widget -->

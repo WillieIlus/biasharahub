@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+
+
+{% block title %} formset | {{ block.super }} {% endblock %}
+{% block lead %}
+formset
+{% endblock %}
+
+{% block jumbotron %}
+<a class="btn btn-common">
+  form
+</a>
+{% endblock  %}
+
+{% block content %}
+<section class="add-listing-wrapper border-bottom section-bg section-padding-strict">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10 offset-lg-1">
+        <div class="atbd_content_module">
+          <div class="atbd_content_module__tittle_area">
+            <div class="atbd_area_title">
+              <h4><span class="la la-calendar-check-o"></span> Opening/Business Hour Information</h4>
+            </div>
+          </div>
+          <div class="atbdb_content_module_contents">
+            <form enctype="multipart/form-data" class="form-ad" action="." method="POST">
+              <div class="form-group is-empty">
+                {% csrf_token %}
+              {% crispy form %}
+
+                {{ formset.management_form }}
+                {{ formset.non_form_errors }}
+                {% for form in formset %}
+                {{ form.id }}
+                <div class="form-group">
+                  <div class="atbd_day_label form-label col-md-3 mb-1">
+                    {{ form.weekday|as_crispy_field }}
+                  </div>
+                  <div class="row atbd_row_bg">
+                    <div class="col-md-4 mb-1">
+                      {{ form.start|as_crispy_field }}
+                    </div>
+                    <div class="col-md-4 mb-1">
+                      {{ form.end|as_crispy_field }}
+                    </div>
+                    <div class="col-md-1 mb-1">
+                      {{ form.closed|as_crispy_field }}
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+                <div class="btn_wrap list_submit m-top-25 ">
+                  <a role="button" class="btn btn-lg btn-danger " href="{% url 'home' %}">Cancel</a>
+                  <input type="submit" class="btn btn-primary btn-lg listing_submit_btn" value="Submit"
+                         name="submit">
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+

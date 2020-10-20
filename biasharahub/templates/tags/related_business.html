@@ -1,0 +1,54 @@
+{% load staticfiles %}
+
+{% block stylesheet %}
+<style>
+      .atbd_left_img {
+        width: 70px;
+        height: 70px;
+      }
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+</style>
+{% endblock %}
+
+<div class="widget atbd_widget widget-card">
+          <div class="atbd_widget_title">
+            <h4><span class="la la-list-alt"></span> Similar Biashara</h4>
+            <a href="">View All</a>
+          </div><!-- ends: .atbd_widget_title -->
+          <div class="atbd_categorized_listings atbd_similar_listings">
+            <ul class="listings">
+              {% for obj in related_business %}
+              <li>
+                <div class="atbd_left_img">
+                  {% if obj.featured_image %}
+                  <a href="{{ obj.get_absolute_url }}"><img src="{{ obj.featured_image }}"></a>
+                  {% endif %}
+                </div>
+                <div class="atbd_right_content">
+                  <div class="cate_title">
+                    <h4><a href="{{ obj.get_absolute_url }}">{{ obj.name }}</a></h4>
+                  </div>
+                  {% if obj.review.count == 3 %}
+                  <p class="listing_value">
+                    <span>{{ obj.average_rating | floatformat }}</span>
+                  </p>
+                  {% endif %}
+                  {% if obj.category %}
+                  <p class="directory_tag">
+                    <span aria-hidden="true" class="{{ obj.category.icon }}"></span>
+                    <span>
+                      <a href="">{{ obj.category }}</a>
+                    </span>
+                  </p>
+                  {% endif %}
+                </div>
+              </li>
+              {% endfor %}
+            </ul>
+          </div> <!-- ends .atbd_similar_listings -->
+        </div><!-- ends: .widget -->

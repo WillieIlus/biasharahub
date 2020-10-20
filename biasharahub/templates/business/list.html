@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load humanize %}
+{% load crispy_forms_tags %}
+
+{% block title %}  Biashara List  | {{ block.super }} {% endblock %}
+
+{% block bg-image-holder %}
+<div class="bg_image_holder"><img alt="" src='{% static "img/breadcrumb1.jpg" %}'></div>
+{% endblock %}
+
+{% block page-title %}
+<h1 class="page-title">Biashara List</h1>
+{% endblock %}
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href='{% url "business:new" %}'><i class="fa fa-plus"></i>New</a></li>
+<li aria-current="page" class="breadcrumb-item active">All Listings</li>
+{% endblock %}
+
+{% block content %}
+<section class="all-listing-wrapper section-bg">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="atbd_generic_header">
+          <div class="atbd_generic_header_title">
+            <h4>All Items</h4>
+            <p>Total Biasharas Found: {{ business.count }}</p>
+          </div><!-- ends: .atbd_generic_header_title -->
+          <div class="atbd_listing_action_btn btn-toolbar align-items-center" role="toolbar">
+            <!-- Views dropdown -->
+            <!-- Orderby dropdown -->
+          </div><!-- ends: .atbd_listing_action_btn -->
+        </div><!-- ends: .atbd_generic_header -->
+      </div><!-- ends: .col-lg-12 -->
+      <div class="col-lg-12 listing-items">
+        <div class="row">
+          {% include 'includes/side_search_filter.html' %}
+          <div class="col-lg-8 order-0 order-lg-1">
+            <div class="row">
+              {% for business in business %}
+              <div class="col-lg-12">
+                <div class="atbd_single_listing atbd_listing_list">
+                  <article class="atbd_single_listing_wrapper">
+                    {% if business.featured_image %}
+                    <figure class="atbd_listing_thumbnail_area">
+                      <div class="atbd_listing_image">
+                        <a href="{{ business.get_absolute_url }}">
+                          <img alt="listing image" src='{{ business.featured_image }}'>
+                        </a>
+                      </div><!-- ends: .atbd_listing_image -->
+                      <div class="atbd_thumbnail_overlay_content">
+                        <ul class="atbd_upper_badge">
+                          {% if business.featured %}
+                          <li><span class="atbd_badge atbd_badge_featured">Featured</span></li>
+                          {% endif %}
+                          {% if business.verified %}
+                          <li><span class="atbd_badge atbd_badge_popular">Verified</span></li>
+                          {% endif %}
+                        </ul><!-- ends .atbd_upper_badge -->
+                      </div><!-- ends: .atbd_thumbnail_overlay_content -->
+                    </figure><!-- ends: .atbd_listing_thumbnail_area -->
+                    {% endif %}
+                    <div class="atbd_listing_info">
+                      <div class="atbd_content_upper">
+                        <h4 class="atbd_listing_title">
+                          <a href="{{ business.get_url_path }}">{{ business.name }}</a>
+                        </h4>
+                        <div class="atbd_listing_meta">
+                          <span class="atbd_meta atbd_listing_rating">
+                                                      {% if business.reviews.count > 3 %}
+                            {{ business.average_rating | floatformat }}
+                          {% else %}
+                          need 3+
+                            <i class="la la-star"></i></span>
+                          {% endif %}
+                          {% comment %}
+                          {% if business.is_open and business.closed == False %}
+                          <span class="atbd_meta atbd_badge_open">Open Now</span>
+                          {% else %}
+                          <span class="atbd_meta atbd_badge_close">Closed</span>
+                          {% endif %}
+                          {% endcomment %}
+                        </div><!-- End atbd listing meta -->
+                        {% if business.description %}
+                        <div><p>{{ business.get_markdown|truncatewords:"25" }}</p></div>
+                        {% else %}
+                        <p>{{ business.name }} has decided to put an air of heightened hysteria around them</p>
+                        {% endif %}
+                        <div class="pull-right">
+                          <a href="{{ business.get_absolute_url }}"
+                             class="btn btn-gradient btn-gradient-one btn-block btn-icon icon-right m-top-40">
+                            More
+                            <span class="la la-long-arrow-right"></span>
+                          </a>
+                        </div>
+                        <div class="atbd_listing_data_list">
+                          <ul>
+                            {% if business.address %}
+                            <li>
+                              <p><span class="la la-map-marker"></span>{{ business.address }},
+                                {% if business.location %}
+                                {{ business.location }}, {{ business.location.country }}
+                                {% endif %}
+                              </p>
+                            </li>
+                            {% endif %}
+                            <li>
+                              {% if business.phone %}
+                              <p><span class="la la-phone"></span>(+254) {{ business.phone }}</p>
+                              {% endif %}
+                            </li>
+                            <li>
+                              <p><span class="la la-calendar-check-o"></span>
+                                Posted {{ business.publish|date }} ( {{ business.publish|timesince }} ago )</p>
+                            </li>
+                          </ul>
+                        </div><!-- End atbd listing meta -->
+                      </div><!-- end .atbd_content_upper -->
+                      <div class="atbd_listing_bottom_content">
+                        <div class="atbd_content_left">
+                          <div class="atbd_listing_category">
+                            {% if business.category %}
+                            <a href=""><span class="{{ business.category.icon }}"></span>{{ business.category }}</a>
+                            {% endif %}
+                          </div>
+                        </div>
+                        <ul class="atbd_content_right">
+                          <li class="atbd_count"><span class="la la-eye"></span>
+                            10+
+                          </li>
+                          <li class="atbd_save">
+                            <span href="{% url 'business:bookmark' slug=business.slug %}" class="la la-heart-o"></span>
+                          </li>
+                          <li>
+                            {% if business.logo %}
+                            <div class="atbd_author atbd_author--thumb">
+                              <a href="{{ business.get_absolute_url }}">
+                                <img alt="Logo" src=' {{ business.logo.url }}  '>
+                                <span class="custom-tooltip">{{ business.name }}</span>
+                              </a>
+                            </div>
+                            {% endif %}
+                          </li>
+                        </ul>
+                      </div><!-- end .atbd_listing_bottom_content -->
+                    </div><!-- ends: .atbd_listing_info -->
+                  </article><!-- atbd_single_listing_wrapper -->
+                </div>
+              </div><!-- ends: .col-lg-12 -->
+              {% endfor %}
+            </div>
+
+            {% include 'includes/pagination.html' %}
+
+          </div><!-- ends: .col-lg-8 -->
+        </div>
+      </div><!-- ends: .listing-items -->
+    </div>
+  </div>
+</section><!-- ends: .all-listing-wrapper -->
+
+{% endblock content %}

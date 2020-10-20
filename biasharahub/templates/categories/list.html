@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block title %}  Categories  | {{ block.super }} {% endblock %}
+
+{% block stylesheet %}
+<style>
+      .category--img4 {
+        height: 280px;
+      }
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+</style>
+{% endblock %}
+
+{% block bg-image-holder %}
+<div class="bg_image_holder"><img alt="" src='{% static "img/breadcrumb1.jpg" %}'></div>
+{% endblock %}
+
+
+{% block page-title %}
+<h1 class="page-title">Categories</h1>
+{% endblock %}
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href='{% url "categories:new" %}'><i class="fa fa-plus"></i>New</a></li>
+<li aria-current="page" class="breadcrumb-item active">All Categories</li>
+{% endblock %}
+
+{% block content %}
+
+<section class="section-padding-1_7 border-bottom">
+  <div class="container">
+    <div class="row">
+      {% for category in category %}
+      <div class="col-lg-4 col-sm-6">
+        <div class="category-single category--img">
+          <figure class="category--img4">
+            <img src='{% if category.photo %} {{ category.photo.url }} {% else %} {% static "img/cat1.jpg" %} {% endif %}' alt="">
+            <figcaption class="overlay-bg">
+              <a href="{{ category.get_absolute_url }}" class="cat-box">
+                <div>
+                  <div class="icon">
+                    <span class="{{ category.icon }}"></span>
+                  </div>
+                  <h4 class="cat-name">{{ category.name }}</h4>
+                  <span class="badge badge-pill badge-success">{{ category.business_set.count }}
+                                          Listing{{ category.business_set.count }}</span>
+                </div>
+              </a>
+            </figcaption>
+          </figure>
+        </div><!-- ends: .category-single -->
+      </div><!-- ends: .col -->
+      {% endfor %}
+    </div>
+  </div>
+</section><!-- ends: section -->
+{% endblock %}

@@ -1,0 +1,42 @@
+{% load staticfiles %}
+<div class="widget atbd_widget widget-card">
+  <div class="atbd_widget_title">
+    <h4><span class="la la-list-alt"></span> Popular Biashara</h4>
+    <a href="">View All</a>
+  </div><!-- ends: .atbd_widget_title -->
+  <div class="atbd_categorized_listings atbd_popular_listings">
+    <ul class="listings">
+      {% for business in popular_business %}
+      <li>
+        <div class="atbd_left_img">
+          <a href="{{ business.get_absolute_url }}">
+            {% if business.featured_image %}
+            <img alt="listing image" src="{{ business.featured_image.url }}">
+            {% endif %}
+          </a>
+        </div>
+        <div class="atbd_right_content">
+          <div class="cate_title">
+            <h4><a href="{{ business.get_absolute_url }}">{{ business.name }}</a></h4>
+          </div>
+          {% if business.category %}
+          <p class="directory_tag">
+            <span aria-hidden="true" class="la la-glass"></span>
+            <span><a href="{{ business.get_absolute_url }}">{{ business.category }}</a></span>
+          </p>
+          {% endif %}
+          <div class="atbd_rated_stars">
+            <ul>
+              <li><span class="rate_active"></span></li>
+              <li><span class="rate_active"></span></li>
+              <li><span class="rate_active"></span></li>
+              <li><span class="rate_active"></span></li>
+              <li><span class="rate_active"></span></li>
+            </ul>
+          </div>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  </div> <!-- ends .atbd_similar_listings -->
+</div><!-- ends: .widget -->

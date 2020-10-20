@@ -1,0 +1,79 @@
+{% load biasharahub %}
+<footer class="footer-three footer-grey p-top-95">
+  <div class="footer-top p-bottom-25">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-2 col-sm-6">
+          <div class="widget widget_pages">
+            <h2 class="widget-title">Company Info</h2>
+            <ul class="list-unstyled">
+              <li class="page-item"><a href="{% url 'about' %}">About Us</a></li>
+              <li class="page-item"><a href="{% url 'contact' %}">Conact Us</a></li>
+              <li class="page-item"><a href="{% url 'business:list' %}">Biasharas</a></li>
+              <li class="page-item"><a href="{% url 'policy' %}">Privacy Policy</a></li>
+            </ul>
+          </div>
+        </div><!-- ends: .col-lg-3 -->
+        <div class="col-lg-3 d-flex justify-content-lg-center  col-sm-6">
+          <div class="widget widget_pages">
+            <h2 class="widget-title">Helpful Links</h2>
+            <ul class="list-unstyled">
+              <li class="page-item"><a href="{% url 'account_signup' %}">Join BiasharaHub</a></li>
+              <li class="page-item"><a href="{% url 'account_login' %}">Login</a></li>
+              <li class="page-item"><a href="{% url 'about' %}">How it Work</a></li>
+              <li class="page-item"><a href="{% url 'reviews:list' %}">Reviews</a></li>
+              <li class="page-item"><a href="{% url 'locations:list' %}">Locations</a></li>
+              <li class="page-item"><a href="{% url 'categories:list' %}">Categories</a></li>
+            </ul>
+          </div>
+        </div><!-- ends: .col-lg-3 -->
+        <div class="col-lg-3 col-sm-6">
+          <div class="widget widget_social">
+            <h2 class="widget-title">Connect with Us</h2>
+            <ul class="list-unstyled social-list">
+              <li><a href=""><span class="mail"><i class="la la-envelope"></i></span> Contact Support</a></li>
+              <li><a href=""><span class="twitter"><i class="fab fa-twitter"></i></span> Twitter</a></li>
+              <li><a href=""><span class="facebook"><i class="fab fa-facebook-f"></i></span> Facebook</a></li>
+              <li><a href=""><span class="instagram"><i class="fab fa-instagram"></i></span> Instagram</a></li>
+              <li><a href=""><span class="gplus"><i class="fab fa-google-plus-g"></i></span> Google+</a></li>
+            </ul>
+          </div><!-- ends: .widget -->
+        </div><!-- ends: .col-lg-3 -->
+        <div class="col-lg-4 col-sm-6">
+          <div class="widget widget_text">
+            <h2 class="widget-title">Subscribe to Newsletter</h2>
+            {% comment %}
+            <div class="textwidget">
+              <p>At these time this is not working.</p>
+              <ul class="list-unstyled store-btns">
+                <li><a class="btn btn-dark btn-md btn-icon btn-icon" href=""><span class="fa fa-mailchimp">
+                                  </span> Subscribe </a></li>
+              </ul>
+            </div>
+            {% endcomment %}
+
+          </div><!-- ends: .widget -->
+        </div><!-- ends: .col-lg-3 -->
+      </div>
+    </div>
+  </div><!-- ends: .footer-top -->
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="footer-bottom--content">
+            <a class="footer-logo" href=""><img alt="" src="static/img/logo.png"></a>
+            <p class="m-0 copy-text">©2020 BiasharaHub</p>
+            <ul class="list-unstyled lng-list">
+              <li><a href="">English</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- ends: .footer-bottom -->
+</footer><!-- ends: .footer -->
+
+          {% get_cat_to_add_biz %}
+          {% get_login %}
+          {% get_signup %}

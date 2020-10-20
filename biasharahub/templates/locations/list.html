@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block title %}  Locations  | {{ block.super }} {% endblock %}
+
+{% block bg-image-holder %}
+<div class="bg_image_holder"><img alt="" src='{% static "img/breadcrumb1.jpg" %}'></div>
+{% endblock %}
+
+{% block page-title %}
+<h1 class="page-title">All Locations</h1>
+{% endblock %}
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href='{% url "locations:new" %}'><i class="fa fa-plus"></i>New</a></li>
+<li aria-current="page" class="breadcrumb-item active">All Locations</li>
+{% endblock %}
+
+{% block content %}
+
+<section class="section-padding-strict section-bg">
+  <div class="atbd_location_grid_wrap">
+    <div class="container">
+      <div class="row">
+        {% for location in location %}
+        <div class="col-lg-3 col-md-4 col-sm-6">
+          <a class="atbd_location_grid" href="{{ location.get_absolute_url }}">
+            {{ location.name }} ({{ location.company.count }})
+          </a>
+        </div><!-- ends: .col-lg-3 -->
+        {% endfor %}
+      </div>
+    </div>
+  </div><!-- ends: .atbd_location_grid_wrap -->
+</section><!-- ends: section -->
+<!-- ends: section -->
+
+
+{% endblock %}

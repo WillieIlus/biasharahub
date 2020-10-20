@@ -1,0 +1,32 @@
+{% block content %}
+
+<div aria-hidden="true" aria-labelledby="category_modal_label" class="modal fade" id="category_modal" role="dialog"
+     tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="la la-lock"></i> Select category to add your business</h5>
+        <button aria-label="Close" class="close" type="button">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body atbd_location_grid_wrap">
+        <div class="container">
+          <div class="row">
+            {% for category in categories %}
+            <div class="col-lg-3">
+              <a class="atbd_location_grid" href="{% url 'categories:add_business' slug=category.slug %}">{{ category.name }}</a>
+            </div><!-- ends: .col-lg-3 -->
+            {% endfor %}
+            <div class="col-lg-3 col-md-4 col-sm-6">
+              <a class="atbd_location_grid" href='{% url "business:new" %}'>None</a>
+            </div><!-- ends: .col-lg-3 -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

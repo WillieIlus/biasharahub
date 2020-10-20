@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+
+
+{% load account %}
+{% block title %} {% trans "Sign Up Closed" %} | {{ block.super }} {% endblock %}
+
+
+{% block page-title %}
+<h1 class="page-title">
+  {% trans "Sign Up Closed" %}
+</h1>
+{% endblock  %}
+
+
+{% block content %}
+
+<section class="checkout-wrapper section-padding-strict section-bg">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="checkout-form">
+          <div class="atbd_content_module" id="directorist_payment_gateways">
+            <div class="atbd_content_module__tittle_area">
+              <div class="atbd_area_title">
+                <h3>{% trans "Sign Up Closed" %}</h3>
+              </div>
+            </div>
+            <div class="atbdb_content_module_contents">
+              <ul class="list-unstyled">
+                <li>
+                  <p>{% trans "We are sorry, but the sign up is currently closed." %}</p>
+                </li>
+              </ul>
+            </div>
+          </div><!-- ends: .atbd_content_module -->
+        </div><!-- ends: .checkout-form -->
+      </div><!-- ends: .col-lg-12 -->
+    </div>
+  </div>
+</section><!-- ends: .checkout-wrapper -->
+{% endblock %}

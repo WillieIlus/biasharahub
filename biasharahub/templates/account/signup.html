@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+{% load account %}
+{% load socialaccount %}
+
+{% block title %} {% trans "Signup" %}  | {{ block.super }} {% endblock %}
+
+
+{% block page-title %}
+<h1 class="page-title">
+  Sign Up
+</h1>
+{% endblock  %}
+
+{% block breadcrumb_item %}
+<li aria-current="page" class="breadcrumb-item active">
+  {% trans "Sign Up" %}
+</li>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div aria-hidden="true" aria-labelledby="login_modal_label" role="dialog"
+     tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="la la-lock"></i> Sign In</h5>
+        <button aria-label="Close" class="close" type="button">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <p> Already a member? <a href="{{ login_url }}">login</a>
+             or <a href="{% url 'account_set_password' %}">Recover Password</a> </p>
+
+        <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+          {% csrf_token %}
+          {% crispy form %}
+          {% if redirect_field_value %}
+          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+          {% endif %}
+        </form>
+
+        <div class="form-excerpts">
+
+          <div class="social-login">
+            <span>Or Signup with</span>
+            <p><a class="btn btn-outline-secondary"
+                  href="{% provider_login_url 'facebook' method='oauth2' %}"><i class="fab fa-facebook-f"></i> Facebook</a>
+              <a class="btn btn-outline-danger"
+                 href="{% provider_login_url 'google' method='oauth2' %}"><i class="fab fa-google-plus-g"></i> Google</a></p>
+              <a class="btn btn-outline-warning" href=""><i class="fab fa-twitter"></i> Twitter</a></p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

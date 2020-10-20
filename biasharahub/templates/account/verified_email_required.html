@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+
+
+{% load account %}
+{% block title %} Change password successful  | {{ block.super }} {% endblock %}
+
+
+{% block page-title %}
+<h1 class="page-title">
+  {% trans "Verify Your E-mail Address" %}</h1>
+{% endblock  %}
+
+{% block breadcrumb_item %}
+<li aria-current="page" class="breadcrumb-item active">
+  <a href="{% url 'accounts:password_change' %}">{% trans "Verify Your E-mail Address" %}</a>
+</li>
+
+{% endblock %}
+
+
+{% block content %}
+<section class="checkout-wrapper section-padding-strict section-bg">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="checkout-form">
+          <div class="atbd_content_module" id="directorist_payment_gateways">
+            <div class="atbd_content_module__tittle_area">
+              <div class="atbd_area_title">
+                <h3>{% trans "Verify Your E-mail Address" %}</h3>
+              </div>
+            </div>
+            <div class="atbdb_content_module_contents">
+              <ul class="list-unstyled">
+                <li>
+                  {% url 'account_email' as email_url %}
+
+                  <p>{% blocktrans %}This part of the site requires us to verify that
+                    you are who you claim to be. For this purpose, we require that you
+                    verify ownership of your e-mail address. {% endblocktrans %}</p>
+
+                  <p>{% blocktrans %}We have sent an e-mail to you for
+                    verification. Please click on the link inside this e-mail. Please
+                    contact us if you do not receive it within a few minutes.{% endblocktrans %}</p>
+
+                  <p>{% blocktrans %}<strong>Note:</strong> you can still <a href="{{ email_url }}">change your e-mail
+                    address</a>.{% endblocktrans %}</p>
+
+                </li>
+              </ul>
+            </div>
+          </div><!-- ends: .atbd_content_module -->
+        </div><!-- ends: .checkout-form -->
+      </div><!-- ends: .col-lg-12 -->
+    </div>
+  </div>
+</section><!-- ends: .checkout-wrapper -->
+
+
+<h1></h1>
+
+
+{% endblock %}

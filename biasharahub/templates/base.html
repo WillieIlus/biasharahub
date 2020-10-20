@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+{% load static %}
+{% load social_share %}
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="ie=edge" http-equiv="X-UA-Compatible">
+  {% block head %}
+  <meta content="Nairobi Biashara Hub" name="description">
+  <meta content=" Prices, Business,online, directory,CV,Resume, Insurance, Loan, opening" name="keywords">
+  <meta content="BiasharaHub" name="author">
+  {% endblock %}
+  <title>{% block title %} BiasharaHub {% endblock %}</title>
+  <link href="https://fonts.googleapis.com/css?family=Muli:400,400i,600,700" rel="stylesheet">
+  <script src="https://use.fontawesome.com/495762792b.js"></script>
+  <!-- inject:css-->
+  <link href="{% static 'css/bootstrap/bootstrap.css' %}" rel="stylesheet">
+  <link href="{% static 'css/brands.css' %}" rel="stylesheet">
+  <link href="{% static 'css/fontawesome.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/jquery-ui.css' %}" rel="stylesheet">
+  <link href="{% static 'css/line-awesome.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/magnific-popup.css' %}" rel="stylesheet">
+  <link href="{% static 'css/owl.carousel.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/select2.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/slick.css' %}" rel="stylesheet">
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
+  <link href="{% static 'css/autocomplete.css' %}" rel="stylesheet" type="text/css"/>
+
+  <!-- endinject -->
+  <link href="{% static 'img/fevicon.png' %}" rel="icon" sizes="32x32" type="image/png">
+  <link href="{% static 'css/bootstrap/config.bs.scss' %}" rel="stylesheet">
+
+  <!-- CSS Files -->
+
+  <!--fonts ===========================================-->
+  {% block stylesheet %}{% endblock %}
+</head>
+<body>
+
+{% include "includes/messages_display.html" %}
+
+{% block headcrumb-wrapper %}
+<section class="header-breadcrumb bgimage overlay overlay--dark">
+  {% block bg-image-holder %}
+  {% endblock %}
+  <!--      mainmenu wrapper-->
+  {% include 'includes/menu.html' %}
+  <!-- ends: .mainmenu-wrapper -->
+  <div class="breadcrumb-wrapper content_above">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12 text-center">
+          {% block page-title %}
+          {% endblock %}
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              {% block home_link %}
+              <li class="breadcrumb-item"><a href='{% url "home" %}'><i class="fa fa-home"></i>Home</a></li>
+              {% endblock %}
+
+              {% block breadcrumb_item %}
+              {% endblock %}
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div><!-- ends: .breadcrumb-wrapper -->
+</section>
+{% endblock %}
+
+{% block content %}
+<!--Information gets in here-->
+{% endblock %}
+
+{% include 'includes/footer.html' %}
+
+<!-- inject:js-->
+<script src="{% static 'js/jquery/jquery-1.12.3.js' %}"></script>
+<script src="{% static 'js/bootstrap/popper.js' %}"></script>
+<script src="{% static 'js/bootstrap/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/jquery-ui.min.js' %}"></script>
+<script src="{% static 'js/jquery.barrating.min.js' %}"></script>
+<script src="{% static 'js/jquery.counterup.min.js' %}"></script>
+<script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+<script src="{% static 'js/jquery.mCustomScrollbar.concat.min.js' %}"></script>
+<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'js/masonry.pkgd.min.js' %}"></script>
+<script src="{% static 'js/owl.carousel.min.js' %}"></script>
+<script src="{% static 'js/select2.full.min.js' %}"></script>
+<script src="{% static 'js/slick.min.js' %}"></script>
+<script src="{% static 'js/locator.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'js/map.js' %}"></script>
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/jquery.autocomplete.js' %}"></script>
+<script src="{% static 'js/our_search_code.js' %}"></script>
+<!-- endinject-->
+
+{% block javascript %}{% endblock %}
+</body>
+</html>
