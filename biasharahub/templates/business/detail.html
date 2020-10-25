@@ -83,7 +83,7 @@
             {% if business.category %}
             <li>
               <div class="atbd_listing_category">
-                <a href="{% url 'categories:detail' business.category %}">
+                <a href="{{ business.category.get_absolute_url }}">
                   <span class="{{ business.category.icon }}"></span>{{ business.category }}</a>
               </div>
             </li>
