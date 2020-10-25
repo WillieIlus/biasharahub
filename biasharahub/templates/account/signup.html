@@ -38,7 +38,7 @@
 
         <p> Already a member? <a href="{{ login_url }}">login</a>
              or <a href="{% url 'account_set_password' %}">Recover Password</a> </p>
-
+{% comment %}
         <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
           {% csrf_token %}
           {% crispy form %}
@@ -46,11 +46,11 @@
           <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
           {% endif %}
         </form>
-
+{% endcomment %}
         <div class="form-excerpts">
 
           <div class="social-login">
-            <span>Or Signup with</span>
+            <span>Signup With</span>
             <p><a class="btn btn-outline-secondary"
                   href="{% provider_login_url 'facebook' method='oauth2' %}"><i class="fab fa-facebook-f"></i> Facebook</a>
               <a class="btn btn-outline-danger"
