@@ -63,7 +63,7 @@ INSTALLED_APPS = [
 ]
 
 SITE_ID = 1
-
+ACCOUNT_DEFAULT_HTTP_PROTOCOL='https'
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
@@ -251,4 +251,4 @@ else:
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
+# s://docs.djangoproject.com/en/1.11/howto/static-files/
