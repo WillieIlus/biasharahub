@@ -63,7 +63,7 @@ INSTALLED_APPS = [
 ]
 
 SITE_ID = 1
-ACCOUNT_DEFAULT_HTTP_PROTOCOL='https'
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
@@ -76,10 +76,15 @@ SOCIALACCOUNT_EMAIL_REQUIRED = True
 SOCIALACCOUNT_PROVIDERS = {
 
     'google': {
-        'APP': {
-            'client_id': '123',
-            'secret': '456',
-            'key': ''
+        'SCOPE': [
+            'profile',
+            'email',
+            'name',
+            'first_name',
+            'last_name',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
         }
     },
 
@@ -178,7 +183,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                # `allauth` needs this from django
+                # `allauth` needs this from django,
                 'django.template.context_processors.request',
             ],
         },
@@ -223,12 +228,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'biasharahubke@gmail.com'
-EMAIL_HOST_PASSWORD = 'tungsten1'
-EMAIL_PORT = 587
-DEFAULT_FROM_EMAIL = 'webmaster@example.com'
 
 # LOGOUT_REDIRECT_URL = 'accounts:login'
 LOGOUT_REDIRECT_URL = 'account_login'
@@ -249,6 +248,12 @@ if os.environ.get("CAPROVER") is None:
 else:
     from .settings_cap import *
 
+
+# if os.environ.get("CAPROVER") is None:
+#     from .settings_dev import *
+# else:
+#     from .settings_cap import *
+#
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # Static files (CSS, JavaScript, Images)
 # s://docs.djangoproject.com/en/1.11/howto/static-files/

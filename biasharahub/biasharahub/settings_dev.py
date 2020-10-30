@@ -11,7 +11,7 @@ SECRET_KEY = '4-#uonxctis^jk88-&&%s4gci7=0xvp66y4^4nmrtmsp6=i_=%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*', '0.0.0.0', '127.0.0.1', 'biasharahub.com']
+ALLOWED_HOSTS = ['*', '0.0.0.0', '127.0.0.1', 'biasharahub.com', 'www.biasharahub.com']
 
 
 DATABASES = {

@@ -40,11 +40,16 @@ else:
         }
     }
 
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'biasharahubke@gmail.com'
+EMAIL_HOST_PASSWORD = 'tungsten1'
+EMAIL_PORT = 587
+DEFAULT_FROM_EMAIL = 'webmaster@example.com'
 
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
-
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
+
