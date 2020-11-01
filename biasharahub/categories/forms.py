@@ -1,5 +1,6 @@
 from builtins import super
 
+from business.models import Business
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Column, Layout, Row, Submit
 from crispy_forms.layout import Div
@@ -8,7 +9,6 @@ from django import forms
 from django.forms import ModelForm
 from pagedown.widgets import PagedownWidget
 
-from business.models import Business
 from .models import Category
 
 
@@ -48,12 +48,13 @@ class CategoryBusinessForm(ModelForm):
     logo = forms.ImageField(label='logo', required=False,
                             widget=forms.ClearableFileInput(attrs={'placeholder': 'Logo',
                                                                    'class': 'btn btn-outline-secondary'}))
-    description = forms.CharField(widget=PagedownWidget())
+    description = forms.CharField(widget=PagedownWidget(
+        attrs={'placeholder': 'Write something beautful about your biashara, it can be short, the freedom is yours', }))
 
     class Meta:
         model = Business
         fields = (
-            'name', 'logo', 'email', 'description', 'website', 'location', 'address', 'services')
+            'name', 'logo', 'email', 'description')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -67,8 +68,4 @@ class CategoryBusinessForm(ModelForm):
             'logo',
             'email',
             'description',
-            'website',
-            'location',
-            'address',
-            'services',
         )

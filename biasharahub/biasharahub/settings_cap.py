@@ -6,7 +6,7 @@ from .settings import BASE_DIR
 
 SECRET_KEY = os.environ.get("CR_SECRET_KEY") or ImproperlyConfigured("CR_SECRET_KEY not set")
 
-DEBUG = False
+DEBUG = True
 
 hosts = os.environ.get("CR_HOSTS") or ImproperlyConfigured("CR_HOSTS not set")
 
@@ -47,9 +47,10 @@ EMAIL_HOST_PASSWORD = 'tungsten1'
 EMAIL_PORT = 587
 DEFAULT_FROM_EMAIL = 'webmaster@example.com'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = '/media/'
+
 
