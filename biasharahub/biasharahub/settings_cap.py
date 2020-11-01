@@ -6,7 +6,7 @@ from .settings import BASE_DIR
 
 SECRET_KEY = os.environ.get("CR_SECRET_KEY") or ImproperlyConfigured("CR_SECRET_KEY not set")
 
-DEBUG = True
+DEBUG = False
 
 hosts = os.environ.get("CR_HOSTS") or ImproperlyConfigured("CR_HOSTS not set")
 
