@@ -49,7 +49,8 @@ class CategoryBusinessForm(ModelForm):
                             widget=forms.ClearableFileInput(attrs={'placeholder': 'Logo',
                                                                    'class': 'btn btn-outline-secondary'}))
     description = forms.CharField(widget=PagedownWidget(
-        attrs={'placeholder': 'Write something beautful about your biashara, it can be short, the freedom is yours', }))
+        attrs={'placeholder': 'Write something beautiful about your biashara, it can be short or long, '
+                              'the freedom is yours', }))
 
     class Meta:
         model = Business
