@@ -126,7 +126,48 @@
                   </div>
                 </div>
                 <!-- end .author-area -->
-
+                <div class="offcanvas-menu d-none">
+                  {% if not request.user.is_authenticated %}
+                  <a class="offcanvas-menu__user" href=""><i class="la la-user"></i></a>
+                  <div class="offcanvas-menu__contents">
+                    <a class="offcanvas-menu__close" href=""><i class="la la-times-circle"></i></a>
+                    <div class="author-avatar">
+                      <img alt="" class="rounded-circle" src="img/author-avatar.png">
+                    </div>
+                    <ul class="list-unstyled">
+                      <li><a class="access-link" data-target="#login_modal" data-toggle="modal"
+                             href='{% url "account_login" %}'><i class="fa fa-lock"></i> Login</a></li>
+                      <li><a class="access-link" data-target="#signup_modal" data-toggle="modal"
+                             href="{% url 'account_signup' %}"><i class="fa fa-pencil"></i> Register</a></li>
+                      <div><a class="btn btn-xs btn-gradient btn-gradient-two"
+                             data-target="#category_modal" data-toggle="modal"
+                             href='{% url "business:new" %}'>
+                        <span class="la la-plus"></span> Add Biashara
+                      </a></div>
+                      <li><a href="">Logout</a></li>
+                    </ul>
+                  </div>
+                  {% else %}
+                  <a class="offcanvas-menu__user" href=""><i class="la la-user"></i></a>
+                  <div class="offcanvas-menu__contents">
+                    <a class="offcanvas-menu__close" href=""><i class="la la-times-circle"></i></a>
+                    <div class="author-avatar">
+                      <img alt="" class="rounded-circle" src="img/author-avatar.png">
+                    </div>
+                    <ul class="list-unstyled">
+                      <li><a href="{% url 'accounts:detail' request.user.pk %}">My Profile</a></li>
+                      <li><a href="{% url 'accounts:dashboard' %}">Dashboard</a></li>
+                      <li><a href="{% url 'account_logout' %}">Logout</a></li>
+                    </ul>
+                    <div class="search_area">
+                      <a class="btn btn-xs btn-gradient btn-gradient-two"
+                         data-target="#category_modal" data-toggle="modal"
+                         href='{% url "business:new" %}'>
+                        <span class="la la-plus"></span> Add Biashara
+                      </a></div><!-- ends: .search_area -->
+                  </div><!-- ends: .author-info -->
+                  {% endif %}
+                </div><!-- ends: .offcanvas-menu -->
 
               </div><!-- ends: .menu-right -->
             </div>
