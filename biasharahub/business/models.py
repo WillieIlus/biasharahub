@@ -33,12 +33,15 @@ class Business(Common, UrlMixin, MetaTagsMixin):
     website = models.URLField(blank=True, null=True, help_text="Please start with 'https://www.'")
     category = models.ForeignKey(Category, related_name="company", blank=True, null=True, on_delete=models.PROTECT)
     address = models.CharField(max_length=255, blank=True, )
+    phone = models.CharField(max_length=255, blank=True, )
     location = models.ForeignKey(Location, related_name='company', blank=True, null=True,
                                  help_text="Please leave empty if 100% virtual",
                                  on_delete=models.PROTECT)
     services = TaggableManager(through=SameServices, blank=True, verbose_name='services')
     verified = models.BooleanField(default=False)
     featured = models.BooleanField(default=False)
+    hide_mail = models.BooleanField(default=True)
+    hide_phone = models.BooleanField(default=True)
 
     reviews = GenericRelation(Review)
     bookmark = GenericRelation(Bookmark)

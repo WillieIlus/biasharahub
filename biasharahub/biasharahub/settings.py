@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'guardian',
     'markdown_deux',
     'pagedown',
+    'pinax.messages',
     'taggit',
     'whitenoise',
 

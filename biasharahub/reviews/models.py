@@ -42,7 +42,11 @@ class Review(UrlMixin, models.Model):
         ordering = ['-publish']
 
     def save(self, *args, **kwargs):
-        slug = slugify("%s at  %s" % (self.user, self.content_object))
+        get_short_name = self.user.first_name
+        # if self.user.first_name is None:
+        #     get_short_name = self.user
+        #     return get_short_name
+        slug = slugify("%s at  %s" % (get_short_name, self.content_object))
         self.slug = slug
         super().save(*args, **kwargs)
 

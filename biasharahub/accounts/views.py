@@ -1,11 +1,14 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views.generic import UpdateView, DetailView, ListView
 from django.views.generic.detail import SingleObjectMixin
 
 from business.models import Business
 from comments.models import Comment
-from .forms import UserForm
+from accounts.decorators import UserRequiredMixin
+from .forms import UserForm, SocialProfileFormSet
 from .models import User
 
 
@@ -142,3 +145,67 @@ class Detail(LoginRequiredMixin, SingleObjectMixin, ListView):
 
     def get_queryset(self):
         return self.object.review_set.all()
+
+
+class SocialProfile(LoginRequiredMixin, UserRequiredMixin, UpdateView):
+    model = Business
+    # form_class = BusinessNameFormi
+    fields = 'first_name'
+    template_name = 'business/form.html'
+    # success_url = self.model.get_absolute_url
+    success_message = "updated successfully"
+
+    def get_success_url(self):
+        return reverse('business:detail', kwargs={'pk': self.object.pk})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context['social_form'] = SocialProfileFormSet(self.request.POST, instance=self.object)
+            context['social_form'].full_clean()
+
+        else:
+            context['social_form'] = SocialProfileFormSet(instance=self.object)
+
+        return context
+
+    def form_valid(self, form):
+        # form.instance.user = self.request.user
+        # form.save()
+
+        context = self.get_context_data(form=form)
+        formset = context['social_form']
+
+        if formset.is_valid():
+            response = super().form_valid(form)
+            formset.instance = self.object
+            formset.save()
+            return response
+        else:
+            return super().form_invalid(form)
+
+def hide_mail(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    hidden = user.hide_mail
+
+    if hidden:
+        user.hide_mail = False
+        user.save()
+    else:
+        user.hide_mail = True
+        user.save()
+
+    return HttpResponseRedirect(user.get_absolute_url())
+
+
+def hide_phone(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    hidden = user.hide_phone
+    if hidden:
+        user.hide_phone = False
+        user.save()
+    else:
+        user.hide_phone = True
+        user.save()
+
+    return HttpResponseRedirect(user.get_absolute_url())

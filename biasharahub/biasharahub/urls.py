@@ -42,6 +42,7 @@ urlpatterns = [
                   path('comments/', include('comments.urls', namespace='comments')),
                   path('invitations/', include('invitations.urls', namespace='invitations')),
                   path('locations/', include('locations.urls', namespace='locations')),
+                  path('messages/', include("pinax.messages.urls", namespace="pinax_messages")),
                   path('opening-hours/', include('openinghours.urls', namespace='openinghours')),
                   path('about-us/', flatpage, {'url': '/about-us/'}, name='about'),
                   path('contact-us/', flatpage, {'url': '/contact-us/'}, name='contact'),

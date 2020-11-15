@@ -5,6 +5,7 @@ from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.text import slugify
 
 
 class MyUserManager(BaseUserManager):
@@ -50,11 +51,14 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     photo = models.ImageField(upload_to="user/photos", blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
+    phone = models.CharField(max_length=255, blank=True, )
     website = models.URLField(blank=True, null=True, help_text="Please start with 'https://www.'")
 
     address = models.CharField(max_length=255, blank=True, )
     is_freelancer = models.BooleanField(default=False)
     is_entrepreneur = models.BooleanField(default=False)
+    hide_mail = models.BooleanField(default=True)
+    hide_phone = models.BooleanField(default=True)
 
     objects = MyUserManager()
     EMAIL_FIELD = 'email'

@@ -1,3 +1,6 @@
+from accounts.decorators import UserRequiredMixin
+from business.models import Business, BusinessImage
+from comments.forms import CommentForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -10,10 +13,8 @@ from django.views.generic import CreateView, ListView, UpdateView
 from django.views.generic.detail import SingleObjectMixin, DetailView
 from haystack.generic_views import FacetedSearchView as BaseFacetedSearchView
 from haystack.query import SearchQuerySet
-
-from business.models import Business, BusinessImage
-from comments.forms import CommentForm
 from reviews.forms import ReviewForm
+
 from .forms import BusinessForm, BusinessSearchForm, \
     SocialProfileFormSet, BusinessPhotoForm, BusinessNameForm
 
@@ -80,7 +81,7 @@ class BusinessCreate(LoginRequiredMixin, CreateView):
             return super().form_invalid(form)
 
 
-class BusinessEdit(LoginRequiredMixin, UpdateView):
+class BusinessEdit(LoginRequiredMixin, UserRequiredMixin, UpdateView):
     model = Business
     form_class = BusinessForm
     template_name = 'business/form.html'
@@ -107,7 +108,7 @@ class BusinessEdit(LoginRequiredMixin, UpdateView):
             return super().form_invalid(form)
 
 
-class BusinessSocialProfile(LoginRequiredMixin, UpdateView):
+class BusinessSocialProfile(LoginRequiredMixin, UserRequiredMixin, UpdateView):
     model = Business
     form_class = BusinessNameForm
     template_name = 'business/form.html'
@@ -228,3 +229,30 @@ class PhotoGallery(DetailView):
     model = Business
     template_name = 'business/photo_gallery.html'
     context_object_name = 'photo'
+
+
+def hide_mail(request, slug):
+    business = get_object_or_404(Business, slug=slug)
+    hidden = business.hide_mail
+
+    if hidden:
+        business.hide_mail = False
+        business.save()
+    else:
+        business.hide_mail = True
+        business.save()
+
+    return HttpResponseRedirect(business.get_absolute_url())
+
+
+def hide_phone(request, slug):
+    business = get_object_or_404(Business, slug=slug)
+    hidden = business.hide_phone
+    if hidden:
+        business.hide_phone = False
+        business.save()
+    else:
+        business.hide_phone = True
+        business.save()
+
+    return HttpResponseRedirect(business.get_absolute_url())

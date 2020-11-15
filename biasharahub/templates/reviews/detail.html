@@ -3,19 +3,19 @@
 {% load crispy_forms_tags %}
 {% load biasharahub %}
 
-{% block title %}  {{ review.user }} | {{ block.super }} {% endblock %}
+{% block title %}  {{ review.user.first_name }} | {{ block.super }} {% endblock %}
 
 {% block bg-image-holder %}
 <div class="bg_image_holder"><img alt="" src='{% static "img/breadcrumb1.jpg" %}'></div>
 {% endblock %}
 
 {% block page-title %}
-<h1 class="page-title">{{ review.user }} </h1>
+<h1 class="page-title">{{ review.user.first_name }} </h1>
 {% endblock %}
 
 {% block breadcrumb_item %}
 <li class="breadcrumb-item"><a href='{% url "reviews:list" %}'><i class="fa fa-list"></i>List</a></li>
-<li aria-current="page" class="breadcrumb-item active">{{ review.user }}</li>
+<li aria-current="page" class="breadcrumb-item active">{{ review.user.first_name }}</li>
 <li class="breadcrumb-item"><a href='{% url "reviews:edit" review.slug %}'><i class="fa fa-plus"></i>Edit</a></li>
 {% endblock %}
 
@@ -33,10 +33,10 @@
           </div>
           <div class="post-content">
             <div class="post-header">
-              <h3>{{ review.user }}</h3>
+              <h3>{{ review.user.first_name }}</h3>
               <ul class="list-unstyled">
                 <li>{{ review.publish|date }}</li>
-                <li>By <a href="{{ review.user.get_absolute_url }}">{{ review.user }}</a></li>
+                <li>By <a href="{{ review.user.get_absolute_url }}">{{ review.user.first_name }}</a></li>
                 <li>In <a href="{{ review.content_object.get_absolute_url }}">{{ review.content_object.name }}</a></li>
                 <li><a href="#">{{ review.comments.count }} Comment{{ review.comments.count|pluralize }}</a></li>
               </ul>
@@ -78,10 +78,12 @@
             <P>{{ review.user.get_full_name }} has decided to put a wall of heightened hysteria around them </P>
             {% endif %}
             <ul class="list-unstyled social-basic">
-              <li><a href="{{ review.user.facebook }}"><i class="fab fa-facebook-f"></i></a></li>
-              <li><a href="{{ review.user.twitter }}"><i class="fab fa-twitter"></i></a></li>
-              <li><a href="{{ review.user.linkedin }}"><i class="fab fa-linkedin-in"></i></a></li>
-              <li><a href="{{ review.user.instagram }}"><i class="fab fa-instagram"></i></a></li>
+                            {% for network in review.user.network.all %}
+              <li>
+              <a href="{{ network.url }}"><i class="{{ network.network.icon }}"></i></a>
+              </li>
+              <span class="custom-tooltip">{{ network.name }}</span>
+              {% endfor %}
             </ul>
           </div>
         </div><!-- ends: .post-author -->
@@ -103,7 +105,7 @@
                     <div class="media_top">
                       <div class="heading_left">
                         <a href="{{ comment.user.get_absolute_url }}">
-                          <h6 class="media-heading">{{ comment.user}}</h6>
+                          <h6 class="media-heading">{{ comment.user.first_name }}</h6>
                         </a>
                         <span>{{ comment.publish|date }}</span>
                       </div>
@@ -126,7 +128,7 @@
                         <div class="media_top">
                           <div class="heading_left">
                             <a href="#">
-                              <h6 class="media-heading">{{ reply.user }}</h6>
+                              <h6 class="media-heading">{{ reply.user.get_short_name }}</h6>
                             </a>
                             <span>{{ reply.publish|date }}</span>
                           </div>

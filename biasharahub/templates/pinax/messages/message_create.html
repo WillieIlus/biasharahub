@@ -1,0 +1,36 @@
+{% extends "pinax/messages/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block body_class %}{{ block.super }} pinax-messages-create{% endblock %}
+
+
+{% block content %}
+<div class="modal-dialog" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">New Message
+      </h5></div>
+    <div class="modal-body">
+      <form action="{% url 'pinax_messages:message_create' %}" class="comment-form" method="post">
+        {% csrf_token %}
+<div class="form-row">
+      <div  hidden class="form-group col-md-12 mb-0">
+        {{ form.to_user|as_crispy_field }}
+      </div>
+  <div class="form-group col-md-12 mb-0">
+        {{ form.subject|as_crispy_field }}
+      </div>
+  <div class="form-group col-md-12 mb-0">
+        {{ form.content|as_crispy_field }}
+      </div>
+        <div class="form-actions">
+          <a class='btn btn-warning' href="{% url 'pinax_messages:inbox' %}">Cancel</a>
+          <button class='btn btn-primary'>Send</button>
+        </div>
+</div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,9 +1,11 @@
+from accounts.models import User
 from allauth.account.forms import LoginForm, SignupForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column
 from django import forms
+from django.forms import ModelForm, inlineformset_factory
 
-from accounts.models import User
+from accounts.models import SocialProfile
 
 
 class CustomSignupForm(SignupForm):
@@ -54,7 +56,8 @@ class UserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = (
-            'first_name', 'last_name', 'is_freelancer', 'is_entrepreneur', 'photo', 'bio', 'website', 'address',
+            'first_name', 'last_name', 'phone', 'hide_mail', 'hide_phone', 'is_freelancer', 'is_entrepreneur', 'photo',
+            'bio', 'website', 'address',
         )
 
     def __init__(self, *args, **kwargs):
@@ -68,13 +71,18 @@ class UserForm(forms.ModelForm):
             ),
             'photo',
             Row(
-                Column('first_name', css_class='mt-10 form-group col-md-6 col-sm-12 mb-0'),
-                Column('last_name', css_class='mt-10 form-group col-md-6 col-sm-12 mb-0'),
+                Column('first_name', css_class='mt-10 form-group col-md-6 col-sm-12 mb-10'),
+                Column('last_name', css_class='mt-10 form-group col-md-6 col-sm-12 mb-10'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('phone', css_class='mt-10 form-group col-md-6 col-sm-12 mb-10'),
+                Column('hide_phone', css_class='mt-10 form-group col-md-3 col-sm-6'),
+                Column('hide_mail', css_class='mt-10 form-group col-md-3 col-sm-6'),
                 css_class='form-row'
             ),
             'bio',
-            'website', 'facebook',
-            'twitter', 'linkedin', 'instagram', 'youtube',
+            'website',
             Row(
                 Column('address', css_class='mt-10 form-group col-md-6 col-sm-12 mb-0'),
                 css_class='form-row'
@@ -115,3 +123,27 @@ class CustomLoginForm(LoginForm):
             # <i class="fa fa-sign-in"></i>
 
         )
+
+
+class SocialProfileForm(ModelForm):
+    class Meta:
+        model = SocialProfile
+        fields = ('user', 'network', 'username', 'url')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Row(
+                Column('user', css_class='mt-10 form-group col-md-3 mb-0'),
+                Column('network', css_class='mt-10 form-group col-md-3 mb-0'),
+                Column('username', css_class='mt-10 form-group col-md-3 mb-0'),
+                Column('url', css_class='mt-10 form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+        )
+
+
+SocialProfileFormSet = inlineformset_factory(User, SocialProfile,
+                                             fields=['user', 'network', 'username', 'url'],
+                                             can_delete=True, exclude=None, extra=3, max_num=9)

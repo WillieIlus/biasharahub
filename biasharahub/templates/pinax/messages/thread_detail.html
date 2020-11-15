@@ -1,0 +1,42 @@
+{% extends "pinax/messages/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block body_class %}pinax-messages-thread | {{ block.super }} {% endblock %}
+{% block jumbotron %}
+<a class="btn btn-common" href='{% url "job:list" %}'>Messages
+</a>
+<a class="btn btn-common active"> Inbox
+</a>
+{% endblock  %}
+
+{% block content %}
+<div class="container">
+  <h2 class="with-actions">
+    {{ thread.subject }}
+    <a class="pull-right btn std-btn btn-sm btn-warning" href='{% url "pinax_messages:thread_delete" thread.pk %}'><small> Delete Thread</small></a>
+  </h2>
+
+  <section class="card">
+    {% for message in thread.messages.all %}
+    <div class="card-body">
+      <div class="message-byline">
+        <h6 class="message-from">{{ message.sender.get_short_name }}</h6>
+        <div class="pull-right">{{ message.sent_at }}</div>
+      </div><br/>
+      <div class="message-content">{{ message.content|urlize|linebreaks }}</div>
+    </div>
+    <hr/>
+    {% endfor %}
+  </section>
+
+  <form class="comment-form" action='{% url "pinax_messages:thread_detail" thread.pk %}' method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <div class="form-actions">
+      <a href='{% url "pinax_messages:inbox" %}' class="btn std-btn btn-sm btn-danger">Cancel</a>
+      <button class="btn std-btn btn-sm btn-primary">Send</button>
+    </div>
+  </form>
+</div>
+<div class="mb-60"></div>
+{% endblock %}

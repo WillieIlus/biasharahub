@@ -26,6 +26,18 @@
         object-fit: cover;
       }
 
+
+
+
+
+
+
+
+
+
+
+
+
 </style>
 {% endblock %}
 
@@ -89,7 +101,7 @@
             </li>
             {% endif %}
           </ul><!-- ends: .listing-info-meta -->
-          <h1>{{ business.name }} </h1>
+          <h1>{{ business.name|title }} </h1>
           <div class="atbd_name_time">
           <span class="verified" data-placement="top" data-toggle="tooltip"
                 title="Verified"></span>
@@ -234,14 +246,14 @@
         <div class="atbd_content_module atbd_listing_details">
           <div class="atbd_content_module__tittle_area">
             <div class="atbd_area_title">
-              <h4><span class="la la-file-text-o"></span>{{ business.name }}</h4>
+              <h4><span class="la la-file-text-o"></span>{{ business.name|title }}</h4>
             </div>
           </div>
           <div class="atbdb_content_module_contents">
             {% if business.description %}
             <p>{{ business.get_markdown }}</p>
             {% else %}
-            <p>{{ business.name }} has decided to put an air of heightened hysteria around them</p>
+            <p>{{ business.name|title }} has decided to put an air of heightened hysteria around them</p>
             {% endif %}
             {% if request.user == business.user %}
             <hr/>
@@ -311,16 +323,63 @@
                 </li>
                 {% endif %}
                 {% if business.phone %}
+                {% if business.hide_phone and not request.user == business.user %}
                 <li>
                   <div class="atbd_info_title"><span class="la la-phone"></span>Phone Number:</div>
-                  <div class="atbd_info">{{ business.phone }}</div>
+                  <div class="atbd_info"> +254 {{ business.phone|truncatechars:3 }} [ hidden ]</div>
+                </li>
+                {% else %}
+                <li>
+                  <div class="atbd_info_title"><span class="la la-phone"></span>Phone Number:</div>
+                  <span class="atbd_info"> +254 {{ business.phone }}</span>
+                  {% if request.user == business.user %}
+                  <span>
+                              {% if business.hide_phone %}
+                              <a href="{% url 'business:show_hide_phone' business.slug %}"
+                                 class="btn btn-outline-primary">
+                                <i class='fas fa-toggle-off'></i><span> Show Phone to public </span>
+                              </a>
+                              {% else %}
+                              <a href="{% url 'business:show_hide_phone' business.slug %}"
+                                 class="btn btn-outline-success">
+                                <i class='fas fa-toggle-on'></i> <span> Hide Phone from public</span>
+                              </a>
+                              {% endif %}
+                  </span>
+                  {% endif %}
+                </li>
+
+                <li>
                 </li>
                 {% endif %}
+                {% endif %}
                 {% if business.email %}
+                {% if business.hide_mail and not request.user == business.user %}
+                <li>
+                  <div class="atbd_info_title"><span class="la la-envelope"></span>Email:</div>
+                  <span class="atbd_info">
+                    <a href="{% url 'pinax_messages:message_user_create' user_id=object.user.id %}">Inbox {{ business.name|title }}</a>
+                  </span>
+                </li>
+                {% else%}
                 <li>
                   <div class="atbd_info_title"><span class="la la-envelope"></span>Email:</div>
                   <span class="atbd_info">{{ business.email }}</span>
+                  {% if request.user == business.user %}
+                  <span>
+                              {% if business.hide_mail %}
+                              <a href="{% url 'business:show_hide' business.slug %}" class="btn btn-outline-primary">
+                                <i class='fas fa-toggle-off'></i><span> Show Mail to public </span>
+                              </a>
+                              {% else %}
+                              <a href="{% url 'business:show_hide' business.slug %}" class="btn btn-outline-success">
+                                <i class='fas fa-toggle-on'></i> <span> Hide Mail from public</span>
+                              </a>
+                              {% endif %}
+                  </span>
+                  {% endif %}
                 </li>
+                {% endif %}
                 {% endif %}
                 {% if business.website %}
                 <li>
@@ -333,9 +392,17 @@
             <div class="atbd_director_social_wrap">
               {% for network in business.network.all %}
               <a class="atbd_info" href="{{ network.url }}"><span class="{{ network.network.icon }}"></span></a>
-              <span class="custom-tooltip" >{{ network.name }}</span>
+              <span class="custom-tooltip">{{ network.name }}</span>
               {% endfor %}
             </div>
+            {% if request.user == business.user %}
+            <span>
+                    <a href="{% url 'business:social_profile' business.slug %}"
+                       class="btn btn-outline-primary">
+                      <span> Add Social Networks </span>
+                    </a>
+                  </span>
+            {% endif %}
           </div>
         </div><!-- ends: .atbd_content_module -->
         <div class="atbd_content_module atbd_review_module">
@@ -561,16 +628,32 @@
                 </li>
                 {% endif %}
                 {% if business.phone %}
+                {% if business.hide_phone and not request.user == business.user %}
                 <li>
                   <span class="la la-phone"></span>
-                  <span class="atbd_info">(+254) {{ business.phone }}</span>
+                  <div class="atbd_info"> +254 {{ business.phone|truncatechars:3 }} [ hidden ]</div>
+                </li>
+                {% else %}
+                <li>
+                  <span class="la la-phone"></span>
+                  <span class="atbd_info"> +254 {{ business.phone }}</span>
                 </li>
                 {% endif %}
+                {% endif %}
                 {% if business.email %}
+                {% if business.hide_mail and not request.user == business.user %}
+                <li>
+                  <span class="la la-envelope"></span>
+                  <span class="atbd_info">
+                    <a href="{% url 'pinax_messages:message_user_create' user_id=object.user.id %}">Inbox {{ business.name|title }}</a>
+                  </span>
+                </li>
+                {% else%}
                 <li>
                   <span class="la la-envelope"></span>
                   <span class="atbd_info">{{ business.email }}</span>
                 </li>
+                {% endif %}
                 {% endif %}
                 {% if business.website %}
                 <li>

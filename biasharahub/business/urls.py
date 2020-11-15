@@ -1,8 +1,8 @@
 from django.urls import path
-
 from favourites.views import bookmark_company
+
 from .views import BusinessCreate, BusinessDetail, BusinessList, BusinessEdit, PhotoGallery, \
-    FacetedSearchView, autocomplete,  BusinessSocialProfile, add_photos #ManagePhoto
+    FacetedSearchView, autocomplete, BusinessSocialProfile, add_photos, hide_mail, hide_phone
 
 app_name = 'business'
 
@@ -17,7 +17,8 @@ urlpatterns = [
     path('<slug:slug>/social_profile/', BusinessSocialProfile.as_view(), name='social_profile'),
     path('<slug:slug>/photo_update/', add_photos, name='photo_update'),
     path('<slug:slug>/gallery/', PhotoGallery.as_view(), name='gallery'),
-    # path('<slug:slug>/photo_update/', ManagePhoto.as_view(), name='photo_update'),
+    path('<slug:slug>/show_hide/', hide_mail, name='show_hide'),
+    path('<slug:slug>/show_hide_phone/', hide_phone, name='show_hide_phone'),
 
     path('<slug:slug>/bookmark/', bookmark_company, name='bookmark'),
     path('autocomplete/', autocomplete),

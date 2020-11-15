@@ -1,18 +1,18 @@
 from builtins import super
 
+from business.models import Business, BusinessImage, CompanySocialProfile
+from categories.models import Category
+from crispy_forms.bootstrap import StrictButton
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Column, Layout, Row, Submit
 from django import forms
 # from django.contrib.admin import widgets
-from django.forms import ModelForm, modelformset_factory
+from django.forms import ModelForm
 from django.forms.models import inlineformset_factory
 from django.utils.translation import ugettext_lazy as _
 from haystack.forms import FacetedSearchForm
-from pagedown.widgets import PagedownWidget
-
-from business.models import Business, BusinessImage, CompanySocialProfile
-from categories.models import Category
 from locations.models import Location
+from pagedown.widgets import PagedownWidget
 from reviews.models import RATING_CHOICES
 
 
@@ -29,6 +29,7 @@ class BusinessNameForm(ModelForm):
         fields = ('name',)
 
 
+
 class BusinessForm(ModelForm):
     logo = forms.ImageField(label='logo', required=False,
                             widget=forms.ClearableFileInput(attrs={'placeholder': 'Logo',
@@ -38,7 +39,7 @@ class BusinessForm(ModelForm):
     class Meta:
         model = Business
         fields = (
-            'name', 'logo', 'email', 'description', 'website', 'location', 'category', 'address', 'services')
+            'name', 'logo', 'email', 'hide_mail', 'phone', 'hide_phone', 'description', 'website', 'location', 'category', 'address', 'services')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -53,6 +54,9 @@ class BusinessForm(ModelForm):
             'name',
             'logo',
             'email',
+            'hide_mail',
+            'phone',
+            'hide_phone',
             'description',
             'website',
             'location',
@@ -73,6 +77,7 @@ class BusinessFilterForm(forms.Form):
 class BusinessPhotoForm(ModelForm):
     img = forms.ImageField(label='Image', )
     alt = forms.CharField(label='Describe the Image', )
+
     class Meta:
         model = BusinessImage
         fields = ('business', 'img', 'alt')
@@ -92,9 +97,6 @@ class BusinessPhotoForm(ModelForm):
                 css_class='form-row'
             ),
         )
-
-
-
 
 
 class BusinessPhotoFormSetHelper(FormHelper):
@@ -130,7 +132,8 @@ class SocialProfileForm(ModelForm):
         )
 
 
-SocialProfileFormSet = inlineformset_factory(Business, CompanySocialProfile, fields=['business', 'network', 'username', 'url'],
+SocialProfileFormSet = inlineformset_factory(Business, CompanySocialProfile,
+                                             fields=['business', 'network', 'username', 'url'],
                                              can_delete=True, exclude=None, extra=3, max_num=9)
 
 

@@ -42,7 +42,7 @@
                 </a></h6>
                 <ul class="post-meta list-unstyled">
                   <li>{{ review.publish|date }} ( {{ review.publish|timesince }} ago )</li>
-                  <li>by <a href="{{ review.user.get_absolute_url }}">{{ review.user }}</a></li>
+                  <li>by <a href="{{ review.user.get_absolute_url }}">{{ review.user.first_name }}</a></li>
                   <li>to <a href="{{ review.content_object.get_absolute_url }}">{{ review.content_object.name }}</a>
                   </li>
                   <li><a href="{{ review.get_absolute_url }}">{{ review.comments.count }}

@@ -2,14 +2,14 @@
 {% load staticfiles %}
 {% load crispy_forms_tags %}
 
-{% block title %}  {{ user }}  | {{ block.super }} {% endblock %}
+{% block title %}  {{ user.get_short_name }}  | {{ block.super }} {% endblock %}
 
 {% block bg-image-holder %}
 <div class="bg_image_holder"><img alt="" src='{% static "img/breadcrumb1.jpg" %}'></div>
 {% endblock %}
 
 {% block page-title %}
-<h1 class="page-title">{{ user }}</h1>
+<h1 class="page-title">{{ user.get_short_name }}</h1>
 {% endblock %}
 
 {% block breadcrumb_item %}
@@ -72,16 +72,56 @@
                 </li>
                 {% endif %}
                 {% if user.phone %}
+                {% if user.hide_phone and not request.user == user %}
                 <li>
                   <span class="la la-phone"></span>
-                  <span class="atbd_info">(+254) {{ user.phone }}</span>
+                  <div class="atbd_info"> +254 {{ user.phone|truncatechars:3 }} [ hidden ]</div>
                 </li>
+                {% else %}
+                <li>
+                  <span class="la la-phone"></span>
+                  <span class="atbd_info"> +254 {{ user.phone }}</span>
+                </li>
+                                  {% if request.user == user %}
+                  <span>
+                              {% if user.hide_phone %}
+                              <a href="{% url 'accounts:show_hide_phone' user.pk %}" class="btn btn-outline-primary">
+                                <i class='fas fa-toggle-off'></i><span> Show Phone to public </span>
+                              </a>
+                              {% else %}
+                              <a href="{% url 'accounts:show_hide_phone' user.pk %}" class="btn btn-outline-success">
+                                <i class='fas fa-toggle-on'></i> <span> Hide Phone from public</span>
+                              </a>
+                              {% endif %}
+                  </span>
+                  {% endif %}
                 {% endif %}
-                {% if user.email %}
+                {% endif %}
+                                {% if user.email %}
+                {% if user.hide_mail and not request.user == user %}
+                <li>
+                  <span class="la la-email"></span>
+                    <a href="{% url 'pinax_messages:message_user_create' user_id=user.pk %}">Send Message</a>
+                </li>
+                {% else %}
                 <li>
                   <span class="la la-envelope"></span>
-                  <span class="atbd_info">{{ user.email }}</span>
+                  <span class="atbd_info"> +254 {{ user.email }}</span>
                 </li>
+                                  {% if request.user == user %}
+                  <span>
+                              {% if user.hide_mail %}
+                              <a href="{% url 'accounts:show_hide' user.pk %}" class="btn btn-outline-primary">
+                                <i class='fas fa-toggle-off'></i><span> Show email to public </span>
+                              </a>
+                              {% else %}
+                              <a href="{% url 'accounts:show_hide' user.pk %}" class="btn btn-outline-success">
+                                <i class='fas fa-toggle-on'></i> <span> Hide email from public</span>
+                              </a>
+                              {% endif %}
+                  </span>
+                  {% endif %}
+                {% endif %}
                 {% endif %}
                 {% if user.website %}
                 <li>
@@ -92,21 +132,12 @@
               </ul>
             </div><!-- ends: .atbd_widget_contact_info -->
             <div class="atbd_social_wrap">
-              {% if user.facebook %}
-              <p><a href="{{ user.facebook }}"><span class="fab fa-facebook-f"></span></a></p>
-              {% endif %}
-              {% if user.twitter %}
-              <p><a href="{{ user.twitter }}"><span class="fab fa-twitter"></span></a></p>
-              {% endif %}
-              {% if user.google %}
-              <p><a href="{{ user.google }}"><span class="fab fa-google-plus-g"></span></a></p>
-              {% endif %}
-              {% if user.linkedin %}
-              <p><a href="{{ user.linkedin }}"><span class="fab fa-linkedin-in"></span></a></p>
-              {% endif %}
-              {% if user.youtube %}
-              <p><a href="{{ user.youtube }}"><span class="fab fa-youtube"></span></a></p>
-              {% endif %}
+            <div class="atbd_director_social_wrap">
+              {% for network in user.network.all %}
+              <a class="atbd_info" href="{{ network.url }}"><span class="{{ network.network.icon }}"></span></a>
+              <span class="custom-tooltip">{{ network.name }}</span>
+              {% endfor %}
+            </div>
             </div><!-- ends: .atbd_social_wrap -->
           </div><!-- ends: .widget-body -->
         </div><!-- ends: .widget -->
@@ -126,19 +157,17 @@
           <div class="col-lg-4 col-sm-6">
             <div class="atbd_single_listing ">
               <article class="atbd_single_listing_wrapper">
+                {% if business.featured_image %}
                 <figure class="atbd_listing_thumbnail_area">
                   <div class="atbd_listing_image">
-                    <a href="{{ business.get_absolute_url }}">
-                      <img alt="listing image"
-                           src='{% if business.featured_image %}
-                          {{ business.featured_image }} {% else %} {% static "img/p1.jpg" %} {% endif %}'>
-                    </a>
+                    <a href="{{ business.get_absolute_url }}"><img alt="" src='
+                {{ business.featured_image }}'></a>
                   </div><!-- ends: .atbd_listing_image -->
                   <div class="atbd_author atbd_author--thumb">
                     <a href="{{ business.get_absolute_url }}">
-                      <img alt="Logo" class="img-fluid" width="50px" src='{% if business.logo %}
-                          {{ business.logo.url }} {% else %} {% endif %}'>
-                      <span class="custom-tooltip">{{ business.name }}</span>
+                      <img alt="Logo" class="center-cropped" src='{% if business.logo %}
+                          {{ business.logo.url }} {% else %} {% static "img/author-thumb2.jpg" %} {% endif %}'>
+                      <span class="custom-tooltip">{{ business.name|title }}</span>
                     </a>
                   </div>
                   <div class="atbd_thumbnail_overlay_content">
@@ -152,44 +181,72 @@
                     </ul><!-- ends .atbd_upper_badge -->
                   </div><!-- ends: .atbd_thumbnail_overlay_content -->
                 </figure><!-- ends: .atbd_listing_thumbnail_area -->
+                {% endif %}
                 <div class="atbd_listing_info">
                   <div class="atbd_content_upper">
                     <h4 class="atbd_listing_title">
-                      <a href="{{ business.get_absolute_url }}">{{ business.name }}</a>
+                      <a href="{{ business.get_absolute_url }}">{{ business.name|title }}</a>
                     </h4>
                     <div class="atbd_listing_meta">
                       <span class="atbd_meta atbd_listing_rating">{{ business.average_rating | floatformat }}
                         <i class="la la-star"></i></span>
                       {% comment %}
-                      <span class="atbd_meta atbd_listing_price">$55.00</span>
+                      {% if business.is_open == True %}
                       <span class="atbd_meta atbd_badge_open">Open Now</span>
+                      {% else %}
+                      <span class="atbd_meta atbd_badge_closed">Closed</span>
+                      {% endif %}
                       {% endcomment %}
                     </div><!-- End atbd listing meta -->
+                    {% if business.description %}
+                    <div><p>{{ business.get_markdown|truncatewords:"25" }}</p></div>
+                    {% else %}
+                    <p>{{ business.name|title }} has decided to put an air of heightened hysteria around them</p>
+                    {% endif %}
                     <div class="atbd_listing_data_list">
                       <ul>
                         <li>
-                          <p><span class="la la-map-marker"></span>{{ business.address }},
-                            {{ business.location }}, {{ business.location.country }}</p>
+                          <p><span class="la la-map-marker"></span>{% if business.address %}{{ business.address }},
+                            {% if business.location %}
+                            {{ business.location }}, {{ business.location.country }}
+                            {% endif %}
+                            {% endif %}</p>
                         </li>
-                        <li>
-                          <p><span class="la la-phone"></span>(+254) {{ business.phone }}</p>
-                        </li>
+                {% if business.phone %}
+                {% if business.hide_phone and not request.user == business.user %}
+                <li>
+                  <p>
+                  <span class="la la-phone"></span>
+                   +254 {{ business.phone|truncatechars:3 }} [ hidden ]
+                </p>
+                </li>
+                {% else %}
+                <li><p>
+                  <span class="la la-phone"></span>
+                 +254 {{ business.phone }}
+                </p>
+                </li>
+                {% endif %}
+                {% endif %}
                         <li>
                           <p><span class="la la-calendar-check-o"></span>
-                            Posted {{ business.publish|timesince }} ago</p>
+                            Posted {{ business.publish|date }} ( {{ business.publish|timesince }} ago )</p>
                         </li>
                       </ul>
                     </div><!-- End atbd listing meta -->
                   </div><!-- end .atbd_content_upper -->
                   <div class="atbd_listing_bottom_content">
                     <div class="atbd_content_left">
+                      {% if business.category %}
                       <div class="atbd_listing_category">
                         <a href="{{ business.category.get_absolute_url }}">
-                          <span class="{{ business.category.icon }}"></span>{{ business.category }}</a>
+                          <span class="{{ business.category.icon }}"></span>{{ business.category }}
+                        </a>
                       </div>
+                      {% endif %}
                     </div>
                     <ul class="atbd_content_right">
-                      <li class="atbd_count"><span class="fa fa-inbox"></span>{{ business.reviews.count }}+</li>
+                      <li class="atbd_count"><span class="la la-eye"></span>10+</li>
                       <li class="atbd_save">
                         <span class="la la-heart-o"></span>
                       </li>
@@ -221,7 +278,7 @@
   <div class="container">
     {% if page_obj %}
     <div class="atbd_author_listings_area m-bottom-30">
-      <h1>{{ user}}'s Reviews</h1>
+      <h1>{{ user.get_short_name}}'s Reviews</h1>
       <div class="atbd_author_filter_area">
         <!--            add something here-->
       </div>
