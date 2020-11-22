@@ -2,7 +2,7 @@ from django.urls import path
 
 from .views import LocationCreate, LocationDetail, LocationList, LocationUpdate
 
-app_name = 'categories'
+app_name = 'locations'
 
 urlpatterns = [
     path('new/', LocationCreate.as_view(), name='new'),

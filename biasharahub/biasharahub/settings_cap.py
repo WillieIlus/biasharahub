@@ -41,11 +41,10 @@ else:
     }
 
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'biasharahubke@gmail.com'
-EMAIL_HOST_PASSWORD = 'tungsten1'
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = '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'
 EMAIL_PORT = 587
-DEFAULT_FROM_EMAIL = 'webmaster@example.com'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 STATIC_URL = '/static/'

@@ -16,7 +16,7 @@
           <div class="row">
             {% for category in categories %}
             <div class="col-lg-3">
-              <a class="atbd_location_grid" href="{% url 'categories:add_business' slug=category.slug %}">{{ category.name }}</a>
+              <a class="atbd_location_grid" href='{% url "categories:add-business" slug=category.slug %}'>{{ category.name }}</a>
             </div><!-- ends: .col-lg-3 -->
             {% endfor %}
             <div class="col-lg-3 col-md-4 col-sm-6">

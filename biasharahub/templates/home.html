@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
+{% load humanize %}
 {% load crispy_forms_tags %}
 
 {% block title %}  home | {{ block.super }} {% endblock %}
@@ -152,7 +153,7 @@
                 {% endif %}
                         <li>
                           <p><span class="la la-calendar-check-o"></span>
-                            Posted {{ business.publish|date }} ( {{ business.publish|timesince }} ago )</p>
+                            Posted {{ business.publish|naturaltime }}</p>
                         </li>
                       </ul>
                     </div><!-- End atbd listing meta -->
