@@ -19,7 +19,7 @@ class Home(TemplateView):
         context = super().get_context_data(**kwargs)
         context['business'] = Business.objects.order_by('-publish')[:9]
         context['location'] = Location.objects.order_by('-publish')[:6]
-        context['category'] = Category.objects.order_by('-publish')[:6]
+        context['category'] = Category.objects.order_by('-company')[:6]
         context['review'] = Review.objects.order_by('-publish')[:9]
 
         return context

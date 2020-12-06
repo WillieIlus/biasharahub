@@ -15,7 +15,7 @@ register = Library()
 
 @register.inclusion_tag('tags/categories.html')
 def get_categories(count=5):
-    return {'categories': Category.objects.order_by('-publish')[:count]}
+    return {'categories': Category.objects.order_by('-company')[:count]}
 
 
 @register.inclusion_tag('tags/login.html')
@@ -25,7 +25,7 @@ def get_login():
 
 @register.inclusion_tag('includes/cat_to_add_biz.html')
 def get_cat_to_add_biz():
-    return {'categories': Category.objects.order_by('-publish')}
+    return {'categories': Category.objects.order_by('-company')}
 
 
 @register.inclusion_tag('tags/signup.html')
@@ -62,11 +62,10 @@ def get_popular_business(number=5):
 def get_popular_reviews(number=5):
     return {'popular_reviews': Review.objects.order_by('-comments')[:number]}
 
-
-@register.inclusion_tag('tags/related_business.html')
-def get_related_business(number=5):
-    return {'related_business': Business.objects.all()[:number]}
-    # return {'related_business': Business.objects.services.similar_objects[:number]}
+# @register.inclusion_tag('tags/related_business.html')
+# def get_related_business(number=5):
+#     return {'related_business': Business.objects.all()[:number]}
+    # return {'related_business': Business.services.similar_objects[:number]}
 
 
 @register.inclusion_tag('tags/statistics.html')

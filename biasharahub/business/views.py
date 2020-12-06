@@ -15,6 +15,7 @@ from haystack.generic_views import FacetedSearchView as BaseFacetedSearchView
 from haystack.query import SearchQuerySet
 from reviews.forms import ReviewForm
 
+from hitcount.views import HitCountMixin
 from .forms import BusinessForm, BusinessSearchForm, \
     SocialProfileFormSet, BusinessPhotoForm, BusinessNameForm
 
@@ -198,7 +199,7 @@ def add_photos(request, slug):
     return render(request, "business/photo_formset.html", context)
 
 
-class BusinessDetail(SingleObjectMixin, ListView):
+class BusinessDetail(SingleObjectMixin, HitCountMixin, ListView):
     model = Business
     template_name = 'business/detail.html'
     context_object_name = 'business'
@@ -221,6 +222,7 @@ class BusinessDetail(SingleObjectMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['form'] = ReviewForm()
         context['comment_form'] = CommentForm()
+        context['related_business'] = self.object.services.similar_objects()
 
         return context
 
