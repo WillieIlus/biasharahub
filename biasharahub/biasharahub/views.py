@@ -1,6 +1,7 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django import forms
+from django.db.models import Count, Avg
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 
@@ -11,15 +12,16 @@ from reviews.models import Review
 
 
 class Home(TemplateView):
-    model = None
+    model = Business
     context_object_name = 'home'
     template_name = 'home.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['business'] = Business.objects.order_by('-publish')[:9]
+        context['business'] = self.model.objects.annotate(avg_reviews=Avg('reviews__rating'), num_reviews=Count('reviews')).order_by(
+            '-num_reviews', '-avg_reviews', 'hit_count', '-publish')[:9]
         context['location'] = Location.objects.order_by('-publish')[:6]
-        context['category'] = Category.objects.order_by('-company')[:6]
+        context['category'] = Category.objects.annotate(num_companies=Count('company')).order_by('-num_companies')[:6]
         context['review'] = Review.objects.order_by('-publish')[:9]
 
         return context

@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
 import re
 import warnings
 
-from django.conf import settings
-
-MODEL_HITCOUNT = getattr(settings, 'HITCOUNT_HITCOUNT_MODEL', 'hitcount.HitCount')
-
-get_hitcount_model = MODEL_HITCOUNT
+from hitcount import settings
+from etc.toolbox import get_model_class_from_settings
 
 
 # this is not intended to be an all-knowing IP address regex
@@ -47,9 +43,13 @@ def get_ip(request):
     return ip_address
 
 
+def get_hitcount_model():
+    """Returns the HitCount model, set for the project."""
+    return get_model_class_from_settings(settings, 'MODEL_HITCOUNT')
+
+
 class RemovedInHitCount13Warning(DeprecationWarning):
     pass
-
 
 # enable warnings by default for our deprecated
 warnings.simplefilter("default", RemovedInHitCount13Warning)

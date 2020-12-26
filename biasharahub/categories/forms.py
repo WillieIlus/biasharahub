@@ -15,7 +15,9 @@ from .models import Category
 class CategoryForm(forms.ModelForm):
     name = forms.CharField(label='', required=True, widget=forms.TextInput(attrs={'placeholder': 'Category Name'}))
     icon = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={'placeholder': 'Icon Class'}))
-    photo = forms.ImageField(label='', required=False, widget=forms.ClearableFileInput(attrs={'placeholder': 'Photo'}))
+    photo = forms.ImageField(label='', required=False,
+                             widget=forms.ClearableFileInput(attrs={'placeholder': 'Logo',
+                                                                    'class': 'btn btn-outline-secondary'}))
     description = forms.CharField(label='', max_length=1024,
                                   widget=forms.Textarea(attrs={'placeholder': 'Description'}))
 
@@ -32,12 +34,13 @@ class CategoryForm(forms.ModelForm):
                 Column('icon', css_class='mt-10 form-group col-md-6 mb-0'),
                 css_class='form-group'
             ),
-            Div(
-                Div('photo', css_class='margin-top-10 upload-header btn btn-outline-secondary',
-                    style='padding: 0;'),
-                # style="background: white;",
-                css_class='form-group text-center'
-            ),
+            'photo',
+            # Div(
+            #     Div('photo', css_class='margin-top-10 upload-header btn btn-outline-secondary',
+            #         style='padding: 0;'),
+            #     # style="background: white;",
+            #     css_class='form-group'
+            # ),
             Div('description', css_class='form-group'),
             Submit('submit', 'Submit'),
 

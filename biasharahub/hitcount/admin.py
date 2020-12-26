@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
 from django.contrib import admin
 from django.core.exceptions import PermissionDenied
 from django.utils.translation import gettext_lazy as _
 
 from .models import Hit, BlacklistIP, BlacklistUserAgent
+from .utils import get_hitcount_model
 
 
 class HitAdmin(admin.ModelAdmin):
-    list_display = ('created', 'user', 'ip', 'user_agent', 'hits')
+    list_display = ('created', 'user', 'ip', 'user_agent', 'hitcount')
     search_fields = ('ip', 'user_agent')
     date_hierarchy = 'created'
     actions = ['blacklist_ips',
@@ -39,7 +39,6 @@ class HitAdmin(admin.ModelAdmin):
                 ip.save()
         msg = _("Successfully blacklisted %d IPs") % queryset.count()
         self.message_user(request, msg)
-
     blacklist_ips.short_description = _("Blacklist selected IP addresses")
 
     def blacklist_user_agents(self, request, queryset):
@@ -50,20 +49,17 @@ class HitAdmin(admin.ModelAdmin):
                 ua.save()
         msg = _("Successfully blacklisted %d User Agents") % queryset.count()
         self.message_user(request, msg)
-
     blacklist_user_agents.short_description = _("Blacklist selected User Agents")
 
     def blacklist_delete_ips(self, request, queryset):
         self.blacklist_ips(request, queryset)
         self.delete_queryset(request, queryset)
-
     blacklist_delete_ips.short_description = _(
         "Delete selected hits and blacklist related IP addresses")
 
     def blacklist_delete_user_agents(self, request, queryset):
         self.blacklist_user_agents(request, queryset)
         self.delete_queryset(request, queryset)
-
     blacklist_delete_user_agents.short_description = _(
         "Delete selected hits and blacklist related User Agents")
 
@@ -80,9 +76,7 @@ class HitAdmin(admin.ModelAdmin):
                 obj.delete()  # calling it this way to get custom delete() method
 
             self.message_user(request, "%s successfully deleted." % msg)
-
     delete_queryset.short_description = _("Delete selected hits")
-
 
 admin.site.register(Hit, HitAdmin)
 
@@ -94,16 +88,16 @@ class HitCountAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         return False
 
+admin.site.register(get_hitcount_model(), HitCountAdmin)
+
 
 class BlacklistIPAdmin(admin.ModelAdmin):
     pass
-
 
 admin.site.register(BlacklistIP, BlacklistIPAdmin)
 
 
 class BlacklistUserAgentAdmin(admin.ModelAdmin):
     pass
-
 
 admin.site.register(BlacklistUserAgent, BlacklistUserAgentAdmin)

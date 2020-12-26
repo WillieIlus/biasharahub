@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
+{% load hitcount_tags %}
 {% load crispy_forms_tags %}
 
 
@@ -141,9 +142,6 @@
                           </div>
                         </div>
                         <ul class="atbd_content_right">
-                          <li class="atbd_count"><span class="la la-eye"></span>
-                            10+
-                          </li>
                           <li class="atbd_save">
                             <span href="{% url 'business:bookmark' slug=business.slug %}" class="la la-heart-o"></span>
                           </li>

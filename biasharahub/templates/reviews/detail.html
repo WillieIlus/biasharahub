@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% load crispy_forms_tags %}
+{% load social_share %}
 {% load biasharahub %}
 
 {% block title %}  {{ review.user.first_name }} | {{ block.super }} {% endblock %}
@@ -57,12 +58,16 @@
                   </div>
 
           <div class="social-share d-flex align-items-center">
-            <span class="m-right-15">Share Post: </span>
+            <span class="m-right-15">Share this Review: </span>
             <ul class="social-share list-unstyled">
-              <li><a href=""><i class="fab fa-facebook-f"></i></a></li>
-              <li><a href=""><i class="fab fa-twitter"></i></a></li>
-              <li><a href=""><i class="fab fa-linkedin-in"></i></a></li>
-              <li><a href=""><i class="fab fa-instagram"></i></a></li>
+              <li><div>
+                {% post_to_facebook object_or_url "F" %}
+                </div></li>
+              <li><div>
+                {% post_to_twitter "New Biashara: {{review.title}}. Check it out!" object_or_url "T" %}
+                </div></li>
+              <li><div>
+                {% post_to_whatsapp object_or_url "W" %}</div></li>
             </ul>
           </div>
         </div><!-- ends: .post-bottom -->

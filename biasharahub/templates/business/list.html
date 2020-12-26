@@ -1,7 +1,11 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
+{% load hitcount_tags %}
 {% load humanize %}
+{% load hitcount_tags %}
 {% load crispy_forms_tags %}
+{% load openinghours_tags %}
+
 
 {% block title %}  Biashara List  | {{ block.super }} {% endblock %}
 
@@ -75,18 +79,17 @@
                           need 3+
                             <i class="la la-star"></i></span>
                           {% endif %}
-                          {% comment %}
-                          {% if business.is_open and business.closed == False %}
-                          <span class="atbd_meta atbd_badge_open">Open Now</span>
+                          {% is_open business as open %}
+                          {% if open %}
+                          <span class="atbd_meta atbd_badge_open">Come in we're open</span>
                           {% else %}
-                          <span class="atbd_meta atbd_badge_close">Closed</span>
+                          <span class="atbd_meta atbd_badge_close">We're Closed</span>
                           {% endif %}
-                          {% endcomment %}
                         </div><!-- End atbd listing meta -->
-                        {% if business.description %}
-                        <div><p>{{ business.get_markdown|truncatewords:"25" }}</p></div>
-                        {% else %}
-                        <p>{{ business.name|title }} has decided to put an air of heightened hysteria around them</p>
+                        {% is_open business as open %}
+                          {% if not open %}
+                        <div><p class="text-success">Reopening on {% next_time_open business as next %}
+                      {{ next.get_weekday_display|naturaltime }} {{ next.from_hour }}</p></div>
                         {% endif %}
                         <div class="pull-right">
                           <a href="{{ business.get_absolute_url }}"
@@ -97,6 +100,9 @@
                         </div>
                         <div class="atbd_listing_data_list">
                           <ul>
+                            <li>
+                              <p><span class="la la-tag"></span>{{ business.services.all|join:", " }}</p>
+                            </li>
                             {% if business.address %}
                             <li>
                               <p><span class="la la-map-marker"></span>{{ business.address }},
@@ -106,22 +112,22 @@
                               </p>
                             </li>
                             {% endif %}
-                {% if business.phone %}
-                {% if business.hide_phone and not request.user == business.user %}
-                <li>
-                  <p>
-                  <span class="la la-phone"></span>
-                   +254 {{ business.phone|truncatechars:3 }} [ hidden ]
-                </p>
-                </li>
-                {% else %}
-                <li><p>
-                  <span class="la la-phone"></span>
-                 +254 {{ business.phone }}
-                </p>
-                </li>
-                {% endif %}
-                {% endif %}
+                            {% if business.phone %}
+                            {% if business.hide_phone and not request.user == business.user %}
+                            <li>
+                              <p>
+                                <span class="la la-phone"></span>
+                                +254 {{ business.phone|truncatechars:3 }} [ hidden ]
+                              </p>
+                            </li>
+                            {% else %}
+                            <li><p>
+                              <span class="la la-phone"></span>
+                              +254 {{ business.phone }}
+                            </p>
+                            </li>
+                            {% endif %}
+                            {% endif %}
                             <li>
                               <p><span class="la la-calendar-check-o"></span>
                                 Posted {{ business.publish|naturaltime }}</p>
@@ -138,8 +144,7 @@
                           </div>
                         </div>
                         <ul class="atbd_content_right">
-                          <li class="atbd_count"><span class="la la-eye"></span>
-                            10+
+                          <li class="atbd_count"><span class="la la-eye"></span>{% get_hit_count for business %}
                           </li>
                           <li class="atbd_save">
                             <span href="{% url 'business:bookmark' slug=business.slug %}" class="la la-heart-o"></span>

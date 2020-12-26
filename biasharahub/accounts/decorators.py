@@ -7,6 +7,9 @@ class UserRequiredMixin(object):
     def dispatch(self, request, *args, **kwargs):
         response = redirect('account_login')
         obj = self.get_object()
-        if obj.user != self.request.user:
-            return response
+        if not self.request.user.is_superuser:
+            if obj.user != self.request.user:
+                return response
+        else:
+            return super(UserRequiredMixin, self).dispatch(request, *args, **kwargs)
         return super(UserRequiredMixin, self).dispatch(request, *args, **kwargs)

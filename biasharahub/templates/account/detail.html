@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% load crispy_forms_tags %}
+{% load hitcount_tags %}
 
 {% block title %}  {{ user.get_short_name }}  | {{ block.super }} {% endblock %}
 
@@ -246,7 +247,7 @@
                       {% endif %}
                     </div>
                     <ul class="atbd_content_right">
-                      <li class="atbd_count"><span class="la la-eye"></span>10+</li>
+                      <li class="atbd_count"><span class="la la-eye"></span>{% get_hit_count for business %}</li>
                       <li class="atbd_save">
                         <span class="la la-heart-o"></span>
                       </li>

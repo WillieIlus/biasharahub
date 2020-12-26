@@ -16,7 +16,8 @@ from taggit.models import TaggedItemBase
 from accounts.models import User, Network
 from categories.models import Category
 from favourites.models import Bookmark
-from hitcount.models import Hit
+from hitcount.models import Hit, HitCount
+from hitcount.models import HitCountMixin
 from locations.models import Location
 from reviews.models import Review
 from utility.models import Common, UrlMixin, MetaTagsMixin
@@ -26,7 +27,7 @@ class SameServices(TaggedItemBase):
     content_object = models.ForeignKey('Business', on_delete=models.PROTECT)
 
 
-class Business(Common, UrlMixin, MetaTagsMixin):
+class Business(Common, UrlMixin, MetaTagsMixin, HitCountMixin):
     user = models.ForeignKey(User, related_name='added_by', on_delete=models.PROTECT)
     logo = models.ImageField(upload_to="business/logos", blank=True, null=True)
     email = models.EmailField(help_text="This is required")
@@ -43,9 +44,9 @@ class Business(Common, UrlMixin, MetaTagsMixin):
     hide_mail = models.BooleanField(default=True)
     hide_phone = models.BooleanField(default=True)
 
-    reviews = GenericRelation(Review)
-    bookmark = GenericRelation(Bookmark)
-    hit_count = GenericRelation(Hit)
+    reviews = GenericRelation(Review, related_query_name='reviews')
+    bookmark = GenericRelation(Bookmark, related_query_name='bookmarks')
+    hit_count = GenericRelation(HitCount, object_id_field='object_pk', related_query_name='hit_count_generic_relation')
 
     class Meta:
         verbose_name = "biashara"

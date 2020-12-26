@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% load crispy_forms_tags %}
+{% load hitcount_tags %}
+
 
 {% block title %}  {{ user.get_full_name }}  | {{ block.super }} {% endblock %}
 
@@ -14,8 +16,8 @@
 
 {% block breadcrumb_item %}
 <li aria-current="page" class="breadcrumb-item active">Welcome {{ user.get_short_name }} to your Dashboard</li>
-<li class="breadcrumb-item"><a href='{% url "accounts:account_edit" %}'><i class="fa fa-plus"></i>Edit</a></li>
-<li class="breadcrumb-item"><a href='{% url "accounts:account_edit" %}'><i class="fa fa-plus"></i>Profile</a></li>
+<li class="breadcrumb-item"><a href='{% url "accounts:account_edit" %}'><i class="fa fa-plus"></i> Edit</a></li>
+<li class="breadcrumb-item"><a href='{% url "accounts:account_edit" %}'><i class="fa fa-plus"></i> Profile</a></li>
 {% endblock %}
 
 {% block content %}
@@ -155,7 +157,7 @@
                       {% endif %}
                     </div>
                     <ul class="atbd_content_right">
-                      <li class="atbd_count"><span class="la la-eye"></span>10+</li>
+                      <li class="atbd_count"><span class="la la-eye"></span>{% get_hit_count for business %}</li>
                       <li class="atbd_save">
                         <span class="la la-heart-o"></span>
                       </li>

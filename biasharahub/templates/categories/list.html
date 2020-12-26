@@ -15,6 +15,7 @@
         object-fit: cover;
       }
 
+
 </style>
 {% endblock %}
 
@@ -41,7 +42,9 @@
       <div class="col-lg-4 col-sm-6">
         <div class="category-single category--img">
           <figure class="category--img4">
-            <img src='{% if category.photo %} {{ category.photo.url }} {% else %} {% static "img/cat1.jpg" %} {% endif %}' alt="">
+            <img
+                src='{% if category.photo %} {{ category.photo.url }} {% else %} {% static "img/cat1.jpg" %} {% endif %}'
+                alt="">
             <figcaption class="overlay-bg">
               <a href="{{ category.get_absolute_url }}" class="cat-box">
                 <div>
@@ -49,8 +52,8 @@
                     <span class="{{ category.icon }}"></span>
                   </div>
                   <h4 class="cat-name">{{ category.name }}</h4>
-                  <span class="badge badge-pill badge-success">{{ category.business_set.count }}
-                                          Listing{{ category.business_set.count }}</span>
+                  <span class="badge badge-pill badge-success">{{ category.company.count }}
+                                          Listing{{ category.company.count|pluralize }}</span>
                 </div>
               </a>
             </figcaption>
@@ -61,4 +64,19 @@
     </div>
   </div>
 </section><!-- ends: section -->
+
+<section class="section-padding-strict section-bg">
+  <div class="atbd_location_grid_wrap">
+    <div class="container">
+      <div class="row">
+        {% for category in all_category %}
+        <div class="col-lg-3 col-md-4 col-sm-6">
+          <a href="" class="atbd_location_grid">{{ category.name }} ({{ category.company.count }})</a>
+        </div><!-- ends: .col-lg-3 -->
+        {% endfor %}
+      </div>
+    </div>
+  </div><!-- ends: .atbd_location_grid_wrap -->
+</section><!-- ends: section -->
+
 {% endblock %}

@@ -4,8 +4,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.views.generic import UpdateView
+from django.views.generic import UpdateView, TemplateView
 
+from biasharahub import settings
 from business.forms import BusinessNameForm
 from business.models import Business
 from openinghours.forms import OpeningHoursForm
@@ -20,13 +21,6 @@ class OpeningHoursUpdateView(LoginRequiredMixin, UpdateView):
     form_class = BusinessNameForm
     is_update_view = True
     template_name = 'openinghours/formset.html'
-
-    # def get_initial(self):
-    #     initial = super().get_initial()
-    #     choices = OpeningHours.weekday.choices
-    #     initial['weekday'] = OpeningHours.object.filter(choices=choices)
-    #     # initial['weekday'] = OpeningHours.weekday.choices
-    #     return initial
 
 
     def get_context_data(self, **kwargs):
@@ -52,25 +46,13 @@ class OpeningHoursUpdateView(LoginRequiredMixin, UpdateView):
         else:
             return super().form_invalid(form)
 
-#
-# @login_required
-# def opening_hours(request, slug):
-#     company = Business.objects.get(slug=slug)
-#
-#     if request.method == "POST":
-#         formset = openingHoursFormset(
-#             # request.POST, request.FILES,
-#             instance=company, initial=[{'weekday': x} for x in range(1, 8)])
-#         if formset.is_valid():
-#             formset.save()
-#             messages.success(request, "Successfully Created")
-#             return HttpResponseRedirect(company.get_absolute_url())
-#     else:
-#         formset = openingHoursFormset(instance=company,
-#                                       initial=[{'weekday': x} for x in range(1, 8)]
-#                                       )
-#
-#     context = {
-#         "formset": formset,
-#     }
-#     return render(request, "openinghours/formset.html", context)
+
+class CurrentlyOpenView(TemplateView):
+    model = Business
+    template_name = "openinghours/index.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(CurrentlyOpenView, self).get_context_data(**kwargs)
+        context['biashara'] = self.model.objects.all()
+        context['timezone'] = settings.TIME_ZONE
+        return context

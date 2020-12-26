@@ -1,7 +1,11 @@
 {% extends 'base.html' %}
+{% load i18n %}
+{% load openinghours_tags %}
 {% load crispy_forms_tags %}
 {% load staticfiles %}
 {% load biasharahub %}
+{% load social_share %}
+{% load hitcount_tags %}
 {% block head %}
 {{ business.get_meta_description|truncatechars:254 }}
 {{ business.get_meta_keywords }}
@@ -25,16 +29,18 @@
         height: 100%;
         object-fit: cover;
       }
+      .btn-like {
+          width: 2.33333rem;
+    height: 2.33333rem;
+    border-radius: 30rem;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    margin-right: 0.66667rem;
+    flex: none;
 
-
-
-
-
-
-
-
-
-
+      }
 
 
 
@@ -102,6 +108,17 @@
             {% endif %}
           </ul><!-- ends: .listing-info-meta -->
           <h1>{{ business.name|title }} </h1>
+          <p class="subtitle">
+            {% is_open business as open %}
+            {% if open %}
+            Come in, we're open!
+            {% else %}
+            Sorry, we're closed.
+            Reopening on
+            {% next_time_open business as next %}
+            {{ next.get_weekday_display }} {{ next.from_hour }}
+            {% endif %}
+          </p>
           <div class="atbd_name_time">
           <span class="verified" data-placement="top" data-toggle="tooltip"
                 title="Verified"></span>
@@ -123,29 +140,22 @@
               <div aria-labelledby="social-links" class="atbd_director_social_wrap dropdown-menu">
                 <ul class="list-unstyled">
                   <li>
-                    <a href="" target="_blank"><span
-                        class="fab fa-facebook-f color-facebook"></span>Facebook</a>
+                    <span
+                        class="fab fa-facebook-f color-facebook">{% post_to_facebook object_or_url "Facebook" %}</span>
                   </li>
                   <li>
-                    <a href="" target="_blank"><span class="fab fa-twitter color-twitter"></span>Twitter</a>
+                    <span class="fab fa-twitter color-twitter"></span>
+                    {% post_to_twitter "New Biashara: {{business.name}}. Check it out!" object_or_url "Twitter" %}
                   </li>
                   <li>
-                    <a href="" target="_blank"><span
-                        class="fab fa-pinterest-p color-pinterest"></span>Pinterest</a>
+                    <span
+                        class="fab fa-whatsapp color-whatsapp"></span>{% post_to_whatsapp object_or_url "WhatsApp" %}
                   </li>
                   <li>
-                    <a href="" target="_blank"><span
-                        class="fab fa-google-plus-g color-gplus"></span>Google Plus</a>
+                    <span class="fab fa-google-plus-g color-gplus"></span>{% post_to_gplus object_or_url "Google+" %}
                   </li>
                   <li>
-                    <a href="" target="_blank"><span
-                        class="fab fa-linkedin-in color-linkedin"></span>LinkedIn</a>
-                  </li>
-                  <li>
-                    <a href="" target="_blank"><span class="fab fa-tumblr color-tumblr"></span>Tumblr</a>
-                  </li>
-                  <li>
-                    <a href="" target="_blank"><span class="fab fa-vk color-vk"></span>VKontakte</a>
+                    <span class="fab fa-linkedin-in color-linkedin"></span>{% post_to_linkedin object_or_url %}
                   </li>
                 </ul>
               </div>
@@ -194,13 +204,6 @@
          role="dialog" tabindex="-1">
       <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="claim_listing_label"><i class="la la-check-square"></i> Claim This
-              Business</h5>
-            <button aria-label="Close" class="close" data-dismiss="modal" type="button">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
           <div class="modal-body">
             <form action="/">
               <div class="form-group">
@@ -246,10 +249,14 @@
         <div class="atbd_content_module atbd_listing_details">
           <div class="atbd_content_module__tittle_area">
             <div class="atbd_area_title">
-              <h4><span class="la la-file-text-o"></span>{{ business.name|title }}</h4>
+              <h4><span class="la la-file-text-o"></span>{{ business.name|title }}'s Details</h4>
+              <div class="atbd_content_right"> {% get_hit_count for business %}
+                <span class="la la-eye"></span>
+              </div>
             </div>
           </div>
           <div class="atbdb_content_module_contents">
+            <p>{{ business.services.all|join:", " }}</p>
             {% if business.description %}
             <p>{{ business.get_markdown }}</p>
             {% else %}
@@ -258,7 +265,12 @@
             {% if request.user == business.user %}
             <hr/>
             <a href="{% url 'business:edit' business.slug %}" class="btn btn-gradient btn-gradient-two">
-              Update Business
+              Update your Biashara
+            </a>&nbsp;
+            {% elif request.user.is_superuser %}
+            <hr/>
+            <a href="{% url 'business:edit' business.slug %}" class="btn btn-gradient btn-gradient-two">
+              Update Biashara?
             </a>&nbsp;
             {% endif %}
           </div>
@@ -291,12 +303,16 @@
               <!-- ends: .gallery-thumbs -->
             </div><!-- ends: .gallery-wrapper -->
             <a href="{% url 'business:gallery' business.slug %}" class="btn btn-gradient btn-gradient-two">
-              Gallery
+              See all Photos
             </a>
             {% endif %}
             {% if request.user == business.user %}
             <a href="{% url 'business:photo_update' business.slug %}" class="btn btn-gradient btn-gradient-one">
-              Update Photos
+              Update your Photos
+            </a>&nbsp;
+            {% elif request.user.is_superuser %}
+            <a href="{% url 'business:photo_update' business.slug %}" class="btn btn-gradient btn-gradient-one">
+              Update Photos?
             </a>&nbsp;
             {% endif %}
           </div>
@@ -457,12 +473,12 @@
                     Thread<span class="la la-mail-reply-all"></span></a>
                   {% endif %}
                   <div class="action_button pull-right">
-                    <a class=" btn btn-xs btn-secondary" href="{% url 'reviews:vote_up' slug=review.slug %}"></span>
-                      Like |
-                      <span>{{ review.votes.likes.count }}</span></a>
-                    <a class=" btn btn-xs btn-danger" href="{% url 'reviews:vote_down' slug=review.slug %}"></span>
-                      Dislike |
-                      <span>{{ review.votes.dislikes.count }}</span></a>
+                    <a class=" btn btn-like  btn-secondary" href="{% url 'reviews:vote_up' slug=review.slug %}"></span>
+                      <i class="fas fa-thumbs-up"></i></a>
+                    <span>{{ review.votes.likes.count }}</span>
+                    <a class=" btn btn-like  btn-danger" href="{% url 'reviews:vote_down' slug=review.slug %}"></span>
+                      <i class="fas fa-thumbs-down"></i>
+                    </a><span>{{ review.votes.dislikes.count }}</span>
                   </div>
                 </div>
                 <div class="review_reply_form">
@@ -616,7 +632,7 @@
                 <h4>{% if not business.user.get_full_name %}
                   {{ business.user.username }} {% else %}
                   {{ business.user.get_full_name }} {% endif %} </h4>
-                <span class="review_time">Posted {{ business.publish.date|timesince }} ago</span>
+                <span class="review_time">Added {{ business.publish.date|timesince }} ago</span>
               </div>
             </div><!-- ends: .atbd_avatar_wrapper -->
             <div class="atbd_widget_contact_info">
@@ -684,48 +700,29 @@
               Profile</a>
           </div><!-- ends: .widget-body -->
         </div><!-- ends: .widget -->
-        <div class="widget atbd_widget widget_claim_listing">
-          <a class="btn btn-block btn-gradient btn-gradient-two btn-lg claim-btn" data-target="#moda_claim_listing"
-             data-toggle="modal"
-             href="">Claim This Business</a>
-        </div><!-- ends: .widget -->
-
 
         <div class="widget atbd_widget widget-card">
           <div class="atbd_widget_title">
             <h4><span class="la la-clock-o"></span> Business Hours</h4>
-            {% comment %}
-            {% if business.is_open == True %}
+            {% is_open business as open %}
+            {% if open %}
             <span class="badge badge-success">Open Now</span>
             {% else %}
             <span class="badge badge-warning">Closed</span>
             {% endif %}
-            {% endcomment %}
 
           </div><!-- ends: .atbd_widget_title -->
           <div class="directory_open_hours">
+            {% opening_hours biashara %}
             {% if business.opening_hours %}
-            <ul>
-              {% for obj in business.opening_hours.all %}
-              <li class="atbd_open {% if obj.weekday == date.today.isoweekday  %} atbd_today {% endif %}">
-                <span class="day">{{ obj.get_weekday_display }}</span>
-                <div class="{% if obj.closed == False %} atbd_open_close_time {% else %} atbd_closed {% endif %}">
-                  {% if obj.closed == False %}
-                  <span class="time">{{ obj.start }}-{{ obj.end }}</span>
-                  {% else %}
-                  <span>Closed</span>
-                  {% endif %}
-                </div>
-              </li>
-              {% endfor %}
-            </ul>
             {% else %}
             <p> Opening hours not added yet</p>
             {% endif %}
             <hr/>
             {% if request.user == business.user %}
 
-            <a href="{% url 'openinghours:update' business.slug %}" class="btn btn-gradient btn-gradient-one">
+            <a href="{% url 'openinghours:openinghours_edit' business.slug %}"
+               class="btn btn-gradient btn-gradient-one">
               Edit Business Hours
             </a>
             {% endif %}
@@ -773,7 +770,7 @@
         <!--similar business widget-->
         {% comment %}
         {% get_related_business %}
-{% endcomment %}
+        {% endcomment %}
         {% include 'tags/related_business.html' %}
 
 

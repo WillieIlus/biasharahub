@@ -1,5 +1,5 @@
 import datetime
-
+from django.db.models import Count
 from django.template import Library
 from django.utils import timezone
 
@@ -8,6 +8,7 @@ from accounts.models import User
 from business.models import Business
 from categories.models import Category
 from comments.models import Comment
+from openinghours.views_edit import OpeningHoursEditView
 from reviews.models import Review
 
 register = Library()
@@ -15,7 +16,8 @@ register = Library()
 
 @register.inclusion_tag('tags/categories.html')
 def get_categories(count=5):
-    return {'categories': Category.objects.order_by('-company')[:count]}
+    return {'categories': Category.objects.annotate(num_companies=Count('company')).order_by('-num_companies')[:count]}
+    # return {'categories': Category.objects.order_by('company.count')[:count]}
 
 
 @register.inclusion_tag('tags/login.html')
@@ -25,7 +27,12 @@ def get_login():
 
 @register.inclusion_tag('includes/cat_to_add_biz.html')
 def get_cat_to_add_biz():
-    return {'categories': Category.objects.order_by('-company')}
+    return {'categories': Category.objects.all}
+
+
+@register.inclusion_tag('openinghours/edit_form.html')
+def get_edit_opening_form():
+    return {'opening': OpeningHoursEditView()}
 
 
 @register.inclusion_tag('tags/signup.html')
@@ -83,53 +90,3 @@ def Biashara_statistics():
         'categories_count': categories_count,
         'comments_count': comments_count,
     }
-
-
-@register.simple_tag()
-def is_open():
-    """
-    Is the company currently open? Pass "now" to test with a specific
-    timestamp. Can be used stand-alone or as a helper.
-    """
-    now = timezone.now()
-    open = Business.objects.first().opening_hours.all()  # .filter(closed=False, start__lte=now, end__gte=now,
-    # weekday=now.isoweekday)
-    for oh in open:
-        is_open = False
-        if oh.weekday == now.isoweekday() and oh.start <= now <= oh.end:
-            is_open = oh
-
-        if is_open is not False:
-            return oh
-    return False
-
-
-@register.simple_tag()
-def is_open_now(self):
-    now = timezone.now()
-    if self.is_closed_for_now:
-        return False
-
-    now_time = datetime.time(now.hour, now.minute, now.second)
-    # now_time = datetime.time()
-    #
-    ohs = self.opening_hours.all()
-    for oh in ohs:
-        is_open = False
-        # start and end is on the same day
-        if oh.weekday == now.isoweekday() and oh.start <= now_time <= oh.end:
-            is_open = oh
-
-        # start and end are not on the same day and we test on the start day
-        if oh.weekday == now.isoweekday() and oh.start <= now_time and (
-                (oh.end < oh.start) and (now_time < datetime.time(23, 59, 59))):
-            is_open = oh
-
-        # start and end are not on the same day and we test on the end day
-        if oh.weekday == (now.isoweekday() - 1) % 7 and oh.start >= now_time and now_time <= oh.end < oh.start:
-            is_open = oh
-            # print " 'Special' case after midnight", oh
-
-        if is_open is not False:
-            return oh
-    return False

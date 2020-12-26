@@ -1,0 +1,28 @@
+<ul>
+  {% for day in days %}
+  <li class="atbd_open">
+    <span class="day">{% ifchanged %}{{ day.name }}{% endifchanged %}</span>
+    <div class="{% if day.open_days %} atbd_open_close_time {% else %} atbd_closed {% endif %}">
+      <span class="time">{{ day.hours }}</span>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+
+{% comment %}
+{% if day.weekday == date.today.isoweekday  %} atbd_today {% endif %}
+{% if day.closed == False %}
+<span class="time">{{ day.hours }}</span>
+{% else %}
+<span>Closed</span>
+{% endif %}
+
+
+      if day_number not in open_days:
+            days.append({
+                'day_number': day_number,
+                'name': day_name,
+                'hours': _('Closed')
+            })
+{% endcomment%}
+

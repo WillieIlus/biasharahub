@@ -3,17 +3,32 @@ from categories.forms import CategoryForm, CategoryBusinessForm
 from categories.models import Category
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Count, Avg
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView, TemplateView
 from django.views.generic.detail import SingleObjectMixin
 
 
-class CategoryList(ListView):
-    model = Category
-    paginate_by = 12
-    context_object_name = "category"
+# class CategoryList(ListView):
+#     # model = Category
+#     # paginate_by = 12
+#     queryset = Category.objects.exclude(photo__isnull=True)
+#     context_object_name = "category"
+#     template_name = 'categories/list.html'
+
+class CategoryList(TemplateView):
+    model = None
+    # context_object_name = "category"
     template_name = 'categories/list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = Category.objects.exclude(photo__isnull=True).annotate(
+            num_companies=Count('company')).order_by('-num_companies')[:6]
+        context['all_category'] = Category.objects.annotate(num_companies=Count('company')).order_by('-num_companies')
+
+        return context
 
 
 class CategoryDetail(SingleObjectMixin, ListView):
@@ -27,7 +42,8 @@ class CategoryDetail(SingleObjectMixin, ListView):
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
-        return self.object.company.all()
+        return self.object.company.annotate(avg_reviews=Avg('reviews__rating'), num_reviews=Count('reviews')).order_by(
+            '-num_reviews', '-avg_reviews', 'hit_count', '-publish')
 
 
 class CategoryCreate(LoginRequiredMixin, CreateView):

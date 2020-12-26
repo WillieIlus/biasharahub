@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% load humanize %}
+{% load hitcount_tags %}
 {% load crispy_forms_tags %}
+{% load openinghours_tags %}
+
 
 {% block title %}  home | {{ block.super }} {% endblock %}
 {% block stylesheet %}
@@ -20,6 +23,13 @@
         height: 100%;
         object-fit: cover;
       }
+      .category--img4{
+        width: 100%;
+        height: 220px;
+      }
+
+
+
 
 </style>
 {% endblock %}
@@ -40,8 +50,8 @@
       <div class="row">
         <div class="col-lg-10 offset-lg-1">
           <div class="search_title_area">
-            <h2 class="title">Find the Best Services in Kenya</h2>
-            <p class="sub_title">From photographers and singers, to printers, famous lawyers and
+            <h2 class="title">Best Biasharas near you</h2>
+            <p class="sub_title">From photographers and graphic design agencies, to printers, web developers and
               more..</p>
           </div><!-- ends: .search_title_area -->
           {% include "includes/search.html" %}
@@ -50,7 +60,7 @@
               {% for category in category %}
               <li>
                 <a href="{{ category.get_absolute_url }}">
-                  <span class="{% cycle 'color-success' 'color-primary' 'color-warning' 'color-danger' as rowcolorsv%}" >
+                  <span class="{% cycle 'color-success' 'color-primary' 'color-warning' 'color-danger' as rowcolorsv%}">
                     <i class="{{ category.icon }}"></i></span>
                   {{ category.name }}
                 </a>
@@ -63,15 +73,61 @@
     </div>
   </div><!-- ends: .directory_search_area -->
 </section><!-- ends: .intro-wrapper -->
+{% if category %}
+<section class="categories-cards section-padding-two">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="section-title">
+          <h2>From which service would you want to get?</h2>
+          <p>Discover experts, tour guide, safaris, painters, graphic designers, and barbers in Kenya by
+            categories.</p>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      {% for category in category %}
+      <div class="col-lg-4 col-sm-6">
+        <div class="category-single category--img">
+          <figure class="category--img4">
+            <img alt="" src='{% if category.photo %}
+                          {{ category.photo.url }} {% else %} {% static "img/cat1.jpg" %} {% endif %}'>
+            <figcaption class="overlay-bg">
+              <a class="cat-box" href="{{ category.get_absolute_url }}">
+                <div>
+                  <div class="icon">
+                    <span class="{{ category.icon }}"></span>
+                  </div>
+                  <h4 class="cat-name">{{ category.name }}</h4>
+                  <span class="badge badge-pill badge-success">
+                    {{ category.company.count }} Biashara{{ category.company.count|pluralize }}
+                  </span>
+                </div>
+              </a>
+            </figcaption>
+          </figure>
+        </div><!-- ends: .category-single -->
+      </div><!-- ends: .col -->
+      {% endfor %}
+    </div>
 
+    <div class="col-lg-12 text-center m-top-20">
+      <a class="btn btn-gradient btn-gradient-two" href='{% url "categories:list" %}'>
+        More Categories
+      </a>
+    </div>
+
+  </div>
+</section><!-- ends: .categories-cards -->
+{% endif %}
 {% if business %}
 <section class="listing-cards section-bg section-padding">
   <div class="container">
     <div class="row">
       <div class="col-lg-12">
         <div class="section-title">
-          <h2>Latest Entries</h2>
-          <p>Explore listings in Nairobi and other counties</p>
+          <h2>Latest Biasharas</h2>
+          <p>Explore biasharas in Nairobi, Mombasa, Kisumu, Nakuru, and other counties</p>
         </div>
       </div>
       <div class="listing-cards-wrapper col-lg-12">
@@ -105,6 +161,7 @@
                   </div><!-- ends: .atbd_thumbnail_overlay_content -->
                 </figure><!-- ends: .atbd_listing_thumbnail_area -->
                 {% endif %}
+
                 <div class="atbd_listing_info">
                   <div class="atbd_content_upper">
                     <h4 class="atbd_listing_title">
@@ -113,21 +170,23 @@
                     <div class="atbd_listing_meta">
                       <span class="atbd_meta atbd_listing_rating">{{ business.average_rating | floatformat }}
                         <i class="la la-star"></i></span>
-                      {% comment %}
-                      {% if business.is_open == True %}
-                      <span class="atbd_meta atbd_badge_open">Open Now</span>
+                      {% is_open business as open %}
+                      {% if open %}
+                      <span class="atbd_meta atbd_badge_open">Come in we're open</span>
                       {% else %}
-                      <span class="atbd_meta atbd_badge_closed">Closed</span>
-                      {% endif %}
-                      {% endcomment %}
+                      <span class="atbd_meta atbd_badge_close">We're Closed</span>
                     </div><!-- End atbd listing meta -->
-                    {% if business.description %}
-                    <div><p>{{ business.get_markdown|truncatewords:"25" }}</p></div>
-                    {% else %}
-                    <p>{{ business.name|title }} has decided to put an air of heightened hysteria around them</p>
+                    <p class="text-success">Reopening on {% next_time_open business as next %}
+                      {{ next.get_weekday_display|naturaltime }} {{ next.from_hour }}</p>
                     {% endif %}
                     <div class="atbd_listing_data_list">
                       <ul>
+                        {% if business.services %}
+                        <li><p>
+                          <span class="la la-tag"></span>
+                          {{ business.services.all|join:", " }}</p>
+                        </li>
+                        {% endif %}
                         <li>
                           <p><span class="la la-map-marker"></span>{% if business.address %}{{ business.address }},
                             {% if business.location %}
@@ -135,22 +194,22 @@
                             {% endif %}
                             {% endif %}</p>
                         </li>
-                {% if business.phone %}
-                {% if business.hide_phone and not request.user == business.user %}
-                <li>
-                  <p>
-                  <span class="la la-phone"></span>
-                   +254 {{ business.phone|truncatechars:3 }} [ hidden ]
-                </p>
-                </li>
-                {% else %}
-                <li><p>
-                  <span class="la la-phone"></span>
-                 +254 {{ business.phone }}
-                </p>
-                </li>
-                {% endif %}
-                {% endif %}
+                        {% if business.phone %}
+                        {% if business.hide_phone and not request.user == business.user %}
+                        <li>
+                          <p>
+                            <span class="la la-phone"></span>
+                            +254 {{ business.phone|truncatechars:3 }} [ hidden ]
+                          </p>
+                        </li>
+                        {% else %}
+                        <li><p>
+                          <span class="la la-phone"></span>
+                          +254 {{ business.phone }}
+                        </p>
+                        </li>
+                        {% endif %}
+                        {% endif %}
                         <li>
                           <p><span class="la la-calendar-check-o"></span>
                             Posted {{ business.publish|naturaltime }}</p>
@@ -169,7 +228,7 @@
                       {% endif %}
                     </div>
                     <ul class="atbd_content_right">
-                      <li class="atbd_count"><span class="la la-eye"></span>10+</li>
+                      <li class="atbd_count"><span class="la la-eye"></span>{% get_hit_count for business %}</li>
                       <li class="atbd_save">
                         <span class="la la-heart-o"></span>
                       </li>
@@ -182,7 +241,7 @@
           {% endfor %}
           <div class="col-lg-12 text-center m-top-20">
             <a class="btn btn-gradient btn-gradient-two" href='{% url "business:list" %}'>
-              Explore All {{ business.count }}+
+              Load More Biasharas
             </a>
           </div>
         </div>
@@ -232,45 +291,7 @@
   </div>
 </section>
 {% endif %}
-{% if category %}
-<section class="categories-cards section-padding-two">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="section-title">
-          <h2>From which service would you want to get?</h2>
-          <p>Discover experts, tour guide, safaris, painters, graphic designers, and barbers in Kenya by
-            categories.</p>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      {% for category in category %}
-      <div class="col-lg-4 col-sm-6">
-        <div class="category-single category--img">
-          <figure class="category--img4">
-            <img alt="" src="static/img/cat1.jpg">
-            <figcaption class="overlay-bg">
-              <a class="cat-box" href="{{ category.get_absolute_url }}">
-                <div>
-                  <div class="icon">
-                    <span class="{{ category.icon }}"></span>
-                  </div>
-                  <h4 class="cat-name">{{ category.name }}</h4>
-                  <span class="badge badge-pill badge-success">
-                    {{ category.company.count }} Biashara{{ category.company.count|pluralize }}
-                  </span>
-                </div>
-              </a>
-            </figcaption>
-          </figure>
-        </div><!-- ends: .category-single -->
-      </div><!-- ends: .col -->
-      {% endfor %}
-    </div>
-  </div>
-</section><!-- ends: .categories-cards -->
-{% endif %}
+
 {% comment %}
 <section class="subscribe-wrapper">
   <div class="container">
@@ -324,5 +345,8 @@ $("#decreaseButton").click(function () {
     var newValue = parseInt($("#vote").val()) - 1;
     $("#vote").val(newValue);
 });
+
+
+
 </script>
 {% endblock %}

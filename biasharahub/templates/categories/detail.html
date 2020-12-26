@@ -2,11 +2,14 @@
 {% load staticfiles %}
 {% load humanize %}
 {% load crispy_forms_tags %}
+{% load hitcount_tags %}
+
 
 {% block title %}  {{ category.name }}  | {{ block.super }} {% endblock %}
 
 {% block bg-image-holder %}
-<div class="bg_image_holder"><img alt="" src='{% static "img/breadcrumb1.jpg" %}'></div>
+<div class="bg_image_holder"><img alt="" src='{% if category.photo %}
+                          {{ category.photo.url }} {% else %} {% static "img/breadcrumb1.jpg" %} {% endif %}'></div>
 {% endblock %}
 
 {% block page-title %}
@@ -14,9 +17,9 @@
 {% endblock %}
 
 {% block breadcrumb_item %}
-<li class="breadcrumb-item"><a href='{% url "categories:list" %}'><i class="fa fa-plus"></i>list</a></li>
-<li aria-current="page" class="breadcrumb-item active">{{ category.name }}</li>
-<li class="breadcrumb-item"><a href='{% url "categories:edit" category.slug %}'><i class="fa fa-plus"></i>Edit</a></li>
+<li class="breadcrumb-item"><a href='{% url "categories:list" %}'><i class="fa fa-plus"></i> list</a></li>
+<li aria-current="page" class="breadcrumb-item active"> {{ category.name }} </li>
+<li class="breadcrumb-item"><a href='{% url "categories:edit" category.slug %}'><i class="fa fa-plus"></i> Edit</a></li>
 {% endblock %}
 
 
@@ -29,15 +32,16 @@
           <div class="atbd_content_module">
             <div class="atbd_content_module__tittle_area">
               <div class="atbd_area_title">
-                <h4><span class="fa fa-location"></span>{{ category.name }}</h4>
+                <h4><span class="fa fa-location"></span>{{ category.name|title }}</h4>
               </div>
             </div>
             <div class="atbdb_content_module_contents">
               <p>{{ category.description }}</p>
             </div>
                       <div class="atbd_listing_bottom_content">
+                        <h5>Top {{ category.company.count }} biasharas added in {{ category.name }} category</h5>
              <a class="btn btn-primary" href="{% url 'categories:add-business' slug=category.slug %}">
-              <span class="la la-plus"></span>Add Here</a>
+              <span class="la la-plus"></span>Add yours</a>
           </div>
           </div>
         </div><!-- ends: .atbd_author_module -->
@@ -131,13 +135,13 @@
                       {% if business.category %}
                       <div class="atbd_listing_category">
                         <a href="{{ business.category.get_absolute_url }}">
-                          <span class="{{ business.category.icon }}"></span>{{ business.category }}
+                          <span class="{{ business.category.icon }}"></span> {{ business.category }}
                         </a>
                       </div>
                       {% endif %}
                     </div>
                     <ul class="atbd_content_right">
-                      <li class="atbd_count"><span class="la la-eye"></span>10+</li>
+                      <li class="atbd_count"><span class="la la-eye"></span> {% get_hit_count for business %}</li>
                       <li class="atbd_save">
                         <span class="la la-heart-o"></span>
                       </li>
