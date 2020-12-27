@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Count
 from django.views.generic import ListView, CreateView, UpdateView
 from django.views.generic.detail import SingleObjectMixin
 
@@ -6,7 +7,7 @@ from locations.models import Location
 
 
 class LocationList(ListView):
-    model = Location
+    queryset = Location.objects.annotate(num_companies=Count('company')).order_by('-num_companies')
     paginate_by = 12
     context_object_name = "location"
     template_name = 'locations/list.html'
