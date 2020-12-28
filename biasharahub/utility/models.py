@@ -16,9 +16,7 @@ class Common(models.Model):
     slug = models.SlugField(max_length=200, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
 
-    publish = models.DateTimeField('date published',
-                                   # auto_now_add=True,
-                                   editable=True)
+    publish = models.DateTimeField('date published', auto_now_add=True, editable=True)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False, editable=True)
 
     class Meta:

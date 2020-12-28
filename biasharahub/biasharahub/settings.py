@@ -134,7 +134,7 @@ SOCIALACCOUNT_PROVIDERS = {
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 SENDGRID_SANDBOX_MODE_IN_DEBUG = False
-SENDGRID_API_KEY = "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"
+SENDGRID_API_KEY = "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"
 
 ACCOUNT_FORMS = {
     'login': 'accounts.forms.CustomLoginForm',
@@ -262,8 +262,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # s://docs.djangoproject.com/en/1.11/howto/static-files/
 
 # DJANGO HITCOUNT SPECIFIC VARIABLES
-HITCOUNT_KEEP_HIT_ACTIVE = {'seconds': 1}#{'minutes': 10800}
+HITCOUNT_KEEP_HIT_ACTIVE = {'seconds': 10800}
 HITCOUNT_HITS_PER_IP_LIMIT = 0  # unlimited
 HITCOUNT_EXCLUDE_USER_GROUP = ()  # not used
-HITCOUNT_KEEP_HIT_IN_DATABASE = {'seconds': 10}
 
