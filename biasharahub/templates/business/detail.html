@@ -713,8 +713,8 @@
 
           </div><!-- ends: .atbd_widget_title -->
           <div class="directory_open_hours">
-            {% opening_hours biashara %}
             {% if business.opening_hours %}
+                        {% opening_hours business %}
             {% else %}
             <p> Opening hours not added yet</p>
             {% endif %}

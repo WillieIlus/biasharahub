@@ -50,7 +50,7 @@ class Business(Common, UrlMixin, MetaTagsMixin, HitCountMixin):
 
     class Meta:
         verbose_name = "biashara"
-        verbose_name_plural = "biashara"
+        verbose_name_plural = "biasharas"
 
     def average_rating(self):
         all_ratings = list(map(lambda x: x.rating, self.reviews.all()))

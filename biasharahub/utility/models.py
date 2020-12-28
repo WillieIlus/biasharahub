@@ -16,8 +16,10 @@ class Common(models.Model):
     slug = models.SlugField(max_length=200, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
 
-    publish = models.DateTimeField('date published', auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True, auto_now_add=False)
+    publish = models.DateTimeField('date published',
+                                   # auto_now_add=True,
+                                   editable=True)
+    updated = models.DateTimeField(auto_now=True, auto_now_add=False, editable=True)
 
     class Meta:
         abstract = True
@@ -78,13 +80,21 @@ class UrlMixin(models.Model):
         return self.get_url_path()
 
 
+class TruncatingCharField(models.CharField):
+    def get_prep_value(self, value):
+        value = super().get_prep_value(value)
+        if value:
+            return value[:self.max_length]
+        return value
+
+
 class MetaTagsMixin(models.Model):
     """
     Abstract base class for meta tags in the <head> section
     """
     meta_keywords = models.CharField(_("Keywords"), max_length=255, blank=True,
                                      help_text=_("Separate keywords by comma."), )
-    meta_description = models.CharField(_("Description"), max_length=255, blank=True, )
+    meta_description = TruncatingCharField(_("Description"), max_length=255, blank=True, )
     meta_author = models.CharField(_("Author"), max_length=255, blank=True, )
     meta_copyright = models.CharField(_("Copyright"), max_length=255, blank=True, )
 
