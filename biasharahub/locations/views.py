@@ -8,7 +8,7 @@ from locations.models import Location
 
 class LocationList(ListView):
     queryset = Location.objects.annotate(num_companies=Count('company')).order_by('-num_companies')
-    paginate_by = 12
+    # paginate_by = 12
     context_object_name = "location"
     template_name = 'locations/list.html'
 
