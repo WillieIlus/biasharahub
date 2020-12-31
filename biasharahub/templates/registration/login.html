@@ -47,12 +47,16 @@
       <h5 class="modal-title"> Login </h5>
     </div>
     <div class="modal-body">
+              {% comment %}
+
       <form method='POST' action='' enctype='multipart/form-data' novalidate>
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ next }}">
         {% crispy form %}
         <input type='submit' class='btn btn-primary' value="Sign Up"/>
       </form>
+              {% endcomment %}
+
       <hr/>
       <div>
         <p>

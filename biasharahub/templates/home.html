@@ -31,6 +31,9 @@
 
 
 
+
+
+
 </style>
 {% endblock %}
 
@@ -57,7 +60,7 @@
           {% include "includes/search.html" %}
           <div class="directory_home_category_area">
             <ul class="categories">
-              {% for category in category %}
+              {% for category in category_one %}
               <li>
                 <a href="{{ category.get_absolute_url }}">
                   <span class="{% cycle 'color-success' 'color-primary' 'color-warning' 'color-danger' as rowcolorsv%}">
@@ -251,7 +254,6 @@
 </section><!-- ends: .listing-cards -->
 {% endif %}
 
-
 {% if review %}
 <section class="blog-area blog-grid section-padding-strict section-bg">
   <div class="container">
@@ -264,28 +266,48 @@
 
     <div class="row">
       {% for review in review %}
-      <div class="col-lg-4 col-md-6">
-        <div class="grid-single">
-          <div class="card post--card shadow-sm">
-            {% if review.featured_image %}
-            <figure class="box">
-              <a href="{{ review.get_absolute_url }}"><img alt="" src='
-                {{ review.featured_image }}'></a>
-            </figure>
-            {% endif %}
-            <div class="card-body">
-              <h6><a href="{{ review.get_absolute_url }}">
-                {{ review.user.first_name }} reviewed {{ review.content_object.name }}
-              </a></h6>
-              <ul class="post-meta d-flex list-unstyled">
-                <li>{{ review.publish|date }}</li>
-                <li>to <a href="{{ review.content_object.get_absolute_url }}">{{ review.content_object.name }}</a></li>
-              </ul>
-              <p>{{ review.content|truncatechars:100 }}</p>
-            </div>
-          </div><!-- End: .card -->
-        </div>
-      </div><!-- ends: .col-lg-4 -->
+      <div class="col-lg-4 mt-5 mt-lg-0">
+        <div class="widget atbd_widget widget-card">
+          <div class="atbd_categorized_listings atbd_popular_listings">
+            <ul class="listings">
+              <li>
+                <div class="atbd_left_img">
+                  <a href=""><img src="{% if review.user.photo %}
+                          {{ user.photo.url }} {% else %} {% static 'img/avatar-60x60.jpg' %} {% endif %}" alt="image"></a>
+                </div>
+                <div class="atbd_right_content">
+                  <div class="cate_title">
+                    <h4><a href="{{ review.get_absolute_url }}">{{ review.user.first_name|capfirst }} wrote a review
+                      of</a></h4>
+                  </div>
+                  <p class="directory_tag">
+                    <span class="{{ review.content_object.category.icon }}" aria-hidden="true"></span>
+                    <span> <a
+                        href="{{ review.content_object.get_absolute_url }}">{{ review.content_object.name }}</a></span>
+                  </p>
+                  <div class="atbd_rated_stars">
+                    <ul>
+                      <li><span class="{% if review.rating >= 1 %} rate_active
+                                                {% else %} rate_disable {% endif %}"></span></li>
+                      <li><span class="{% if review.rating >= 2 %} rate_active
+                                                {% else %} rate_disable {% endif %}"></span></li>
+                      <li><span class="{% if review.rating >= 3 %} rate_active
+                                                {% else %} rate_disable {% endif %}"></span></li>
+                      <li><span class="{% if review.rating >= 4 %} rate_active
+                                                {% else %} rate_disable {% endif %}"></span></li>
+                      <li><span class="{% if review.rating >= 5 %} rate_active
+                                                {% else %} rate_disable {% endif %}"></span></li>
+                    </ul>
+                  </div>
+                </div>
+              </li>
+              <li> {{ review.content|truncatechars:100 }}</li>
+              <li><a href="{{ review.get_absolute_url }}" class="btn btn-gradient btn-gradient-one"> Continue
+                Reading </a></li>
+            </ul>
+          </div> <!-- ends .atbd_similar_listings -->
+        </div><!-- ends: .widget -->
+      </div>
       {% endfor %}
     </div>
   </div>
@@ -330,6 +352,17 @@
 {% endcomment %}
 
 
+<div class="col-lg-12">
+  <div class="place-list-wrapper">
+    <ul class="list-unstyled">
+      {% for location in location %}
+      <li><a class="atbd_location_grid" href="{{ location.get_absolute_url }}">
+            {{ location.name }} ({{ location.company.count }})
+          </a></li>
+{% endfor %}
+    </ul>
+  </div>
+</div>
 {% endblock %}
 
 {% block javascript %}
@@ -345,6 +378,15 @@ $("#decreaseButton").click(function () {
     var newValue = parseInt($("#vote").val()) - 1;
     $("#vote").val(newValue);
 });
+
+
+
+
+
+
+
+
+
 
 
 

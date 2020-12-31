@@ -2,7 +2,7 @@
 <div class="widget atbd_widget widget-card">
   <div class="atbd_widget_title">
     <h4><span class="la la-list-alt"></span> Popular Biashara</h4>
-    <a href="">View All</a>
+    <a href='{% url "business:list" %}'>View All</a>
   </div><!-- ends: .atbd_widget_title -->
   <div class="atbd_categorized_listings atbd_popular_listings">
     <ul class="listings">
@@ -21,19 +21,28 @@
           </div>
           {% if business.category %}
           <p class="directory_tag">
-            <span aria-hidden="true" class="la la-glass"></span>
+            <span aria-hidden="true" class="{{ business.category.icon }}"></span>
             <span><a href="{{ business.get_absolute_url }}">{{ business.category }}</a></span>
           </p>
           {% endif %}
-          <div class="atbd_rated_stars">
+          <div class="atbd_rated_stars atbd_content_left">
             <ul>
-              <li><span class="rate_active"></span></li>
-              <li><span class="rate_active"></span></li>
-              <li><span class="rate_active"></span></li>
-              <li><span class="rate_active"></span></li>
-              <li><span class="rate_active"></span></li>
+              <li><span class="{% if business.average_rating >= 1 %} rate_active
+                                                {% else %} rate_disable {% endif %}"></span></li>
+              <li><span class="{% if business.average_rating >= 2 %} rate_active
+                                                {% else %} rate_disable {% endif %}"></span></li>
+              <li><span class="{% if business.average_rating >= 3 %} rate_active
+                                                {% else %} rate_disable {% endif %}"></span></li>
+              <li><span class="{% if business.average_rating >= 4 %} rate_active
+                                                {% else %} rate_disable {% endif %}"></span></li>
+              <li><span class="{% if business.average_rating >= 5 %} rate_active
+                                                {% else %} rate_disable {% endif %}"></span></li>
             </ul>
           </div>
+          <span class="atbd_content_right">
+          {{ business.reviews.count }} review{{ business.reviews.count|pluralize  }}
+          </span>
+                      <p>{{ business.services.all|join:", " }}</p>
         </div>
       </li>
       {% endfor %}

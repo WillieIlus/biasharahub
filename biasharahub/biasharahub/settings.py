@@ -230,7 +230,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-
+IMPORT_EXPORT_USE_TRANSACTIONS = True
 
 # LOGOUT_REDIRECT_URL = 'accounts:login'
 LOGOUT_REDIRECT_URL = 'account_login'

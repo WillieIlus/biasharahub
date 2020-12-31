@@ -1,5 +1,5 @@
 import datetime
-from django.db.models import Count
+from django.db.models import Count, Avg
 from django.template import Library
 from django.utils import timezone
 
@@ -60,9 +60,12 @@ def get_recent_comments(number=5):
     return {'comments': Comment.objects.all()[:number]}
 
 
+
 @register.inclusion_tag('tags/business_popular.html')
 def get_popular_business(number=5):
-    return {'popular_business': Business.objects.order_by('-reviews')[:number]}
+    return {'popular_business': Business.objects.annotate(avg_reviews=Avg('reviews__rating'),
+                                                  num_reviews=Count('reviews')).order_by(
+    '-num_reviews', '-avg_reviews', 'hit_count', '-publish')[:number]}
 
 
 @register.inclusion_tag('tags/reviews_popular.html')

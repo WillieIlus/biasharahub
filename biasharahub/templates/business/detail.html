@@ -44,6 +44,7 @@
 
 
 
+
 </style>
 {% endblock %}
 
@@ -257,6 +258,7 @@
           </div>
           <div class="atbdb_content_module_contents">
             <p>{{ business.services.all|join:", " }}</p>
+            <hr/>
             {% if business.description %}
             <p>{{ business.get_markdown }}</p>
             {% else %}
@@ -714,7 +716,7 @@
           </div><!-- ends: .atbd_widget_title -->
           <div class="directory_open_hours">
             {% if business.opening_hours %}
-                        {% opening_hours business %}
+            {% opening_hours business %}
             {% else %}
             <p> Opening hours not added yet</p>
             {% endif %}
@@ -729,9 +731,6 @@
           </div>
         </div><!-- ends: .widget -->
 
-
-        {% get_categories %}
-
         <div class="widget atbd_widget widget-card">
           <div class="atbd_widget_title">
             <h4><span class="la la-tags"></span> Services offered here are?</h4>
@@ -744,36 +743,18 @@
             </ul>
           </div><!-- ends: .widget-body -->
         </div><!-- ends: .widget -->
-        <div class="widget atbd_widget widget-card">
-          <div class="atbd_widget_title">
-            <h4><span class="la la-envelope"></span></h4>Inbox User
-          </div><!-- ends: .atbd_widget_title -->
-          <div class="atbdp-widget-listing-contact">
-            <form class="form-vertical" id="atbdp-contact-form" role="form">
-              <div class="form-group">
-                <input class="form-control" id="atbdp-contact-name" placeholder="Name" required=""
-                       type="text">
-              </div>
-              <div class="form-group">
-                <input class="form-control" id="atbdp-contact-email" placeholder="Email" required=""
-                       type="email">
-              </div>
-              <div class="form-group">
-                                <textarea class="form-control" id="atbdp-contact-message" placeholder="Message"
-                                          required=""
-                                          rows="3"></textarea>
-              </div>
-              <button class="btn btn-outline-secondary btn-block" type="submit">Message User</button>
-            </form>
-          </div><!-- ends: .atbdp-widget-listing-contact -->
-        </div><!-- ends: .widget -->
+        {% get_categories %}
+        <!-- popular post -->
+        {% get_popular_business %}
+        <!-- ends: .widget-wrapper -->
+        <!-- popular post -->
+        {% get_popular_reviews %}
+        <!-- ends: .widget-wrapper -->
         <!--similar business widget-->
         {% comment %}
         {% get_related_business %}
         {% endcomment %}
         {% include 'tags/related_business.html' %}
-
-
         <!-- ends: .widget -->
         <!--popular business widget-->
         <!-- ends: .widget -->

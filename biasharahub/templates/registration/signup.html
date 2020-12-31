@@ -30,11 +30,15 @@
                 </button>
             </div>
             <div class="modal-body">
+                        {% comment %}
+
                 <form class="login-form" method='POST' action='' enctype='multipart/form-data' novalidate>
                     {% csrf_token %}
                     <input type="hidden" name="next" value="{{ next }}">
                     {% crispy form %}
                 </form>
+                        {% endcomment %}
+
                 <div class="form-excerpts">
                     <ul class="list-unstyled">
                         <li>Already a member? <a href='{% url "accounts:login" %}'>Login In</a></li>
