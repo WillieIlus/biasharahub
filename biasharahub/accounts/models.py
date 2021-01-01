@@ -52,7 +52,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     photo = models.ImageField(upload_to="user/photos", blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
     phone = models.CharField(max_length=255, blank=True, )
-    website = models.URLField(blank=True, null=True, help_text="Please start with 'https://www.'")
+    website = models.URLField(blank=True, null=True, help_text="Please start with 'https://www.' ")
 
     address = models.CharField(max_length=255, blank=True, )
     is_freelancer = models.BooleanField(default=False)

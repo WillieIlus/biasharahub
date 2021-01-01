@@ -8,7 +8,7 @@ from utility.models import Common
 
 class Category(Common):
     icon = models.CharField(max_length=256, null=True, blank=True, default="")
-    photo = models.ImageField(upload_to='category/photos', null=True, blank=True)
+    photo = models.ImageField(upload_to='categories/photos', null=True, blank=True)
 
 
     class Meta:

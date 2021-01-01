@@ -10,9 +10,9 @@ class ReviewImageInline(admin.TabularInline):
     extra = 6
 
 
-class AccountAdmin(ImportExportModelAdmin):
+class ReviewAdmin(ImportExportModelAdmin):
     resource_class = ReviewResource
     inlines = [ReviewImageInline]
 
 
-admin.site.register(Review, AccountAdmin)
+admin.site.register(Review, ReviewAdmin)
