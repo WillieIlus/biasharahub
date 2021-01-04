@@ -43,7 +43,7 @@ else:
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = 'apikey'
-EMAIL_HOST_PASSWORD = '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'
+EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 587
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
