@@ -134,7 +134,7 @@ SOCIALACCOUNT_PROVIDERS = {
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 SENDGRID_SANDBOX_MODE_IN_DEBUG = False
-SENDGRID_API_KEY = "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"
+SENDGRID_API_KEY = ""
 
 ACCOUNT_FORMS = {
     'login': 'accounts.forms.CustomLoginForm',
