@@ -1,10 +1,10 @@
-import datetime
 from django.db.models import Count, Avg
 from django.template import Library
-from django.utils import timezone
+from requests import Request
 
 from accounts.forms import CustomLoginForm, CustomSignupForm
 from accounts.models import User
+from business.forms import BusinessAddForm
 from business.models import Business
 from categories.models import Category
 from comments.models import Comment
@@ -28,6 +28,14 @@ def get_login():
 @register.inclusion_tag('includes/cat_to_add_biz.html')
 def get_cat_to_add_biz():
     return {'categories': Category.objects.all}
+
+
+@register.inclusion_tag('includes/business_form.html', takes_context=True)
+def get_business_form():
+    form = BusinessAddForm()
+    return {
+        'form': form,
+    }
 
 
 @register.inclusion_tag('openinghours/edit_form.html')
@@ -60,22 +68,22 @@ def get_recent_comments(number=5):
     return {'comments': Comment.objects.all()[:number]}
 
 
-
 @register.inclusion_tag('tags/business_popular.html')
 def get_popular_business(number=5):
     return {'popular_business': Business.objects.annotate(avg_reviews=Avg('reviews__rating'),
-                                                  num_reviews=Count('reviews')).order_by(
-    '-num_reviews', '-avg_reviews', 'hit_count', '-publish')[:number]}
+                                                          num_reviews=Count('reviews')).order_by(
+        '-num_reviews', '-avg_reviews', 'hit_count', '-publish')[:number]}
 
 
 @register.inclusion_tag('tags/reviews_popular.html')
 def get_popular_reviews(number=5):
     return {'popular_reviews': Review.objects.order_by('-comments')[:number]}
 
+
 # @register.inclusion_tag('tags/related_business.html')
 # def get_related_business(number=5):
 #     return {'related_business': Business.objects.all()[:number]}
-    # return {'related_business': Business.services.similar_objects[:number]}
+# return {'related_business': Business.services.similar_objects[:number]}
 
 
 @register.inclusion_tag('tags/statistics.html')

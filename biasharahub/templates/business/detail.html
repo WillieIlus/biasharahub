@@ -16,32 +16,10 @@
 
 {% block stylesheet %}
 <style>
-      .atbd_listing_image {
-        width: 100%;
-        height: 220px;
-      }
-      .logo {
-        width: 70px;
-        height: 70px;
-      }
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-      .btn-like {
-          width: 2.33333rem;
-    height: 2.33333rem;
-    border-radius: 30rem;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.2rem;
-    margin-right: 0.66667rem;
-    flex: none;
 
-      }
-
+.hidden_field {
+  display: none !important;
+}
 
 
 
@@ -102,8 +80,8 @@
             {% if business.category %}
             <li>
               <div class="atbd_listing_category">
-                <a href="{{ business.category.get_absolute_url }}">
-                  <span class="{{ business.category.icon }}"></span>{{ business.category }}</a>
+                <a href="{{ business.category.first.get_absolute_url }}">
+                  <span class="{{ business.category.icon }}"></span>{{ business.category.first }}</a>
               </div>
             </li>
             {% endif %}
@@ -200,48 +178,48 @@
           </form>
         </div>
       </div>
-    </div>
-    <div aria-hidden="true" aria-labelledby="claim_listing_label" class="modal fade" id="moda_claim_listing"
-         role="dialog" tabindex="-1">
-      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-body">
-            <form action="/">
-              <div class="form-group">
-                <div class="row">
-                  <div class="col-md-6">
-                    <input class="form-control" placeholder="Your Name" required type="text">
-                  </div>
-                  <div class="col-md-6">
-                    <input class="form-control" placeholder="Email Address" required type="email">
-                  </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <div class="row">
-                  <div class="col-md-6">
-                    <input class="form-control" placeholder="Phone Number" required type="text">
-                  </div>
-                  <div class="col-md-6">
-                    <input class="form-control" placeholder="Listing URL" required type="url">
+      <div aria-hidden="true" aria-labelledby="claim_listing_label" class="modal fade" id="moda_claim_listing"
+           role="dialog" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-body">
+              <form action="/">
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <input class="form-control" placeholder="Your Name" required type="text">
+                    </div>
+                    <div class="col-md-6">
+                      <input class="form-control" placeholder="Email Address" required type="email">
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="form-group">
-                <div class="row">
-                  <div class="col-lg-12">
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <input class="form-control" placeholder="Phone Number" required type="text">
+                    </div>
+                    <div class="col-md-6">
+                      <input class="form-control" placeholder="Listing URL" required type="url">
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-lg-12">
                                         <textarea class="form-control" placeholder="Provie Listing Information" required
                                                   rows="6"></textarea>
-                    <button class="btn btn-secondary" type="submit">Submit Query</button>
+                      <button class="btn btn-secondary" type="submit">Submit Query</button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </div><!-- ends: .listing-info -->
+    </div><!-- ends: .listing-info -->
+  </div>
 </section><!-- ends: .card-details-wrapper -->
 <section class="directory_listiing_detail_area single_area section-bg section-padding-strict">
   <div class="container">
@@ -257,22 +235,26 @@
             </div>
           </div>
           <div class="atbdb_content_module_contents">
+            {% comment %}
             <p>{{ business.services.all|join:", " }}</p>
             <hr/>
-            {% if business.description %}
+            {% endcomment %}
             <p>{{ business.get_markdown }}</p>
-            {% else %}
-            <p>{{ business.name|title }} has decided to put an air of heightened hysteria around them</p>
-            {% endif %}
             {% if request.user == business.user %}
             <hr/>
             <a href="{% url 'business:edit' business.slug %}" class="btn btn-gradient btn-gradient-two">
               Update your Biashara
             </a>&nbsp;
+            <a href="{% url 'business:add_category' business.slug %}" class="btn btn-gradient btn-gradient-one">
+              Add Categories
+            </a>&nbsp;
             {% elif request.user.is_superuser %}
             <hr/>
             <a href="{% url 'business:edit' business.slug %}" class="btn btn-gradient btn-gradient-two">
               Update Biashara?
+            </a>&nbsp;
+            <a href="{% url 'business:add_category' business.slug %}" class="btn btn-gradient btn-gradient-one">
+              Add Categories?
             </a>&nbsp;
             {% endif %}
           </div>
@@ -437,15 +419,23 @@
           <div class="atbdb_content_module_contents">
             <div id="client_review_list">
               {% for review in page_obj %}
+              {% if review.review_approved %}
               <div class="atbd_single_review atbdp_static">
                 <div class="atbd_review_top">
                   <div class="atbd_avatar_wrapper">
                     <div class="atbd_review_avatar"><img alt="" class="avatar avatar-32 photo"
-                                                         {% if review.user.user.photo %}
+                                                         {% if review.anonymous %}
                                                          src="img/review-author-thumb.jpg"
+                                                         {% else %}
+                                                         src=""
                                                          {% endif %}></div>
                     <div class="atbd_name_time">
-                      <p>{{ review.user.username }}</p>
+                      <p>{% if review.anonymous %}
+                        Anonymous user
+                        {% else %}
+                        {{ review.user.first_name|capfirst }}
+                        {% endif %}
+                        wrote a review</p>
                       <span class="review_time">{{ review.publish|timesince }} ago</span>
                     </div>
                   </div>
@@ -575,6 +565,7 @@
                 {% endfor %}
                 <!-- ends: .media-depth2 -->
               </div>
+              {% endif %}
               {% endfor %}
               <!-- ends:.atbd_single_review -->
 
@@ -582,16 +573,7 @@
             {% include 'includes/pagination.html' %}
           </div>
         </div><!-- ends: .atbd_content_module -->
-        {% if request.user == business.user %}
-        <div class="col-lg-8 mt-5 mt-lg-0">
-          <div class="widget atbd_widget widget-card">
-            <div class="atbd_widget_title">
-              <p>You can't review this biashara <strong> but you can reply to reviews</strong></p>
-
-            </div>
-          </div>
-        </div>
-        {% else %}
+        {% if request.user != business.user %}
         <div class="atbd_content_module atbd_review_form">
           <div class="atbd_content_module__tittle_area">
             <div class="atbd_area_title">

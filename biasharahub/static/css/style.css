@@ -4218,6 +4218,15 @@ p {
   margin-right: 0.33333rem;
 }
 
+#client_review_span .review_content .reply {
+  display: inline-block !important;
+  margin-top: 0.66667rem;
+}
+
+#client_review_span .review_content .reply span {
+  margin-right: 0.33333rem;
+}
+
 .atbd_review_module #client_review_list .atbd_single_review .review_reply_form {
   margin-left: 3.33333rem;
   margin-top: 2rem;
@@ -4225,8 +4234,20 @@ p {
   display: none;
 }
 
+
+.hidden_field {
+  display: none !important;
+}
+
 .atbd_review_module #client_review_list .atbd_single_review .review_reply_form.active {
   display: flex;
+}
+
+.review_reply_custom_form {
+  margin-left: 3.33333rem;
+  margin-top: 2rem;
+  text-align: right;
+  display: none;
 }
 
 .atbd_review_module #client_review_list .atbd_single_review .review_reply_form .atbd_review_avatar {
@@ -5712,12 +5733,14 @@ p {
 }
 
 #login_modal .modal-header,
+#review_modal .modal-header,
 #signup_modal .modal-header,
 #moda_claim_listing .modal-header {
   padding: 2rem;
 }
 
 #login_modal .modal-header .modal-title i,
+#review_modal .modal-header .modal-title i,
 #signup_modal .modal-header .modal-title i,
 #moda_claim_listing .modal-header .modal-title i {
   font-size: 1.33333rem;
@@ -5725,12 +5748,14 @@ p {
 }
 
 #login_modal .modal-body,
+#review_modal .modal-body,
 #signup_modal .modal-body,
 #moda_claim_listing .modal-body {
   padding: 2rem;
 }
 
 #login_modal .modal-body .form-control,
+#review_modal .modal-body .form-control,
 #login_modal .modal-body .keep_signed,
 #login_modal .modal-body .btn,
 #signup_modal .modal-body .form-control,
@@ -5743,6 +5768,7 @@ p {
 }
 
 #login_modal .modal-body .form-excerpts ul,
+#review_modal .modal-body .form-excerpts ul,
 #signup_modal .modal-body .form-excerpts ul,
 #moda_claim_listing .modal-body .form-excerpts ul {
   display: flex;
@@ -5751,18 +5777,23 @@ p {
 }
 
 #login_modal .modal-body .form-excerpts ul li,
+#review_modal .modal-body .form-excerpts ul li,
 #signup_modal .modal-body .form-excerpts ul li,
 #moda_claim_listing .modal-body .form-excerpts ul li {
   font-size: 0.93333rem;
 }
 
 #login_modal .modal-body .form-excerpts .social-login,
+#review_modal .modal-body .form-excerpts .social-login,
 #signup_modal .modal-body .form-excerpts .social-login,
 #moda_claim_listing .modal-body .form-excerpts .social-login {
   text-align: center;
 }
 
-#login_modal .modal-body .form-excerpts .social-login span, #login_modal .modal-body .form-excerpts .social-login a,
+#login_modal .modal-body .form-excerpts .social-login span,
+ #login_modal .modal-body .form-excerpts .social-login a,
+#review_modal .modal-body .form-excerpts .social-login span,
+ #review_modal .modal-body .form-excerpts .social-login a,
 #signup_modal .modal-body .form-excerpts .social-login span,
 #signup_modal .modal-body .form-excerpts .social-login a,
 #moda_claim_listing .modal-body .form-excerpts .social-login span,
@@ -5771,12 +5802,14 @@ p {
 }
 
 #login_modal .modal-body .form-excerpts .social-login p,
+#review_modal .modal-body .form-excerpts .social-login p,
 #signup_modal .modal-body .form-excerpts .social-login p,
 #moda_claim_listing .modal-body .form-excerpts .social-login p {
   margin: 1rem 0 0 0;
 }
 
 #login_modal .modal-body .form-excerpts .social-login p a,
+#review_modal .modal-body .form-excerpts .social-login p a,
 #signup_modal .modal-body .form-excerpts .social-login p a,
 #moda_claim_listing .modal-body .form-excerpts .social-login p a {
   margin: 0 0.33333rem;

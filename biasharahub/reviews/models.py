@@ -2,6 +2,7 @@ from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKe
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.urls import reverse
+from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.text import slugify
 
@@ -32,6 +33,8 @@ class Review(UrlMixin, models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     slug = models.SlugField(max_length=200, blank=True, null=True)
     rating = models.IntegerField(choices=RATING_CHOICES, default=1)
+    anonymous = models.BooleanField(default=False, help_text="Keep the your identity anonymous")
+    review_approved = models.BooleanField(default=False, help_text="The review has been approved by an admin")
     hit_count = GenericRelation(Hit)
     comments = GenericRelation(Comment)
     votes = GenericRelation(Vote, related_query_name='review')
@@ -42,11 +45,11 @@ class Review(UrlMixin, models.Model):
         ordering = ['-publish']
 
     def save(self, *args, **kwargs):
-        get_short_name = self.user.first_name
+        # get_short_name = self.user.first_name
         # if self.user.first_name is None:
         #     get_short_name = self.user
         #     return get_short_name
-        slug = slugify("%s at  %s" % (get_short_name, self.content_object))
+        slug = slugify("%s at  %s" % (self.content_object, get_random_string(5)))
         self.slug = slug
         super().save(*args, **kwargs)
 

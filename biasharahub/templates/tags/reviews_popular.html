@@ -13,7 +13,11 @@
             <a href=""><img alt="" width="50px"  src="{% if review.user.photo %} {{ review.user.photo.url }}
                                         {% else %} {% static 'img/bthumb1.jpg' %}{% endif %}"></a>
             <p><span>{{ review.publish|date }}</span>
+              {% if review.anonymous %}
+              <span>by <a href="{{ review.get_absolute_url }}"> Anonymous </a></span></p>
+            {% else %}
               <span>by <a href="{{ review.user.get_absolute_url }}">{{ review.user.get_full_name }}</a></span></p>
+            {% endif %}
           </div>
           <h6 class="widget-title"><a href="{{ review.get_absolute_url }}">{{ review.title }}</a></h6>
           <a class="post-title" href="{{ review.get_absolute_url }}">{{ review.content|truncatechars:30 }}</a>

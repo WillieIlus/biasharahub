@@ -27,7 +27,7 @@ blockquote {
 .wmd-input 
 { 
 	height: 300px;
-	width: 100%;
+	width: 78% !important;
 	background-color: Gainsboro;
 	border: 1px solid DarkGray;
 }

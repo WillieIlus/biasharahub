@@ -84,7 +84,7 @@
                     <ul class="d-flex list-unstyled align-items-center">
                       <li>
                         <a class="btn btn-xs btn-gradient btn-gradient-two"
-                           data-target="#category_modal" data-toggle="modal"
+                           data-target="#category_modal_disabled" data-toggle="modal_disabled"
                            href='{% url "business:new" %}'>
                           <span class="la la-plus"></span> Add Biashara
                         </a>
@@ -143,7 +143,7 @@
                       <li><a class="access-link" data-target="#signup_modal" data-toggle="modal"
                              href="{% url 'account_signup' %}"><i class="fa fa-pencil"></i> Register</a></li>
                       <div><a class="btn btn-xs btn-gradient btn-gradient-two"
-                              data-target="#category_modal" data-toggle="modal"
+                              data-target="#category_modal_disabled" data-toggle="modal_disabled"
                               href='{% url "business:new" %}'>
                         <span class="la la-plus"></span> Add Biashara
                       </a></div>
@@ -160,12 +160,12 @@
                       <li><a href="{% url 'accounts:detail' request.user.pk %}">My Profile</a></li>
                       <li><a href="{% url 'accounts:dashboard' %}">Dashboard</a></li>
                       <li><a href="{% url 'account_logout' %}">Logout</a></li>
-                      <li><a href="{% url 'pinax_messages:inbox' %}"><i class="fa fa-envelope"></i> Message Inbox</a>
+                      <li><a href="{% url 'pinax_messages:inbox' %}"><i class="fa fa-envelope"></i> Inbox</a>
                       </li>
                     </ul>
                     <div class="search_area">
                       <a class="btn btn-xs btn-gradient btn-gradient-two"
-                         data-target="#category_modal" data-toggle="modal"
+                         data-target="#category_modal_disabled" data-toggle="modal_disabled"
                          href='{% url "business:new" %}'>
                         <span class="la la-plus"></span> Add Biashara
                       </a></div><!-- ends: .search_area -->

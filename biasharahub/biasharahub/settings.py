@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'utility',
 ]
 
+
 SITE_ID = 1
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
@@ -188,6 +189,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 # `allauth` needs this from django,
                 'django.template.context_processors.request',
+                # 'custom context processor
+                'utility.context_processors.get_current_year_to_context',
             ],
         },
     },

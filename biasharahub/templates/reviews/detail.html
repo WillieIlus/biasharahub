@@ -4,20 +4,25 @@
 {% load social_share %}
 {% load biasharahub %}
 
-{% block title %}  {{ review.user.first_name }} | {{ block.super }} {% endblock %}
+{% block title %} {% if review.anonymous %} Anonymous {% else %} {{ review.user.first_name|capfirst }} {% endif %}wrote a review | {{ block.super }} {% endblock %}
 
 {% block bg-image-holder %}
 <div class="bg_image_holder"><img alt="" src='{% static "img/breadcrumb1.jpg" %}'></div>
 {% endblock %}
 
 {% block page-title %}
-<h1 class="page-title">{{ review.user.first_name }} </h1>
+<h1 class="page-title">{% if review.anonymous %} Anonymous {% else %} {{ review.user.first_name|capfirst }} {% endif %}
+  wrote a review </h1>
 {% endblock %}
 
 {% block breadcrumb_item %}
-<li class="breadcrumb-item"><a href='{% url "reviews:list" %}'><i class="fa fa-list"></i>List</a></li>
-<li aria-current="page" class="breadcrumb-item active">{{ review.user.first_name }}</li>
+<li class="breadcrumb-item"><a href='{% url "reviews:list" %}'><i class="fa fa-list"></i> List</a></li>
+<li aria-current="page" class="breadcrumb-item active">{% if review.anonymous %} Anonymous {% else %}
+  {{ review.user.first_name|capfirst }} {% endif %}
+</li>
+{% if review.user == request.user %}
 <li class="breadcrumb-item"><a href='{% url "reviews:edit" review.slug %}'><i class="fa fa-plus"></i>Edit</a></li>
+{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -34,10 +39,12 @@
           </div>
           <div class="post-content">
             <div class="post-header">
-              <h3>{{ review.user.first_name }}</h3>
+              <h3>{% if review.anonymous %} Anonymous {% else %} {{ review.user.first_name|capfirst }} {% endif %}</h3>
               <ul class="list-unstyled">
                 <li>{{ review.publish|date }}</li>
-                <li>By <a href="{{ review.user.get_absolute_url }}">{{ review.user.first_name }}</a></li>
+                <li>By <a href="{% if review.anonymous %} {{ review.content_object.get_absolute_url }}
+                     {% else %} {{ review.user.get_absolute_url }} {% endif %} ">
+                  {% if review.anonymous %} Anonymous {% else %} {{ review.user.first_name|capfirst }} {% endif %}</a></li>
                 <li>In <a href="{{ review.content_object.get_absolute_url }}">{{ review.content_object.name }}</a></li>
                 <li><a href="#">{{ review.comments.count }} Comment{{ review.comments.count|pluralize }}</a></li>
               </ul>
@@ -49,28 +56,36 @@
         </div><!-- ends: .post-details -->
         <div class="post-bottom d-flex justify-content-between">
           <div class="action_button pull-left">
-                    <a class=" btn btn-xs btn-secondary" href="{% url 'reviews:vote_up' slug=review.slug %}"></span>
-                      Like |
-                    <span>{{ review.votes.likes.count }}</span></a>
-                    <a class=" btn btn-xs btn-danger" href="{% url 'reviews:vote_down' slug=review.slug %}"></span>
-                      Dislike |
-                    <span>{{ review.votes.dislikes.count }}</span></a>
-                  </div>
+            <a class=" btn btn-xs btn-secondary" href="{% url 'reviews:vote_up' slug=review.slug %}"></span>
+              Like |
+              <span>{{ review.votes.likes.count }}</span></a>
+            <a class=" btn btn-xs btn-danger" href="{% url 'reviews:vote_down' slug=review.slug %}"></span>
+              Dislike |
+              <span>{{ review.votes.dislikes.count }}</span></a>
+          </div>
 
           <div class="social-share d-flex align-items-center">
             <span class="m-right-15">Share this Review: </span>
             <ul class="social-share list-unstyled">
-              <li><div>
-                {% post_to_facebook object_or_url "F" %}
-                </div></li>
-              <li><div>
-                {% post_to_twitter "New Biashara: {{review.title}}. Check it out!" object_or_url "T" %}
-                </div></li>
-              <li><div>
-                {% post_to_whatsapp object_or_url "W" %}</div></li>
+              <li>
+                <div>
+                  {% post_to_facebook object_or_url "F" %}
+                </div>
+              </li>
+              <li>
+                <div>
+                  {% post_to_twitter "New Biashara: {{review.title}}. Check it out!" object_or_url "T" %}
+                </div>
+              </li>
+              <li>
+                <div>
+                  {% post_to_whatsapp object_or_url "W" %}
+                </div>
+              </li>
             </ul>
           </div>
         </div><!-- ends: .post-bottom -->
+        {% if review.anonymous == False %}
         <div class="post-author cardify border">
           <div class="author-thumb">
             <img alt="" class="rounded-circle" src="img/auth1.png">
@@ -83,15 +98,16 @@
             <P>{{ review.user.get_full_name }} has decided to put a wall of heightened hysteria around them </P>
             {% endif %}
             <ul class="list-unstyled social-basic">
-                            {% for network in review.user.network.all %}
+              {% for network in review.user.network.all %}
               <li>
-              <a href="{{ network.url }}"><i class="{{ network.network.icon }}"></i></a>
+                <a href="{{ network.url }}"><i class="{{ network.network.icon }}"></i></a>
               </li>
               <span class="custom-tooltip">{{ network.name }}</span>
               {% endfor %}
             </ul>
           </div>
         </div><!-- ends: .post-author -->
+        {% endif %}
         <div class="comments-area m-top-60">
           <div class="comment-title">
             <h3>{{ review.comments.count }} Comment{{ review.comments.count|pluralize }}</h3>

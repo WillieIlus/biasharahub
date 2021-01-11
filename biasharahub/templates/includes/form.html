@@ -3,6 +3,16 @@
 {% load crispy_forms_tags %}
 
 {% block title %}  Form  | {{ block.super }} {% endblock %}
+{% block stylesheet %}
+<style>
+
+.hidden_field {
+  display: none !important;
+}
+
+
+</style>
+{% endblock %}
 
 {% block bg-image-holder %}
 <div class="bg_image_holder"><img alt="" src='{% static "img/breadcrumb1.jpg" %}'></div>

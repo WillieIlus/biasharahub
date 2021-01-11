@@ -12,11 +12,11 @@ from .models import Review, ReviewImage
 class ReviewForm(ModelForm):
     class Meta:
         model = Review
-        fields = ['rating', 'content']
-        widgets = {
-            'rating': RadioSelect(),
-            'content': Textarea(attrs={'cols': 40, 'rows': 5}),
-        }
+        fields = ['rating', 'content', 'anonymous']
+        # widgets = {
+        #     'rating': RadioSelect(),
+        #     'content': Textarea(attrs={'cols': 40, 'rows': 5}),
+        # }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -25,16 +25,18 @@ class ReviewForm(ModelForm):
             Row(
                 Div(
                     Div(
-                        InlineRadios('rating', css_class='give_rating'),
+                        InlineRadios('rating', css_class='give_rating '),
                         css_class='br-wrapper br-theme-fontawesome-stars m-left-15'
                     ),
-                    css_class='atbd_rating_stars',
+                    css_class='atbd_rating_stars hidden_field',
                 ),
             ),
+            'rating',
             Row(
                 Column('content', css_class='mt-10 form-group col-md-12 mb-0'),
                 css_class='form-row', css_id='review_content'
             ),
+            'anonymous',
             Submit('submit', 'Submit', css_class='btn btn-gradient btn-gradient-two')
         )
 

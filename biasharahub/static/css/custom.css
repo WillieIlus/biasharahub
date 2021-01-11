@@ -1,0 +1,25 @@
+      .atbd_listing_image {
+        width: 100%;
+        height: 220px;
+      }
+      .logo {
+        width: 70px;
+        height: 70px;
+      }
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .btn-like {
+          width: 2.33333rem;
+    height: 2.33333rem;
+    border-radius: 30rem;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    margin-right: 0.66667rem;
+    flex: none;
+
+      }

@@ -1,0 +1,49 @@
+{% block stylesheet %}
+<style>
+
+.wmd-panel{
+    margin-right: 0px !important;
+    margin-left: 0px !important;
+    width: 78% !important;
+}
+
+.wmd-input pagedownwidget form-control{
+    margin-right: 0px !important;
+    margin-left: 0px !important;
+    width: 78% !important;
+}
+
+
+
+</style>
+{% endblock %}
+
+{% load crispy_forms_tags %}
+<div aria-hidden="true" aria-labelledby="category_modal_label" class="modal fade" id="category_modal" role="dialog"
+     tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="login_modal_label"><i class="la la-lock"></i> Add a New Biashara</h5>
+        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="{% url 'business:new' %}" class="uniForm" enctype="multipart/form-data" method="POST">
+          {% csrf_token %}
+          <input name="next" type="hidden" value="{{ next }}">
+          {% crispy form %}
+          <div class="clearfix">
+            <div class=" pull-right">
+              <a role="button" class="btn btn-lg btn-danger" href="{% url 'home' %}">Cancel</a>
+              <input type="submit" class="btn btn-lg btn-success" value="Submit"
+                     name="submit">
+            </div>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -2,7 +2,7 @@ from django.urls import path
 from favourites.views import bookmark_company
 
 from .views import BusinessCreate, BusinessDetail, BusinessList, BusinessEdit, PhotoGallery, \
-    FacetedSearchView, autocomplete, BusinessSocialProfile, add_photos, hide_mail, hide_phone
+    FacetedSearchView, autocomplete, BusinessSocialProfile, add_photos, hide_mail, hide_phone, AddCategory
 
 app_name = 'business'
 
@@ -14,6 +14,7 @@ urlpatterns = [
 
     path('<slug:slug>/', BusinessDetail.as_view(), name='detail'),
     path('<slug:slug>/edit/', BusinessEdit.as_view(), name='edit'),
+    path('<slug:slug>/add_category/', AddCategory.as_view(), name='add_category'),
     path('<slug:slug>/social_profile/', BusinessSocialProfile.as_view(), name='social_profile'),
     path('<slug:slug>/photo_update/', add_photos, name='photo_update'),
     path('<slug:slug>/gallery/', PhotoGallery.as_view(), name='gallery'),

@@ -63,14 +63,15 @@
         <div class="col-lg-12">
           <div class="footer-bottom--content">
             <a class="footer-logo" href='{% url "home" %}'><img alt="" src="static/img/logo.png"></a>
-            <p class="m-0 copy-text">©2021 BiasharaHub</p>
+            <p class="m-0 copy-text">© {{ current_year }} BiasharaHub</p>
           </div>
         </div>
       </div>
     </div>
   </div><!-- ends: .footer-bottom -->
 </footer><!-- ends: .footer -->
-
-          {% get_cat_to_add_biz %}
+{% comment %}
+          {% get_business_form %}
+{% endcomment %}
           {% get_login %}
           {% get_signup %}

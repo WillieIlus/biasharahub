@@ -155,6 +155,17 @@
         }
     });
 
+    /* review reply form */
+    $(".review_reply_custom_form .review-reply").on("click", function (e) {
+        e.preventDefault();
+        if($(this).parent().next().hasClass("active")){
+            $(this).parent().next().removeClass("active")
+        }else {
+            $(this).parent().next().addClass("active");
+        }
+    });
+
+
     /* custom upload file name */
     $("#atbd_review_attachment").on("change", function () {
        var file = $("#atbd_review_attachment")[0].files[0].name;

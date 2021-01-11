@@ -29,6 +29,7 @@ class ReviewCreate(LoginRequiredMixin, CreateView):
         return self.render_to_response(self.get_context_data(form=form))
 
     def get_success_url(self):
+        messages.success(self.request, 'Your review was successful, and will be approved by an admin')
         return reverse('business:detail', kwargs={'slug': self.object.content_object.slug})
 
 
@@ -56,7 +57,8 @@ class ReviewEdit(LoginRequiredMixin,  UserRequiredMixin, UpdateView):
 
 
 class ReviewList(ListView):
-    model = Review
+    # model = Review
+    queryset = Review.objects.filter(review_approved=True)
     context_object_name = 'review'
     template_name = 'reviews/list.html'
     paginate_by = 10
@@ -64,13 +66,14 @@ class ReviewList(ListView):
 
 class ReviewDetail(SingleObjectMixin, ListView):
     model = Review
+    # queryset = Review.objects.filter(review_approved=True)
     paginate_by = 10
     context_object_name = 'review'
     template_name = 'reviews/detail.html'
     count_hit = True
 
     def get(self, request, *args, **kwargs):
-        self.object = self.get_object(queryset=Review.objects.all())
+        self.object = self.get_object(queryset=Review.objects.filter(review_approved=True))
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):

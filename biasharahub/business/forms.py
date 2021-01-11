@@ -1,8 +1,6 @@
 from builtins import super
 
-from business.models import Business, BusinessImage, CompanySocialProfile
-from categories.models import Category
-from crispy_forms.bootstrap import StrictButton
+from crispy_forms.bootstrap import InlineRadios, InlineCheckboxes
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Column, Layout, Row, Submit
 from django import forms
@@ -11,23 +9,43 @@ from django.forms import ModelForm
 from django.forms.models import inlineformset_factory
 from django.utils.translation import ugettext_lazy as _
 from haystack.forms import FacetedSearchForm
-from locations.models import Location
 from pagedown.widgets import PagedownWidget
+
+from business.models import Business, BusinessImage, CompanySocialProfile
+from categories.models import Category
+from locations.models import Location
 from reviews.models import RATING_CHOICES
 
 
 class BusinessNameForm(ModelForm):
     name = forms.CharField(disabled=True)
 
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     # self.fields['name']
-    #     self.fields['name'].disabled
-
     class Meta:
         model = Business
         fields = ('name',)
 
+
+class BusinessAddForm(ModelForm):
+    logo = forms.ImageField(label='', required=False, widget=forms.FileInput(attrs={'placeholder': 'your logo'}))
+    description = forms.Field(label='', widget=forms.Textarea(attrs={'placeholder': 'Describe your biashara'}))
+    name = forms.CharField(label='', widget=forms.TextInput(attrs={'placeholder': 'Your biashara name'}))
+    email = forms.EmailField(label='', required=True, widget=forms.TextInput(attrs={'placeholder': 'Email'}))
+
+    class Meta:
+        model = Business
+        fields = (
+            'name', 'logo', 'email', 'description')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            'name',
+            'logo',
+            'email',
+            'description'
+        )
 
 
 class BusinessForm(ModelForm):
@@ -35,11 +53,16 @@ class BusinessForm(ModelForm):
                             widget=forms.ClearableFileInput(attrs={'placeholder': 'Logo',
                                                                    'class': 'btn btn-outline-secondary'}))
     description = forms.CharField(widget=PagedownWidget())
+    location = forms.ModelChoiceField(widget=forms.RadioSelect(), queryset=Location.objects.all(), )
+
+    category = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple()
+                                              , queryset=Category.objects.all(), )
 
     class Meta:
         model = Business
         fields = (
-            'name', 'logo', 'email', 'hide_mail', 'phone', 'hide_phone', 'description', 'website', 'location', 'category', 'address', 'services')
+            'name', 'logo', 'email', 'hide_mail', 'phone', 'hide_phone', 'description', 'website', 'location',
+            'category', 'address', 'services')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -61,6 +84,31 @@ class BusinessForm(ModelForm):
             'website',
             'location',
             'category',
+            'address',
+            'services',
+        )
+
+
+class AddCategoryForm(ModelForm):
+    location = forms.ModelChoiceField(widget=forms.RadioSelect(), required=False, queryset=Location.objects.all(), )
+
+    category = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple(), required=False,
+                                              queryset=Category.objects.all(), )
+
+    class Meta:
+        model = Business
+        fields = ('address', 'location', 'category', 'services')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-lg-2'
+        self.helper.field_class = 'col-lg-8'
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            InlineCheckboxes('category'),
+            InlineRadios('location'),
             'address',
             'services',
         )

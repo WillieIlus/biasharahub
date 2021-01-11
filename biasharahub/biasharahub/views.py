@@ -7,7 +7,9 @@ from django.views.generic import TemplateView
 
 from business.models import Business
 from categories.models import Category
+from comments.forms import CommentForm
 from locations.models import Location
+from reviews.forms import ReviewForm
 from reviews.models import Review
 
 
@@ -18,12 +20,18 @@ class Home(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['business'] = self.model.objects.annotate(avg_reviews=Avg('reviews__rating'), num_reviews=Count('reviews')).order_by(
-            '-num_reviews', '-avg_reviews', 'hit_count', '-publish')[:9]
+        context['business'] = self.model.objects.annotate(avg_reviews=Avg('reviews__rating'),
+                                                          num_reviews=Count('reviews')).order_by('-num_reviews',
+                                                                                                 '-publish',
+                                                                                                 '-avg_reviews',
+                                                                                                 'hit_count')[:15]
         context['location'] = Location.objects.annotate(num_companies=Count('company')).order_by('-num_companies')
         context['category'] = Category.objects.annotate(num_companies=Count('company')).order_by('-num_companies')[:6]
-        context['category_one'] = Category.objects.annotate(num_companies=Count('company')).order_by('-num_companies')[:4]
-        context['review'] = Review.objects.order_by('-publish')[:9]
+        context['category_one'] = Category.objects.annotate(num_companies=Count('company')).order_by('-num_companies')[
+                                  :4]
+        context['review'] = Review.objects.filter(review_approved=True).order_by('-publish')[:12]
+        context['review_form'] = ReviewForm()
+        context['comment_form'] = CommentForm()
 
         return context
 

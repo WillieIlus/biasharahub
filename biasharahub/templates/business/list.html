@@ -87,9 +87,9 @@
                           {% endif %}
                         </div><!-- End atbd listing meta -->
                         {% is_open business as open %}
-                          {% if not open %}
+                        {% if not open %}
                         <div><p class="text-success">Reopening on {% next_time_open business as next %}
-                      {{ next.get_weekday_display|naturaltime }} {{ next.from_hour }}</p></div>
+                          {{ next.get_weekday_display|naturaltime }} {{ next.from_hour }}</p></div>
                         {% endif %}
                         <div class="pull-right">
                           <a href="{{ business.get_absolute_url }}"
@@ -137,11 +137,23 @@
                       </div><!-- end .atbd_content_upper -->
                       <div class="atbd_listing_bottom_content">
                         <div class="atbd_content_left">
+                          {% if business.category %}
                           <div class="atbd_listing_category">
-                            {% if business.category %}
-                            <a href=""><span class="{{ business.category.icon }}"></span>{{ business.category }}</a>
+                            <a href="{{ business.category.first.get_absolute_url }}">
+                              <span class="{{ business.category.first.icon }}"></span>{{ business.category.first.name }}
+                            </a>
+                            {% if business.category.count > 1%}
+                            <div class="atbd_cat_popup">
+                              <span>+{{ business.category.count }} </span>
+                              <div class="atbd_cat_popup_wrapper">
+                                {% for category in business.category.all|slice:"1:" %}
+                                <span><a href="{{ category.get_absolute_url }}">{{ category.name }}</a></span>
+                                {% endfor %}
+                              </div>
+                            </div>
                             {% endif %}
                           </div>
+                          {% endif %}
                         </div>
                         <ul class="atbd_content_right">
                           <li class="atbd_count"><span class="la la-eye"></span>{% get_hit_count for business %}

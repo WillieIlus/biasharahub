@@ -20,7 +20,7 @@ from hitcount.utils import get_hitcount_model
 from hitcount.views import HitCountMixin
 from reviews.forms import ReviewForm
 from .forms import BusinessForm, BusinessSearchForm, \
-    SocialProfileFormSet, BusinessPhotoForm, BusinessNameForm
+    SocialProfileFormSet, BusinessPhotoForm, BusinessNameForm, AddCategoryForm, BusinessAddForm
 
 
 def autocomplete(request):
@@ -42,7 +42,12 @@ class FacetedSearchView(BaseFacetedSearchView):
     facet_fields = ['category', 'location']
     template_name = 'business/search_result.html'
     paginate_by = 10
-    context_object_name = 'object_list'
+    # context_object_name = 'business'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['review_form'] = ReviewForm()
+        return context
 
 
 class BusinessList(ListView):
@@ -54,36 +59,26 @@ class BusinessList(ListView):
         return Business.objects.annotate(avg_reviews=Avg('reviews__rating'), num_reviews=Count('reviews')).order_by(
             '-num_reviews', '-avg_reviews', 'hit_count', '-publish')
 
-
-class BusinessCreate(LoginRequiredMixin, CreateView):
-    model = Business
-    form_class = BusinessForm
-    template_name = 'business/form.html'
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.request.POST:
-            context['social_form'] = SocialProfileFormSet(self.request.POST)
-
-        else:
-            context['social_form'] = SocialProfileFormSet()
+        context['review_form'] = ReviewForm()
 
         return context
 
+
+class BusinessCreate(LoginRequiredMixin, CreateView):
+    model = Business
+    form_class = BusinessAddForm
+    template_name = 'business/form.html'
+
     def form_valid(self, form):
         form.instance.user = self.request.user
-        form.save()
+        # form.save()
+        messages.success(self.request,
+                         'Awesome! you have successfully created your biashara, '
+                         'you can now see how great it is. You can update it to give your clients more info.')
 
-        context = self.get_context_data(form=form)
-        social_form = context['social_form']
-
-        if social_form.is_valid():
-            response = super().form_valid(form)
-            social_form.instance = self.object
-            social_form.save()
-            return response
-        else:
-            return super().form_invalid(form)
+        return super().form_valid(form)
 
 
 class BusinessEdit(LoginRequiredMixin, UserRequiredMixin, UpdateView):
@@ -111,6 +106,12 @@ class BusinessEdit(LoginRequiredMixin, UserRequiredMixin, UpdateView):
             return response
         else:
             return super().form_invalid(form)
+
+
+class AddCategory(LoginRequiredMixin, UserRequiredMixin, UpdateView):
+    model = Business
+    form_class = AddCategoryForm
+    template_name = 'business/form.html'
 
 
 class BusinessSocialProfile(LoginRequiredMixin, UserRequiredMixin, UpdateView):
@@ -153,40 +154,6 @@ class BusinessSocialProfile(LoginRequiredMixin, UserRequiredMixin, UpdateView):
 BusinessPhotoFormSet = inlineformset_factory(Business, BusinessImage, form=BusinessPhotoForm, extra=6, max_num=12,
                                              can_delete=True)
 
-
-#
-# class ManagePhoto(LoginRequiredMixin, UpdateView):
-#     model = Business
-#     form_class = BusinessNameForm
-#     template_name = 'business/formset.html'
-#     success_message = "created successfully"
-#
-#     # def get_object(self):  # and you have to override a get_object method
-#     #     return get_object_or_404(Business, slug=self.request.GET.get('slug'))
-#
-#     def get_success_url(self):
-#         return reverse('business:detail', kwargs={'slug': self.object.slug})
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         if self.request.POST:
-#             context['photo_formset'] = BusinessPhotoFormSet(instance=self.object, data=self.request.POST, files=self.request.FILES)
-#             context['photo_formset'].full_clean()
-#         else:
-#             context['photo_formset'] = BusinessPhotoFormSet(instance=self.object)
-#         return context
-#
-#     def form_valid(self, form):
-#         context = self.get_context_data(form=form)
-#         formset = context['photo_formset']
-#         if formset.is_valid():
-#             response = super().form_valid(self.request.FILES)
-#             formset.instance = self.object
-#             formset.save()
-#             return response
-#         else:
-#             return super().form_invalid(form)
-#
 
 @login_required
 def add_photos(request, slug):
@@ -245,8 +212,6 @@ class BusinessDetail(SingleObjectMixin, HitCountMixin, ListView):
             context['hitcount']['total_hits'] = hits
 
         return context
-
-
 
 
 class PhotoGallery(DetailView):

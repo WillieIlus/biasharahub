@@ -1,0 +1,18 @@
+{% load crispy_forms_tags %}
+{% if request.user != business.user %}
+<div class="atbd_single_review atbdp_static">
+  <div class="review_content">
+    <a class="review-reply badge badge-pill badge-light " href="#">
+      Add a review</a>
+  </div>
+  <div class="review_reply_custom_form">
+    <form action="{% url 'reviews:new' business.slug %}"
+          enctype="multipart/form-data" id="atbdp_review_form" method="post">
+      {% csrf_token %}
+      <input name='parent_id' type='hidden' value='{{ comment.id }}'>
+      {% crispy review_form %}
+    </form>
+  </div>
+</div>
+{% endif %}
+
