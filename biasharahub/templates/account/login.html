@@ -11,7 +11,6 @@
 {% block breadcrumb %}
 {% endblock  %}
 
-
 {% block content %}
 
 
@@ -27,18 +26,20 @@
                 </button>
             </div>
             <div class="modal-body">
+              {% comment %}
                     <form class="login-form" method='POST' action='' enctype='multipart/form-data' novalidate>
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ next }}">
         {% crispy form %}
     </form>
+              {% endcomment %}
                 <div class="form-excerpts">
                     <ul class="list-unstyled">
                         <li>Not a member? <a href="{% url 'account_signup' %}">Sign Up</a></li>
                         <li><a href="{% url 'account_reset_password' %}">Recover Password</a></li>
                     </ul>
                     <div class="social-login">
-                        <span>Signup With</span>
+                        <span>Login With</span>
                         <p><a class="btn btn-outline-secondary"
                   href="{% provider_login_url 'facebook' method='oauth2' %}"><i class="fab fa-facebook-f"></i> Facebook</a>
               <a class="btn btn-outline-danger"

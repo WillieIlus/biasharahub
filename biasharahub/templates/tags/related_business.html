@@ -40,9 +40,9 @@
                   {% endif %}
                   {% if obj.category %}
                   <p class="directory_tag">
-                    <span aria-hidden="true" class="{{ obj.category.icon }}"></span>
+                    <span aria-hidden="true" class="{{ obj.category.first.icon }}"></span>
                     <span>
-                      <a href="">{{ obj.category }}</a>
+                      <a href="">{{ obj.category.first.name }}</a>
                     </span>
                   </p>
                   {% endif %}

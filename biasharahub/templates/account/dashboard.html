@@ -151,7 +151,7 @@
                       {% if business.category %}
                       <div class="atbd_listing_category">
                         <a href="{{ business.category.get_absolute_url }}">
-                          <span class="{{ business.category.icon }}"></span>{{ business.category }}
+                          <span class="{{ business.category.first.icon }}"></span>{{ business.category.first.name }}
                         </a>
                       </div>
                       {% endif %}

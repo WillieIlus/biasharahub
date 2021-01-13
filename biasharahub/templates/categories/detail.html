@@ -41,7 +41,7 @@
             </div>
                       <div class="atbd_listing_bottom_content">
                         <h5>Top {{ category.company.count }} biasharas added in {{ category.name }} category</h5>
-             <a class="btn btn-primary" href="{% url 'categories:add-business' slug=category.slug %}">
+             <a class="btn btn-primary" href="{% url 'business:new' %}">
               <span class="la la-plus"></span>Add yours</a>
           </div>
           </div>
