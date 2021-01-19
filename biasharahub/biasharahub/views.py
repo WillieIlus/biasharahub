@@ -21,7 +21,8 @@ class Home(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['business'] = self.model.objects.annotate(avg_reviews=Avg('reviews__rating'),
-                                                          num_reviews=Count('reviews')).order_by('photos',
+                                                          num_reviews=Count('reviews'),
+                                                          num_photos=Count('photos')).order_by('-num_photos',
                                                                                                  '-publish',
                                                                                                  '-num_reviews',
                                                                                                  '-avg_reviews',

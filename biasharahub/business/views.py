@@ -57,7 +57,9 @@ class BusinessList(ListView):
     template_name = 'business/list.html'
 
     def get_queryset(self):
-        return Business.objects.annotate(avg_reviews=Avg('reviews__rating'), num_reviews=Count('reviews')).order_by('-photos',
+        return Business.objects.annotate(avg_reviews=Avg('reviews__rating'),
+                                         num_reviews=Count('reviews'),
+                                         num_photos=Count('photos')).order_by('-num_photos',
                                                                               '-publish',
                                                                               '-num_reviews', '-avg_reviews',
                                                                               'hit_count', )
