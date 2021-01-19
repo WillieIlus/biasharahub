@@ -42,6 +42,7 @@ class FacetedSearchView(BaseFacetedSearchView):
     facet_fields = ['category', 'location']
     template_name = 'business/search_result.html'
     paginate_by = 10
+
     # context_object_name = 'business'
 
     def get_context_data(self, **kwargs):
@@ -51,13 +52,15 @@ class FacetedSearchView(BaseFacetedSearchView):
 
 
 class BusinessList(ListView):
-    paginate_by = 10
+    paginate_by = 20
     context_object_name = "business"
     template_name = 'business/list.html'
 
     def get_queryset(self):
-        return Business.objects.annotate(avg_reviews=Avg('reviews__rating'), num_reviews=Count('reviews')).order_by(
-            '-num_reviews', '-avg_reviews', 'hit_count', '-publish')
+        return Business.objects.annotate(avg_reviews=Avg('reviews__rating'), num_reviews=Count('reviews')).order_by('-photos',
+                                                                              '-publish',
+                                                                              '-num_reviews', '-avg_reviews',
+                                                                              'hit_count', )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
