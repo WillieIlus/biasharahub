@@ -2,10 +2,25 @@
 {% load staticfiles %}
 {% load crispy_forms_tags %}
 
+{% block head %}
+
+  <meta content=" {{ photo.name }} gallery "
+        name="description">
+  <meta content="{% for photo in photo.photos.all %}  {{ photo.alt }}, {% endfor %}" name="keywords">
+  <meta content="BiasharaHub" name="author">
+
+{% endblock %}
+
+
+{% block stylesheet %}
+    <link href="{% static 'css/gallery.css' %}" rel="stylesheet">
+{% endblock stylesheet %}
+
 {% block title %}  {{ photo.name }} gallery  | {{ block.super }} {% endblock %}
 
 {% block bg-image-holder %}
-<div class="bg_image_holder"><img alt="" src='{% static "img/breadcrumb1.jpg" %}'></div>
+<div class="bg_image_holder"><img alt="" src='{% if photo.photos.all %}  {{ photo.photos.first.img.url }}
+{% else %} {% static "img/breadcrumb1.jpg" %} {% endif %}'></div>
 {% endblock %}
 
 {% block page-title %}
@@ -24,7 +39,7 @@
         <ul class="gallery_box">
           {% for photo in photo.photos.all %}
           <li>
-            <a href="#0"><img class="img-fluid w-100" src="{{ photo.img.url }}">
+            <a href="#0"><img class="" src="{{ photo.img.url }}">
               <div class="box_data">
                 <span>{{ photo.alt }}</span>
               </div>
@@ -38,7 +53,5 @@
 </section>
 {% endblock content %}
 
-{% block stylesheet %}
-  <link href="{% static 'css/gallery.css' %}" rel="stylesheet">
-{% endblock stylesheet %}
+
 

@@ -4,6 +4,15 @@
 {% load social_share %}
 {% load biasharahub %}
 
+{% block head %}
+{{ review.get_meta_description|truncatechars:254 }}
+  <meta content=" Business,online, directory, biashara, money, opportunity, google my business, business news, income,
+  small business ideas, small business, online business, starting a business, business proposal, business times "
+        name="keywords">
+{{ review.get_meta_author }}
+{{ review.get_meta_copyright }}
+{% endblock %}
+
 {% block title %} {% if review.anonymous %} Anonymous {% else %} {{ review.user.first_name|capfirst }} {% endif %}wrote a review | {{ block.super }} {% endblock %}
 
 {% block bg-image-holder %}

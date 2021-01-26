@@ -191,10 +191,12 @@ class BusinessSearchForm(FacetedSearchForm):
         data = dict(kwargs.get("data", []))
         self.category = data.get('category', [])
         self.location = data.get('location', [])
+        # self.location = data.get('address', [])
+        # self.location = data.get('services', [])
         super(BusinessSearchForm, self).__init__(*args, **kwargs)
 
     def search(self):
-        sqs = super().search()
+        sqs = super(BusinessSearchForm, self).search()
         if self.category:
             query = None
             for category in self.category:
@@ -213,4 +215,22 @@ class BusinessSearchForm(FacetedSearchForm):
                     query = u''
                 query += u'"%s"' % sqs.query.clean(location)
             sqs = sqs.narrow(u'location_exact:%s' % query)
+        # if self.address:
+        #     query = None
+        #     for address in self.address:
+        #         if query:
+        #             query += u' OR '
+        #         else:
+        #             query = u''
+        #         query += u'"%s"' % sqs.query.clean(address)
+        #     sqs = sqs.narrow(u'location_exact:%s' % query)
+        # if self.services:
+        #     query = None
+        #     for services in self.services:
+        #         if query:
+        #             query += u' OR '
+        #         else:
+        #             query = u''
+        #         query += u'"%s"' % sqs.query.clean(services)
+        #     sqs = sqs.narrow(u'location_exact:%s' % query)
         return sqs

@@ -6,6 +6,15 @@
 {% load hitcount_tags %}
 {% load openinghours_tags %}
 
+{% block head %}
+  <meta content="Top {{ location.company.count }} biasharas added in {{ location.name }} "
+        name="description">
+
+<meta content=" Business,online, directory, biashara, money, opportunity, google my business, "  name="keywords">
+
+{{ business.get_meta_author }}
+{{ business.get_meta_copyright }}
+{% endblock %}
 
 {% block title %}  {{ location.name }}  | {{ block.super }} {% endblock %}
 

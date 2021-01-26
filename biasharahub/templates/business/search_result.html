@@ -31,7 +31,9 @@
         <div class="atbd_generic_header">
           <div class="atbd_generic_header_title">
             <h4>All Items</h4>
-            <p>Total Biasharas Found: {{ page_obj.paginator.count }} with the term {{ query }}</p>
+            <p>Total Biasharas Found: {{ page_obj.paginator.count }} with the term {{ query }}
+              on page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </p>
           </div><!-- ends: .atbd_generic_header_title -->
           <div class="atbd_listing_action_btn btn-toolbar align-items-center" role="toolbar">
             <!-- Views dropdown -->
@@ -144,13 +146,15 @@
                           {% if business.category %}
                           <div class="atbd_listing_category">
                             <a href="{{ business.category.first.get_absolute_url }}">
-                              <span class="{{ business.category.first.icon }}"></span>{{ business.object.category.first }}
+                              <span class="{{ business.category.first.icon }}"></span>{{ business.object.category.first
+                              }}
                             </a>
                           </div>
                           {% endif %}
                         </div>
                         <ul class="atbd_content_right">
-                          <li class="atbd_count"><span class="la la-eye"></span>{% get_hit_count for business.object %}</li>
+                          <li class="atbd_count"><span class="la la-eye"></span>{% get_hit_count for business.object %}
+                          </li>
                           <li class="atbd_save">
                             <span class="la la-heart-o"></span>
                           </li>
@@ -203,5 +207,5 @@
   </div>
 </section><!-- ends: .all-listing-wrapper -->
 
+
 {% endblock %}
-    

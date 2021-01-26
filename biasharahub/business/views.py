@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Count, Avg
+from django.db.models import Q, Count, Avg
 from django.forms.models import inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
@@ -23,6 +23,7 @@ from .forms import BusinessForm, BusinessSearchForm, \
     SocialProfileFormSet, BusinessPhotoForm, BusinessNameForm, AddCategoryForm, BusinessAddForm
 
 
+
 def autocomplete(request):
     sqs = SearchQuerySet().autocomplete(
         content_auto=request.GET.get(
@@ -39,11 +40,10 @@ def autocomplete(request):
 
 class FacetedSearchView(BaseFacetedSearchView):
     form_class = BusinessSearchForm
-    facet_fields = ['category', 'location']
+    facet_fields = ['category', 'location']#, 'address', 'services']
     template_name = 'business/search_result.html'
-    paginate_by = 10
-
-    # context_object_name = 'business'
+    paginate_by = 20
+    # context_object_name = 'business' #I'm coming for you
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -57,12 +57,21 @@ class BusinessList(ListView):
     template_name = 'business/list.html'
 
     def get_queryset(self):
-        return Business.objects.annotate(avg_reviews=Avg('reviews__rating'),
-                                         num_reviews=Count('reviews'),
-                                         num_photos=Count('photos')).order_by('-num_photos',
-                                                                              '-publish',
-                                                                              '-num_reviews', '-avg_reviews',
-                                                                              'hit_count', )
+        query = self.request.GET.get('q')
+        if query == None:
+            qs = Business.objects.annotate(
+                avg_reviews=Avg('reviews__rating'), num_reviews=Count('reviews')).order_by(
+                '-publish', '-num_reviews', '-avg_reviews', 'hit_count', )
+        else:
+            qs = Business.objects.filter(
+                Q(category__name__icontains=query) | Q(location__name__icontains=query))
+
+        return qs
+
+        # def get_queryset(self):
+        #     qs = Business.objects.filter(
+        #         Q(category='printing') & Q(location='nairobi')
+        #     return qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

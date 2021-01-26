@@ -5,6 +5,17 @@
 {% load hitcount_tags %}
 {% load openinghours_tags %}
 
+{% block head %}
+  <meta content="Top {{ category.company.count }} biasharas added in {{ category.name }} category">
+
+<meta content=" Business,online, directory, biashara, money,  google my business, business news, income,
+  small business ideas, small business, online business "
+        name="keywords">
+
+{{ cateogy.get_meta_author }}
+{{ cateogy.get_meta_copyright }}
+{% endblock %}
+
 
 {% block title %}  {{ category.name }}  | {{ block.super }} {% endblock %}
 

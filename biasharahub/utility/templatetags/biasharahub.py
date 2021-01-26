@@ -80,6 +80,12 @@ def get_popular_reviews(number=5):
     return {'popular_reviews': Review.objects.order_by('-comments')[:number]}
 
 
+# num_votes = Count('votes'),
+# num_comments = Count('comments')).order_by('-num_votes',
+# '-num_comments',
+# '-publish')[: 12]
+
+
 # @register.inclusion_tag('tags/related_business.html')
 # def get_related_business(number=5):
 #     return {'related_business': Business.objects.all()[:number]}

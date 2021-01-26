@@ -14,8 +14,6 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from biasharahub.views import Home, NewsletterView
-from business.sitemaps import BusinessSitemap
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -23,13 +21,24 @@ from django.contrib.flatpages.views import flatpage
 from django.contrib.sitemaps.views import index, sitemap
 from django.urls import path, include, re_path
 from django.views.static import serve
+
+from biasharahub.views import Home, NewsletterView
+from business.sitemaps import BusinessSitemap
 from reviews.sitemaps import ReviewSitemap
+from accounts.sitemaps import AccountsSitemap
+from categories.sitemaps import CategorySitemap
+from locations.sitemaps import LocationSitemap
+
 
 sitemaps = {
     'business': BusinessSitemap,
     'review': ReviewSitemap,
+    'account': AccountsSitemap,
+    'category': CategorySitemap,
+    'location': LocationSitemap,
 
 }
+
 urlpatterns = [
                   path('admin/', admin.site.urls),
                   path('', Home.as_view(), name='home'),
@@ -47,6 +56,7 @@ urlpatterns = [
                   path('about-us/', flatpage, {'url': '/about-us/'}, name='about'),
                   path('contact-us/', flatpage, {'url': '/contact-us/'}, name='contact'),
                   path('policy/', flatpage, {'url': '/policy/'}, name='policy'),
+                  # path('search', include('haystack.urls')),
 
                   path('sitemap.xml', index, {'sitemaps': sitemaps}),
                   path('sitemap-<section>.xml', sitemap, {'sitemaps': sitemaps},

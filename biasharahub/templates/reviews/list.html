@@ -4,6 +4,16 @@
 {% load biasharahub %}
 
 
+{% block head %}
+
+  <meta content=" popular reviews are {% for review in review|slice:'9' %},  {{ review.name }}
+    {% endfor %} "
+        name="description">
+  <meta content="{% for review in review|slice:'9' %},  {{ review.name }} {% endfor %}" name="keywords">
+  <meta content="BiasharaHub" name="author">
+
+{% endblock %}
+
 {% block title %}  Review List  | {{ block.super }} {% endblock %}
 
 {% block bg-image-holder %}

@@ -1,14 +1,14 @@
 from django.contrib.sitemaps import Sitemap
 
-from .models import Review
+from .models import Category
 
 
-class ReviewSitemap(Sitemap):
+class CategorySitemap(Sitemap):
     changefreq = 'daily'
-    priority = 0.8
+    priority = 0.7
 
     def items(self):
-        return Review.objects.all()
+        return Category.objects.all()
 
     def lastmod(self, obj):
         return obj.publish

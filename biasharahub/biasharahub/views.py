@@ -20,13 +20,12 @@ class Home(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['business'] = self.model.objects.annotate(avg_reviews=Avg('reviews__rating'),
-                                                          num_reviews=Count('reviews'),
-                                                          num_photos=Count('photos')).order_by('-num_photos',
-                                                                                                 '-publish',
-                                                                                                 '-num_reviews',
-                                                                                                 '-avg_reviews',
-                                                                                                 'hit_count')[:15]
+        context['business'] = self.model.objects.exclude(photos__isnull=True).annotate(
+            avg_reviews=Avg('reviews__rating'),
+            num_reviews=Count('reviews')).order_by('-publish',
+                                                   '-num_reviews',
+                                                   '-avg_reviews',
+                                                   'hit_count')[:15]
         context['location'] = Location.objects.annotate(num_companies=Count('company')).order_by('-num_companies')
         context['category'] = Category.objects.annotate(num_companies=Count('company')).order_by('-num_companies')[:6]
         context['category_one'] = Category.objects.annotate(num_companies=Count('company')).order_by('-num_companies')[

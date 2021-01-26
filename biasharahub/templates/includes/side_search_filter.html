@@ -1,10 +1,11 @@
 <div class="col-lg-4 order-1 order-lg-0 mt-5 mt-lg-0">
   <div class="listings-sidebar">
     <div class="search-area default-ad-search">
-      <form action="." class="search-form-container" method="get">
+      <form action="business/" class="search-form-container" method="get">
         <div class="form-group">
-          <input autocomplete="off" class="form-control" class="form-control" id="q" name="q"
-                 placeholder="What are you looking for?">
+          <input autocomplete="off" class="form-control" id="q"
+                                 name="q" placeholder="search for biashara?" type="text">
+                          <div id="selction-ajax"></div>
         </div><!-- ends: .form-group -->
         {% if facets.fields.category %}
         <div class="filter-checklist">
@@ -46,3 +47,69 @@
     </div><!-- ends: .default-ad-search -->
   </div>
 </div><!-- ends: .col-lg-4 -->
+
+{% if query %}
+    <!-- Begin faceting. -->
+    <h2>By category</h2>
+
+    <div>
+        <dl>
+            {% if facets.fields.category %}
+                <dt>category</dt>
+                {# Provide only the top 5 categories #}
+                {% for category in facets.fields.category|slice:":5" %}
+                    <dd><a href="{{ request.get_full_path }}&amp;selected_facets=category_exact:{{ category.0|urlencode }}">{{ category.0 }}</a> ({{ category.1 }})</dd>
+                {% endfor %}
+            {% else %}
+                <p>No category facets.</p>
+            {% endif %}
+        </dl>
+    </div>
+    <!-- End faceting -->
+{% endif %}
+
+<!--<div class="container">-->
+  <!--<div class="row">-->
+    <!--{% if page_obj.object_list %}-->
+    <!--<div class="col-md-3">-->
+      <!--<h3>Filters</h3>-->
+      <!--<dl>-->
+        <!--{% if facets.fields.category %}-->
+        <!--<dt>Filter by Category</dt>-->
+        <!--{% for category in facets.fields.category %}-->
+        <!--{% if category.1 != 0 %}-->
+        <!--<dd>-->
+          <!--<input class="facet" id="{{category.0|cut:" "}}" type="checkbox" name="category" value="{{ category.0 }}"-->
+          <!--data-toggle="toggle" /> {{ category.0 }} ({{ category.1 }})-->
+        <!--</dd>-->
+        <!--{% endif %}-->
+        <!--{% endfor %}-->
+        <!--{% endif %}-->
+      <!--</dl>-->
+      <!--<div>-->
+        <!--<input class="btn btn-info btn-sm pull-right" type="submit" value="apply filter"-->
+               <!--onclick="return onFacetChangeApplied();"/>-->
+      <!--</div>-->
+      <!--<dl>-->
+
+        <!--{% if facets.fields.location %}-->
+        <!--<dt>Filter by location</dt>-->
+        <!--{% for location in facets.fields.location %}-->
+        <!--{% if location.1 != 0 %}-->
+        <!--<dd>-->
+          <!--<input class="facet" id="{{location.0|cut:" "}}" type="checkbox" name="location" value="{{ location.0 }}" /> {{ location.0-->
+          <!--}} ({{ location.1 }})-->
+        <!--</dd>-->
+        <!--{% endif %}-->
+        <!--{% endfor %}-->
+        <!--{% endif %}-->
+      <!--</dl>-->
+      <!--<div>-->
+        <!--<input class="btn btn-info btn-sm pull-right" type="submit" value="apply filter"-->
+               <!--onclick="return onFacetChangeApplied();"/>-->
+
+      <!--</div>-->
+    <!--</div>-->
+    <!--{% endif %}-->
+  <!--</div>-->
+<!--</div>-->

@@ -3,9 +3,12 @@ from statistics import mean
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
+from django.db.models.signals import pre_save
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
+
+from utility.models import MetaTagsMixin
 
 
 class MyUserManager(BaseUserManager):
@@ -38,7 +41,7 @@ class MyUserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin, MetaTagsMixin):
     email = models.EmailField(unique=True, null=True)
     first_name = models.CharField('first name', max_length=30, blank=True)
     last_name = models.CharField('last name', max_length=150, blank=True)
@@ -92,6 +95,26 @@ class User(AbstractBaseUser, PermissionsMixin):
             return float('nan');
         else:
             return mean(all_ratings)
+
+
+def pre_save_account_receiver(sender, instance, *args, **kwargs):
+    # if not instance.slug:
+    #     instance.slug = create_slug(instance)
+    if not instance.meta_description:
+        if instance.bio:
+            instance.meta_description = instance.bio
+    if not instance.meta_author:
+        if instance.first_name:
+            instance.meta_author = instance.first_name
+            instance.meta_copyright = instance.first_name
+        else:
+            instance.meta_author = instance.user
+    if not instance.meta_keywords:
+        if instance.first_name:
+            instance.meta_keywords = instance.first_name
+
+
+pre_save.connect(pre_save_account_receiver, sender=User)
 
 
 class Network(models.Model):

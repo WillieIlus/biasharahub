@@ -2,6 +2,18 @@
 {% load staticfiles %}
 {% load crispy_forms_tags %}
 
+
+{% block head %}
+
+  <meta content=" popular locations are {% for location in location|slice:'9' %},  {{ location.name }}
+    {% endfor %} "
+        name="description">
+  <meta content="{% for location in location|slice:'9' %},  {{ location.name }} {% endfor %}" name="keywords">
+  <meta content="BiasharaHub" name="author">
+
+{% endblock %}
+
+
 {% block title %}  Locations  | {{ block.super }} {% endblock %}
 
 {% block bg-image-holder %}

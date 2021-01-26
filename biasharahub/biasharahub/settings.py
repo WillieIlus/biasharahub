@@ -65,7 +65,6 @@ INSTALLED_APPS = [
     'utility',
 ]
 
-
 SITE_ID = 1
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
@@ -168,9 +167,27 @@ AUTHENTICATION_BACKENDS = [
     'guardian.backends.ObjectPermissionBackend',
 ]
 
+
+# HAYSTACK_CONNECTIONS = {
+#     'default': {
+#         'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
+#     },
+# }
+
 HAYSTACK_CONNECTIONS = {
+    # 'db': {
+    #     'ENGINE': 'haystack.backends.elasticsearch2_backend.Elasticsearch2SearchEngine',
+    #     'URL': 'http://127.0.0.1:9200/',
+    #     'INDEX_NAME': 'haystack',
+    # },
+    # 'elasticsearch': {
+    #     'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+    #     'URL': 'http://127.0.0.1:9200/',
+    #     'INDEX_NAME': 'haystack',
+    # },
     'default': {
         'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
+        'EXCLUDED_INDEXES': ['thirdpartyapp.search_indexes.BarIndex'],
     },
 }
 
@@ -249,11 +266,11 @@ TEMPLATE_DIRS = (os.path.join(BASE_DIR, "templates"),)
 # http://whitenoise.evans.io/en/stable/#quickstart-for-django-apps
 # STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+
 if os.environ.get("CAPROVER") is None:
     from .settings_dev import *
 else:
     from .settings_cap import *
-
 
 # if os.environ.get("CAPROVER") is None:
 #     from .settings_dev import *
@@ -268,4 +285,3 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 HITCOUNT_KEEP_HIT_ACTIVE = {'seconds': 10800}
 HITCOUNT_HITS_PER_IP_LIMIT = 0  # unlimited
 HITCOUNT_EXCLUDE_USER_GROUP = ()  # not used
-

@@ -87,70 +87,6 @@ class Business(Common, UrlMixin, MetaTagsMixin, HitCountMixin):
     def featured_image(self):
         return self.photos.all().first()
 
-    # @cached_property
-    # def closed_hours(self):
-    #     now = timezone.now()
-    #     closed_hours = self.opening_hours.all().filter(start__gte=now, end__lte=now, weekday=now.isoweekday)
-    #     return closed_hours
-    #
-    # @cached_property
-    # def closed_days(self):
-    #     now = timezone.now()
-    #     closed = self.opening_hours.all().filter(closed=True, weekday=now.isoweekday)
-    #     return closed
-    #
-    # @cached_property
-    # def is_closed_for_now(self):
-    #     cfn = self.closed_days or self.closed_hours
-    #     return cfn.count()
-    #
-    # def is_open(self):
-    #     now = datetime.datetime.now()
-    #     # for open in self.opening_hours.all().filter(start__lte=now, end__gte=now, weekday=now.isoweekday):
-    #     #     if open:
-    #     #         return True
-    #     is_open = self.opening_hours.all().filter(start__lte=now, end__gte=now, weekday=now.isoweekday)
-    #     if is_open:
-    #         return True
-    #     else:
-    #         return False
-    #
-    # @cached_property
-    # def is_open_now(self):
-    #     now = timezone.now()
-    #     if self.is_closed_for_now:
-    #         return False
-    #
-    #     now_time = datetime.time(now.hour, now.minute, now.second)
-    #     # now_time = datetime.time()
-    #     #
-    #     ohs = self.opening_hours.all()
-    #     for oh in ohs:
-    #         is_open = False
-    #         # start and end is on the same day
-    #         if (oh.weekday == now.isoweekday() and oh.start <= now_time and now_time <= oh.end):
-    #             is_open = oh
-    #
-    #         # start and end are not on the same day and we test on the start day
-    #         if (oh.weekday == now.isoweekday() and
-    #                 oh.start <= now_time and
-    #                 ((oh.end < oh.start) and
-    #                  (now_time < datetime.time(23, 59, 59)))):
-    #             is_open = oh
-    #
-    #         # start and end are not on the same day and we test on the end day
-    #         if (oh.weekday == (now.isoweekday() - 1) % 7 and
-    #                 oh.start >= now_time and
-    #                 oh.end >= now_time and
-    #                 oh.end < oh.start):
-    #             is_open = oh
-    #             # print " 'Special' case after midnight", oh
-    #
-    #         if is_open is not False:
-    #             return oh
-    #     return False
-    #
-
 
 def pre_save_business_receiver(sender, instance, *args, **kwargs):
     # if not instance.slug:
@@ -165,8 +101,8 @@ def pre_save_business_receiver(sender, instance, *args, **kwargs):
         else:
             instance.meta_author = instance.user
     if not instance.meta_keywords:
-        if instance.name:
-            instance.meta_keywords = instance.name
+        if instance.services:
+            instance.meta_keywords = instance.services
 
 
 pre_save.connect(pre_save_business_receiver, sender=Business)

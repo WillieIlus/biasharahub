@@ -67,10 +67,11 @@
                   <div class="nav_right_module search_module">
                     <span class="icon-left" id="basic-addon9"><i class="la la-search"></i></span>
                     <div class="search_area">
-                      <form action="/">
+                      <form action="/business" class="search_form" method="get">
                         <div class="input-group input-group-light">
-                          <input autocomplete="off" class="form-control search_field top-search-field"
-                                 placeholder="What are you looking for?" type="text">
+                          <input autocomplete="off" class="form-control" id="q"
+                                 name="q" placeholder="search for biashara?" type="text">
+                          <div id="selction-ajax"></div>
                         </div>
                       </form>
                     </div>

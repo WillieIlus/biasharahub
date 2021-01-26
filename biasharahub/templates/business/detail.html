@@ -6,9 +6,14 @@
 {% load biasharahub %}
 {% load social_share %}
 {% load hitcount_tags %}
+{% load tz %}
 {% block head %}
 {{ business.get_meta_description|truncatechars:254 }}
-{{ business.get_meta_keywords }}
+
+<meta content=" Business,online, directory, biashara, money, opportunity, google my business, business news, income,
+  {{ business.services.all|join:', ' }} "
+        name="keywords">
+
 {{ business.get_meta_author }}
 {{ business.get_meta_copyright }}
 {% endblock %}
@@ -81,7 +86,7 @@
             <li>
               <div class="atbd_listing_category">
                 <a href="{{ business.category.first.get_absolute_url }}">
-                  <span class="{{ business.category.icon }}"></span>{{ business.category.first }}</a>
+                  <span class="{{ business.category.first.icon }}"></span>{{ business.category.first }}</a>
               </div>
             </li>
             {% endif %}
@@ -436,7 +441,7 @@
                         {{ review.user.first_name|capfirst }}
                         {% endif %}
                         wrote a review</p>
-                      <span class="review_time">{{ review.publish|timesince }} ago</span>
+                      <span class="review_time">{{ review.publish|localtime|timesince }} ago</span>
                     </div>
                   </div>
                   <div class="atbd_rated_stars">
@@ -501,7 +506,7 @@
                         </div>
                         <div class="atbd_name_time">
                           <p>{{ comment.user }}</p>
-                          <span class="review_time">{{ comment.publish|timesince}} ago</span>
+                          <span class="review_time">{{ comment.publish|localtime|timesince}} ago</span>
                         </div>
                       </div>
                     </div>
@@ -535,7 +540,7 @@
                             </div>
                             <div class="atbd_name_time">
                               <p>{{ reply.user }}</p>
-                              <span class="review_time">{{ reply.publish|timesince}} ago</span>
+                              <span class="review_time">{{ reply.publish|localtime|timesince}} ago</span>
                             </div>
                           </div>
                         </div>
@@ -616,7 +621,7 @@
                 <h4>{% if not business.user.get_full_name %}
                   {{ business.user.username }} {% else %}
                   {{ business.user.get_full_name }} {% endif %} </h4>
-                <span class="review_time">Added {{ business.publish.date|timesince }} ago</span>
+                <span class="review_time">Added {{ business.publish|localtime|timesince }} ago</span>
               </div>
             </div><!-- ends: .atbd_avatar_wrapper -->
             <div class="atbd_widget_contact_info">

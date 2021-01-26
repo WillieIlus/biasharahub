@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count
 from django.views.generic import ListView, CreateView, UpdateView
-from django.views.generic.detail import SingleObjectMixin
+from django.views.generic.detail import SingleObjectMixin, DetailView
 
 from locations.models import Location
 
@@ -25,6 +25,8 @@ class LocationDetail(SingleObjectMixin, ListView):  # this is equivalent to Deta
 
     def get_queryset(self):
         return self.object.company.all()
+
+
 
 
 class LocationCreate(LoginRequiredMixin, CreateView):

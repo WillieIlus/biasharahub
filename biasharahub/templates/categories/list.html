@@ -2,6 +2,17 @@
 {% load staticfiles %}
 {% load crispy_forms_tags %}
 
+
+{% block head %}
+
+  <meta content=" popular categories are {% for category in category|slice:'9' %},  {{ category.name }}
+    {% endfor %} "
+        name="description">
+  <meta content="{% for category in category|slice:'9' %},  {{ category.name }} {% endfor %}" name="keywords">
+  <meta content="BiasharaHub" name="author">
+
+{% endblock %}
+
 {% block title %}  Categories  | {{ block.super }} {% endblock %}
 
 {% block stylesheet %}
@@ -14,8 +25,6 @@
         height: 100%;
         object-fit: cover;
       }
-
-
 </style>
 {% endblock %}
 
@@ -29,8 +38,8 @@
 {% endblock %}
 
 {% block breadcrumb_item %}
-<li class="breadcrumb-item"><a href='{% url "categories:new" %}'><i class="fa fa-plus"></i>New</a></li>
-<li aria-current="page" class="breadcrumb-item active">All Categories</li>
+<li class="breadcrumb-item"><a href='{% url "categories:new" %}'><i class="fa fa-plus"></i> New</a></li>
+<li aria-current="page" class="breadcrumb-item active"> All Categories</li>
 {% endblock %}
 
 {% block content %}

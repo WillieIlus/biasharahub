@@ -3,6 +3,13 @@
 {% load crispy_forms_tags %}
 {% load hitcount_tags %}
 
+{% block head %}
+{{ user.get_meta_description|truncatechars:254 }}
+{{ user.get_meta_keywords }}
+{{ user.get_meta_author }}
+{{ user.get_meta_copyright }}
+{% endblock %}
+
 {% block title %}  {{ user.get_short_name }}  | {{ block.super }} {% endblock %}
 
 {% block bg-image-holder %}

@@ -1,6 +1,7 @@
 from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.db.models.signals import pre_save
 from django.urls import reverse
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
@@ -10,7 +11,7 @@ from accounts.models import User
 from comments.models import Comment
 from favourites.models import Vote
 from hitcount.models import Hit
-from utility.models import UrlMixin
+from utility.models import UrlMixin, MetaTagsMixin
 
 RATING_CHOICES = (
     (1, '1'),
@@ -21,7 +22,7 @@ RATING_CHOICES = (
 )
 
 
-class Review(UrlMixin, models.Model):
+class Review(UrlMixin, MetaTagsMixin, models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
@@ -66,6 +67,18 @@ class Review(UrlMixin, models.Model):
     @cached_property
     def featured_image(self):
         return self.photos.all().first()
+
+
+def pre_save_review_receiver(sender, instance, *args, **kwargs):
+    if not instance.meta_description:
+        if instance.description:
+            instance.meta_description = instance.description
+    if not instance.meta_keywords:
+        if instance.content_object:
+            instance.meta_keywords = instance.content_object
+
+
+pre_save.connect(pre_save_review_receiver, sender=Review)
 
 
 class ReviewImage(models.Model):
