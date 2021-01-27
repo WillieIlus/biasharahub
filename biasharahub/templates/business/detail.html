@@ -10,8 +10,8 @@
 {% block head %}
 {{ business.get_meta_description|truncatechars:254 }}
 
-<meta content=" Business,online, directory, biashara, money, opportunity, google my business, business news, income "
-        name="keywords">
+<meta content=" Business,online, directory, biashara, money, opportunity, google my business, business news,
+{{ business.services.all|join:', ' }} income"  name="keywords">
 
 {{ business.get_meta_author }}
 {{ business.get_meta_copyright }}
