@@ -101,8 +101,8 @@ def pre_save_business_receiver(sender, instance, *args, **kwargs):
         else:
             instance.meta_author = instance.user
     if not instance.meta_keywords:
-        if instance.services:
-            instance.meta_keywords = instance.services
+        if instance.name:
+            instance.meta_keywords = instance.name
 
 
 pre_save.connect(pre_save_business_receiver, sender=Business)
