@@ -27,9 +27,9 @@ class BusinessNameForm(ModelForm):
 
 class BusinessAddForm(ModelForm):
     logo = forms.ImageField(label='', required=False, widget=forms.FileInput(attrs={'placeholder': 'your logo'}))
-    description = forms.Field(label='', widget=forms.Textarea(attrs={'placeholder': 'Describe your biashara'}))
+    description = forms.CharField(widget=PagedownWidget(attrs={'placeholder': 'Describe your biashara'}))
     name = forms.CharField(label='', widget=forms.TextInput(attrs={'placeholder': 'Your biashara name'}))
-    email = forms.EmailField(label='', required=True, widget=forms.TextInput(attrs={'placeholder': 'Email'}))
+    email = forms.EmailField(label='', required=False, widget=forms.TextInput(attrs={'placeholder': 'Email'}))
 
     class Meta:
         model = Business
@@ -52,17 +52,17 @@ class BusinessForm(ModelForm):
     logo = forms.ImageField(label='logo', required=False,
                             widget=forms.ClearableFileInput(attrs={'placeholder': 'Logo',
                                                                    'class': 'btn btn-outline-secondary'}))
-    description = forms.CharField(widget=PagedownWidget())
-    location = forms.ModelChoiceField(widget=forms.RadioSelect(), queryset=Location.objects.all(), )
+    description = forms.CharField(widget=PagedownWidget(attrs={'placeholder': 'Describe your biashara'}))
+    location = forms.ModelChoiceField(widget=forms.RadioSelect(), required=False, queryset=Location.objects.all(), )
 
-    category = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple()
-                                              , queryset=Category.objects.all(), )
+    category = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple(),
+                                              required=False, queryset=Category.objects.all(), )
 
     class Meta:
         model = Business
         fields = (
             'name', 'logo', 'email', 'hide_mail', 'phone', 'hide_phone', 'description', 'website', 'location',
-            'category', 'address', 'services')
+            'category', 'address')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -82,8 +82,8 @@ class BusinessForm(ModelForm):
             'hide_phone',
             'description',
             'website',
-            'location',
-            'category',
+            InlineCheckboxes('category'),
+            InlineRadios('location'),
             'address',
             'services',
         )

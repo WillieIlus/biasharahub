@@ -23,9 +23,20 @@ class CompanySocialProfileInline(admin.TabularInline):
 
 
 class BusinessAdmin(ImportExportModelAdmin):
+    list_display = ['id', 'name', 'email', 'location']
+    list_display_links = ['name']
+    list_editable = ['email']
+    list_filter = ['publish', 'updated']
+    search_fields = ['name', 'slug']
+    prepopulated_fields = {'slug': ('name', )}
+    ordering = ['name', 'publish']
+
+
     resource_class = BusinessResource
     inlines = [BusinessImageInline, CompanySocialProfileInline, OpeningHoursInline, ClosingRulesInline]
-    search_fields = ['name', 'slug']
 
 
 admin.site.register(Business, BusinessAdmin)
+
+
+

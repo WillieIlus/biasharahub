@@ -25,7 +25,7 @@ class Home(TemplateView):
             num_reviews=Count('reviews')).order_by('-publish',
                                                    '-num_reviews',
                                                    '-avg_reviews',
-                                                   'hit_count')[:15]
+                                                   'hit_count')[:9]
         context['location'] = Location.objects.annotate(num_companies=Count('company')).order_by('-num_companies')
         context['category'] = Category.objects.annotate(num_companies=Count('company')).order_by('-num_companies')[:6]
         context['category_one'] = Category.objects.annotate(num_companies=Count('company')).order_by('-num_companies')[

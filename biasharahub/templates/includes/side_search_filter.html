@@ -48,26 +48,6 @@
   </div>
 </div><!-- ends: .col-lg-4 -->
 
-{% if query %}
-    <!-- Begin faceting. -->
-    <h2>By category</h2>
-
-    <div>
-        <dl>
-            {% if facets.fields.category %}
-                <dt>category</dt>
-                {# Provide only the top 5 categories #}
-                {% for category in facets.fields.category|slice:":5" %}
-                    <dd><a href="{{ request.get_full_path }}&amp;selected_facets=category_exact:{{ category.0|urlencode }}">{{ category.0 }}</a> ({{ category.1 }})</dd>
-                {% endfor %}
-            {% else %}
-                <p>No category facets.</p>
-            {% endif %}
-        </dl>
-    </div>
-    <!-- End faceting -->
-{% endif %}
-
 <!--<div class="container">-->
   <!--<div class="row">-->
     <!--{% if page_obj.object_list %}-->

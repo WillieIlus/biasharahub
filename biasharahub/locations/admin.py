@@ -8,7 +8,7 @@ from .models import Country, Location
 class LocationResource(resources.ModelResource):
     class Meta:
         model = Location
-        fields = ('id', 'name', 'slug', 'description', 'icon', 'country__name')
+        fields = ('id', 'name', 'slug', 'description', 'icon', 'country')
 
 
 class LocationAdmin(ImportExportModelAdmin):

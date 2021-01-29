@@ -8,4 +8,4 @@ class BusinessResource(resources.ModelResource):
         model = Business
         fields = (
             'id', 'user', 'name', 'slug', 'publish', 'email', 'phone', 'description', 'website',
-            'address')
+            'address', 'location', 'category')

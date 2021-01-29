@@ -6,6 +6,27 @@
 
 {% block title %}  {{ user.get_full_name }}  | {{ block.super }} {% endblock %}
 
+<style>
+      .atbd_listing_image {
+        width: 100%;
+        height: 220px;
+      }
+      .atbd_author {
+        width: 40px;
+        height: 40px;
+      }
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .category--img4{
+        width: 100%;
+        height: 220px;
+      }
+
+</style>
+
 {% block bg-image-holder %}
 <div class="bg_image_holder"><img alt="" src='{% static "img/breadcrumb1.jpg" %}'></div>
 {% endblock %}

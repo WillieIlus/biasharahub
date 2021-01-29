@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 
-import datetime
 from statistics import mean
 
 from django.contrib.contenttypes.fields import GenericRelation
@@ -16,7 +15,7 @@ from taggit.models import TaggedItemBase
 from accounts.models import User, Network
 from categories.models import Category
 from favourites.models import Bookmark
-from hitcount.models import Hit, HitCount
+from hitcount.models import HitCount
 from hitcount.models import HitCountMixin
 from locations.models import Location
 from reviews.models import Review
@@ -30,11 +29,11 @@ class SameServices(TaggedItemBase):
 class Business(Common, UrlMixin, MetaTagsMixin, HitCountMixin):
     user = models.ForeignKey(User, related_name='added_by', on_delete=models.PROTECT)
     logo = models.ImageField(upload_to="business/logos", blank=True, null=True)
-    email = models.EmailField(help_text="This is required")
+    email = models.EmailField(help_text="This is required", blank=True, null=True)
     website = models.URLField(blank=True, null=True, help_text="Please start with 'https://www.'")
-    category = models.ManyToManyField(Category, related_name="company", blank=True)
-    address = models.CharField(max_length=255, blank=True, )
-    phone = models.CharField(max_length=255, blank=True, )
+    category = models.ManyToManyField(Category, related_name="company", blank=True, null=True)
+    address = models.CharField(max_length=255, blank=True, null=True)
+    phone = models.CharField(max_length=255, blank=True, null=True)
     location = models.ForeignKey(Location, related_name='company', blank=True, null=True,
                                  help_text="Please leave empty if 100% virtual",
                                  on_delete=models.PROTECT)

@@ -80,7 +80,7 @@
       <div class="row">
         {% for category in all_category %}
         <div class="col-lg-3 col-md-4 col-sm-6">
-          <a href="" class="atbd_location_grid">{{ category.name }} ({{ category.company.count }})</a>
+          <a href="{{ category.get_absolute_url }}" class="atbd_location_grid">{{ category.name }} ({{ category.company.count }})</a>
         </div><!-- ends: .col-lg-3 -->
         {% endfor %}
       </div>

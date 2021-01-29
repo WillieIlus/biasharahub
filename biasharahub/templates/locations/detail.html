@@ -16,6 +16,27 @@
 {{ business.get_meta_copyright }}
 {% endblock %}
 
+<style>
+      .atbd_listing_image {
+        width: 100%;
+        height: 220px;
+      }
+      .atbd_author {
+        width: 40px;
+        height: 40px;
+      }
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .category--img4{
+        width: 100%;
+        height: 220px;
+      }
+
+</style>
+
 {% block title %}  {{ location.name }}  | {{ block.super }} {% endblock %}
 
 {% block bg-image-holder %}
@@ -143,8 +164,8 @@
                     <div class="atbd_content_left">
                       {% if business.category %}
                       <div class="atbd_listing_category">
-                        <a href="{{ business.category.get_absolute_url }}">
-                          <span class="{{ business.category.icon }}"></span>{{ business.category }}
+                        <a href="{{ business.category.first.get_absolute_url }}">
+                          <span class="{{ business.category.first.icon }}"></span>{{ business.category.first }}
                         </a>
                       </div>
                       {% endif %}
