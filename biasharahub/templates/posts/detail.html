@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% load social_share %}
+{% load biasharahub %}
+
+{% block head %}
+{{ post.get_meta_description|truncatechars:254 }}
+  <meta content=" Business,online, directory, biashara, money, opportunity, google my business, business news, income,
+  small business ideas, small business, online business, starting a business, business proposal, business times "
+        name="keywords">
+{{ post.get_meta_author }}
+{{ post.get_meta_copyright }}
+{% endblock %}
+
+{% block title %} {% if post.anonymous %} Anonymous {% else %} {{ post.user.first_name|capfirst }} {% endif %}wrote a post | {{ block.super }} {% endblock %}
+
+{% block bg-image-holder %}
+<div class="bg_image_holder"><img alt="" src='{% static "img/breadcrumb1.jpg" %}'></div>
+{% endblock %}
+
+{% block page-title %}
+<h1 class="page-title">{% if post.anonymous %} Anonymous {% else %} {{ post.user.first_name|capfirst }} {% endif %}
+  wrote a post </h1>
+{% endblock %}
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href='{% url "post:list" %}'><i class="fa fa-list"></i> List</a></li>
+<li aria-current="page" class="breadcrumb-item active">{% if post.anonymous %} Anonymous {% else %}
+  {{ post.user.first_name|capfirst }} {% endif %}
+</li>
+{% if post.user == request.user %}
+<li class="breadcrumb-item"><a href='{% url "post:edit" post.slug %}'><i class="fa fa-plus"></i>Edit</a></li>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+
+
+<section class="blog-area section-padding-strict border-bottom">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="post-details">
+          <div class="post-head">
+            <img alt="" src='{% if post.featured_image %}
+                {{ post.featured_image }} {% else %} {% static "img/breadcrumb1.jpg" %}{% endif %}'>
+          </div>
+          <div class="post-content">
+            <div class="post-header">
+              <h3>{% if post.anonymous %} Anonymous {% else %} {{ post.user.first_name|capfirst }} {% endif %}</h3>
+              <ul class="list-unstyled">
+                <li>{{ post.publish|date }}</li>
+                <li>By <a href="{% if post.anonymous %} {{ post.content_object.get_absolute_url }}
+                     {% else %} {{ post.user.get_absolute_url }} {% endif %} ">
+                  {% if post.anonymous %} Anonymous {% else %} {{ post.user.first_name|capfirst }} {% endif %}</a></li>
+                <li>In <a href="{{ post.content_object.get_absolute_url }}">{{ post.content_object.name }}</a></li>
+                <li><a href="#">{{ post.comments.count }} Comment{{ post.comments.count|pluralize }}</a></li>
+              </ul>
+            </div>
+            <div class="post-body">
+              <p>{{ post.content }}</p>
+            </div>
+          </div>
+        </div><!-- ends: .post-details -->
+        <div class="post-bottom d-flex justify-content-between">
+          <div class="action_button pull-left">
+            <a class=" btn btn-xs btn-secondary" href="{% url 'post:vote_up' slug=post.slug %}"></span>
+              Like |
+              <span>{{ post.votes.likes.count }}</span></a>
+            <a class=" btn btn-xs btn-danger" href="{% url 'post:vote_down' slug=post.slug %}"></span>
+              Dislike |
+              <span>{{ post.votes.dislikes.count }}</span></a>
+          </div>
+
+          <div class="social-share d-flex align-items-center">
+            <span class="m-right-15">Share this post: </span>
+            <ul class="social-share list-unstyled">
+              <li>
+                <div>
+                  {% post_to_facebook object_or_url "F" %}
+                </div>
+              </li>
+              <li>
+                <div>
+                  {% post_to_twitter "New Biashara: {{post.title}}. Check it out!" object_or_url "T" %}
+                </div>
+              </li>
+              <li>
+                <div>
+                  {% post_to_whatsapp object_or_url "W" %}
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div><!-- ends: .post-bottom -->
+        {% if post.anonymous == False %}
+        <div class="post-author cardify border">
+          <div class="author-thumb">
+            <img alt="" class="rounded-circle" src="img/auth1.png">
+          </div>
+          <div class="author-info">
+            <h5>About <span>{{ post.user.get_full_name  }}</span></h5>
+            {% if post.user.bio %}
+            <p>{{ post.user.bio }}</p>
+            {% else %}
+            <P>{{ post.user.get_full_name }} has decided to put a wall of heightened hysteria around them </P>
+            {% endif %}
+            <ul class="list-unstyled social-basic">
+              {% for network in post.user.network.all %}
+              <li>
+                <a href="{{ network.url }}"><i class="{{ network.network.icon }}"></i></a>
+              </li>
+              <span class="custom-tooltip">{{ network.name }}</span>
+              {% endfor %}
+            </ul>
+          </div>
+        </div><!-- ends: .post-author -->
+        {% endif %}
+        <div class="comments-area m-top-60">
+          <div class="comment-title">
+            <h3>{{ post.comments.count }} Comment{{ post.comments.count|pluralize }}</h3>
+          </div>
+          <div class="comment-lists">
+            <ul class="media-list list-unstyled">
+              {% for comment in page_obj %}
+              <li class="depth-1">
+                <div class="media">
+                  <div>
+                    <a class="cmnt_avatar" href="{{ comment.user.get_absolute_url }}">
+                      <img alt="" class="media-object rounded-circle" src="img/auth2.png">
+                    </a>
+                  </div>
+                  <div class="media-body">
+                    <div class="media_top">
+                      <div class="heading_left">
+                        <a href="{{ comment.user.get_absolute_url }}">
+                          <h6 class="media-heading">{{ comment.user.first_name }}</h6>
+                        </a>
+                        <span>{{ comment.publish|date }}</span>
+                      </div>
+                      <a class="reply" href="#"><i class="la la-reply"></i> Reply</a>
+                    </div>
+                    <p>{{ comment.content }}</p>
+                  </div>
+                </div><!-- ends: .media -->
+                <ul class="children list-unstyled">
+                  <!-- Nested media object -->
+                  {% for reply in comment.replies.all %}
+                  <li class="depth-2">
+                    <div class="media">
+                      <div>
+                        <a class="cmnt_avatar" href="#">
+                          <img alt="Sample Image" class="media-object rounded-circle" src="img/auth3.png">
+                        </a>
+                      </div>
+                      <div class="media-body">
+                        <div class="media_top">
+                          <div class="heading_left">
+                            <a href="#">
+                              <h6 class="media-heading">{{ reply.user.get_short_name }}</h6>
+                            </a>
+                            <span>{{ reply.publish|date }}</span>
+                          </div>
+                          <a class="reply" href="#"><i class="la la-reply"></i> Reply</a>
+                        </div>
+                        <p>{{ reply.content }}</p>
+                      </div>
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul><!-- ends: .children -->
+              </li><!-- ends: .depth-1 -->
+              {% endfor %}
+            </ul><!-- ends: .media-list -->
+          </div><!-- ends: .comment-lists -->
+
+          <div class="text-center m-top-50">
+            {% include 'includes/pagination.html' %}
+          </div>
+        </div><!-- ends: .comment-area -->
+        <div class="comment-form cardify m-top-60 margin-md-60 border">
+          <div class="comment-title">
+            <h3>Leave a Reply</h3>
+            <span>Your email address will not be published. Required fields are marked <span
+                class="color-primary">*</span></span>
+          </div>
+          <div class="comment_form_wrapper m-top-40">
+            <form action="{% url 'comments:new' post.slug %}" class="form-ad" enctype="multipart/form-data"
+                  method="post">
+              <div class="form-group is-empty">
+                {% csrf_token %}
+                {% crispy form %}
+              </div>
+            </form>
+          </div>
+        </div><!-- ends: .comment-form -->
+      </div><!-- ends: .col-lg-8 -->
+      <div class="col-md-4 mt-5 mt-md-0">
+        <div class="sidebar">
+          <!-- search widget -->
+          <div class="widget-wrapper">
+            <div class="search-widget">
+              <form action="#">
+                <div class="input-group">
+                  <input class="fc--rounded" placeholder="Search" type="text">
+                  <button type="submit"><i class="la la-search"></i></button>
+                </div>
+              </form>
+            </div>
+          </div><!-- ends: .widget-wrapper -->
+          <!-- category widget -->
+          {% get_categories 5 %}
+          <!-- ends: .widget-wrapper -->
+
+          <!-- popular post -->
+          {% get_popular_posts %}
+          <!-- ends: .widget-wrapper -->
+
+          <!-- popular post -->
+          {% get_popular_business %}
+          <!-- ends: .widget-wrapper -->
+          <!-- tags -->
+          <!-- subscribe -->
+          <div class="widget-wrapper">
+            <div class="widget-default">
+              <div class="widget-header">
+                <h6 class="widget-title">Stay Updated</h6>
+              </div>
+              <div class="widget-content">
+                <div class="subscribe-widget">
+                  <form action="#">
+                    <input class="form-control m-bottom-20" placeholder="Enter email" type="email">
+                    <button class="btn btn-sm btn-primary shadow-none" type="submit">Subscribe</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div><!-- ends: .widget-wrapper -->
+          <!-- Social Connect -->
+          <div class="widget-wrapper">
+            <div class="widget-default">
+              <div class="widget-header">
+                <h6 class="widget-title">Connect &amp; Follow</h6>
+              </div>
+              <div class="widget-content">
+                <div class="social social--small">
+                  <ul class="d-flex flex-wrap">
+                    <li><a class="facebook" href="#"><span class="fab fa-facebook-f"></span></a></li>
+                    <li><a class="twitter" href="#"><span class="fab fa-twitter"></span></a></li>
+                    <li><a class="linkedin" href="#"><span class="fab fa-linkedin-in"></span></a></li>
+                    <li><a class="gplus" href="#"><span class="fab fa-google-plus-g"></span></a></li>
+                  </ul>
+                </div><!-- ends: .social -->
+              </div>
+            </div>
+          </div><!-- ends: .widget-wrapper -->
+        </div><!-- ends: .sidebar -->
+      </div><!-- ends: .col-lg-4 -->
+    </div>
+  </div>
+</section><!-- ends: .blog-area -->
+
+{% endblock %}

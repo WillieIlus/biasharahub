@@ -1,0 +1,30 @@
+{% load staticfiles %}
+<!-- popular post -->
+<div class="widget-wrapper">
+  <div class="widget-default">
+    <div class="widget-header">
+      <h3 class="widget-title">Popular Posts</h3>
+    </div>
+    <div class="widget-content">
+      <div class="sidebar-post">
+        {% for post in popular_posts %}
+        <div class="post-single">
+          <div class="d-flex align-items-center">
+            <a href=""><img alt="" width="50px"  src="{% if post.user.photo %} {{ post.user.photo.url }}
+                                        {% else %} {% static 'img/bthumb1.jpg' %}{% endif %}"></a>
+            <p><span>{{ post.publish|date }}</span>
+              {% if post.anonymous %}
+              <span>by <a href="{{ post.get_absolute_url }}"> Anonymous </a></span></p>
+            {% else %}
+              <span>by <a href="{{ post.user.get_absolute_url }}">{{ post.user.get_full_name }}</a></span></p>
+            {% endif %}
+          </div>
+          <h6 class="widget-title"><a href="{{ post.get_absolute_url }}">{{ post.name }}</a></h6>
+          <a class="post-title" href="{{ post.get_absolute_url }}">{{ post.description|truncatechars:30 }}</a>
+        </div><!-- ends: .post-single -->
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ends: .widget-wrapper -->

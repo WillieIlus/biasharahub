@@ -45,6 +45,7 @@ urlpatterns = [
                   path('newsletter', NewsletterView.as_view(), name='newsletter'),
                   path('accounts/', include('allauth.urls', )),
                   path('accounts/', include('accounts.urls', namespace='accounts')),
+                  path('posts/', include('blogpoll.urls', namespace='post')),
                   path('categories/', include('categories.urls', namespace='categories')),
                   path('business/', include('business.urls', namespace='business')),
                   path('reviews/', include('reviews.urls', namespace='reviews')),

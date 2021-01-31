@@ -71,8 +71,6 @@ class BusinessForm(ModelForm):
         self.helper.label_class = 'col-lg-2'
         self.helper.field_class = 'col-lg-8'
         self.helper.form_method = 'post'
-        # self.helper.form_action = 'submit'
-        # self.helper.add_input(Submit('submit', 'Submit', css_class='btn btn-gradient btn-gradient-two btn-lg'))
         self.helper.layout = Layout(
             'name',
             'logo',

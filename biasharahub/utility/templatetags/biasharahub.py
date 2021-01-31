@@ -4,6 +4,7 @@ from requests import Request
 
 from accounts.forms import CustomLoginForm, CustomSignupForm
 from accounts.models import User
+from blogpoll.models import PostPoll
 from business.forms import BusinessAddForm
 from business.models import Business
 from categories.models import Category
@@ -69,7 +70,7 @@ def get_recent_comments(number=5):
 
 
 @register.inclusion_tag('tags/business_popular.html')
-def get_popular_business(number=5):
+def get_popular_business(number=7):
     return {'popular_business': Business.objects.annotate(avg_reviews=Avg('reviews__rating'),
                                                           num_reviews=Count('reviews')).order_by(
         '-num_reviews', '-avg_reviews', 'hit_count', '-publish')[:number]}
@@ -78,6 +79,11 @@ def get_popular_business(number=5):
 @register.inclusion_tag('tags/reviews_popular.html')
 def get_popular_reviews(number=5):
     return {'popular_reviews': Review.objects.order_by('-comments')[:number]}
+
+
+@register.inclusion_tag('tags/posts_popular.html')
+def get_popular_posts(number=5):
+    return {'popular_posts': PostPoll.objects.order_by('-comments')[:number]}
 
 
 # num_votes = Count('votes'),

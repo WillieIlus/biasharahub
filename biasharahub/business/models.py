@@ -31,7 +31,7 @@ class Business(Common, UrlMixin, MetaTagsMixin, HitCountMixin):
     logo = models.ImageField(upload_to="business/logos", blank=True, null=True)
     email = models.EmailField(help_text="This is required", blank=True, null=True)
     website = models.URLField(blank=True, null=True, help_text="Please start with 'https://www.'")
-    category = models.ManyToManyField(Category, related_name="company", blank=True, null=True)
+    category = models.ManyToManyField(Category, related_name="company", blank=True)
     address = models.CharField(max_length=255, blank=True, null=True)
     phone = models.CharField(max_length=255, blank=True, null=True)
     location = models.ForeignKey(Location, related_name='company', blank=True, null=True,

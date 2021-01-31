@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'whitenoise',
 
     'accounts',
+    'blogpoll',
     'business',
     'categories',
     'comments',
