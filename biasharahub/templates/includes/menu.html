@@ -47,13 +47,23 @@
                         </li>
                         <li class="dropdown has_dropdown">
                           <a aria-expanded="false" aria-haspopup="true" class="dropdown-toggle" data-toggle="dropdown"
-                             href="#"
-                             id="drop2" role="button">
+                             href='{% url "reviews:list" %}' id="drop2" role="button">
                             Reviews
                           </a>
                           <ul aria-labelledby="drop2" class="dropdown-menu">
                             <li><a href='{% url "reviews:list" %}'>Reviews</a></li>
                             <li><a href='{% url "reviews:list" %}'>Add Reviews</a></li>
+                          </ul>
+                        </li>
+                        <li class="dropdown has_dropdown">
+                          <a aria-expanded="false" aria-haspopup="true" class="dropdown-toggle" data-toggle="dropdown"
+                             href='{% url "post:list" %}'
+                             id="drop2" role="button">
+                            Blog
+                          </a>
+                          <ul aria-labelledby="drop2" class="dropdown-menu">
+                            <li><a href='{% url "post:list" %}'>Blogs</a></li>
+                            <li><a href='{% url "post:new" %}'>Add a post</a></li>
                           </ul>
                         </li>
                       </ul>

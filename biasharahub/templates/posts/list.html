@@ -6,11 +6,11 @@
 
 {% block head %}
 
-  <meta content=" popular posts are {% for post in post|slice:'9' %},  {{ post.name }}
+<meta content=" popular posts are {% for post in post|slice:'9' %},  {{ post.name }}
     {% endfor %} "
-        name="description">
-  <meta content="{% for post in post|slice:'9' %},  {{ post.name }} {% endfor %}" name="keywords">
-  <meta content="BiasharaHub" name="author">
+      name="description">
+<meta content="{% for post in post|slice:'9' %},  {{ post.name }} {% endfor %}" name="keywords">
+<meta content="BiasharaHub" name="author">
 
 {% endblock %}
 
@@ -25,114 +25,59 @@
 {% endblock %}
 
 {% block breadcrumb_item %}
-<li aria-current="page" class="breadcrumb-item active">All Listings</li>
+<li aria-current="page" class="breadcrumb-item active"> All Listings</li>
 {% endblock %}
 
 {% block content %}
 
-<section class="blog-area section-padding-strict border-bottom">
+<section class="blog-area blog-grid section-padding-strict section-bg">
   <div class="container">
     <div class="row">
-      <div class="col-md-8">
-        <div class="blog-posts">
-          {% for post in post %}
-          <div class="blog-single">
-            <div class="card post--card post--card2 ">
-              {% if post.featured_image %}
-              <figure>
-                <a href="{{ post.get_absolute_url }}"><img alt="" src='
-                {{ post.featured_image }}'></a>
-                <figcaption>
-                  <a href="{{ post.get_absolute_url }}"><i class="la la-image"></i></a>
-                </figcaption>
-              </figure>{% endif %}
-              <div class="card-body">
-                <h6><a href="{{ post.get_absolute_url }}">
-                  {{ post.name }}
-                </a></h6>
-                <ul class="post-meta list-unstyled">
-                  <li>{{ post.publish|date }} ( {{ post.publish|timesince }} ago )</li>
-                  </li>
-                  <li><a href="{{ post.get_absolute_url }}">{{ post.comments.count }}
-                    Comment{{ post.comments.count|pluralize }}</a></li>
-                </ul>
-                <p>{{ post.description|truncatechars:254 }}</p>
+      {% for post in post %}
+      <div class="col-lg-4 col-md-6">
+        <div class="grid-single">
+          <div class="card post--card shadow-sm">
+            {% if post.image %}
+            <figure>
+              <a href="{{ post.get_absolute_url }}">
+                <img src='{{ post.image.url }}' alt="{% if post.choices.count > 1 %}
+                                  {{ post.choices.count }} {% endif %} {{ post.name }}"></a>
+            </figure>
+            {% endif %}
+            <div class="card-body">
+              <h6><a href="{{ post.get_absolute_url }}">{% if post.choices.count > 1 %}
+                {{ post.choices.count }} {% endif %} {{ post.name }}</a></h6>
+              <ul class="post-meta d-flex list-unstyled">
+                <li>{% if post.publish > today %}{{ post.publish|date }} {% else %}
+                  {{ post.publish|timesince }} ago {% endif %}
+                </li>
+                <li>in <a href="{{ post.category.first.get_absolute_url }}">
+                  <i class="{{ post.category.first.icon }}"></i></a></li>
+                <li><i class="far fa-comments"></i> {{ post.comments.count }} </i></li>
+                <li><i class="fas fa-poll"></i> {{ post.get_vote_count }} </i></li>
+              </ul>
+              <p>{{ post.description|truncatechars:100 }}</p>
+            </div>
+            <div class="card-footer">
+              <div class="pull_right">
+                <a href="" class="btn btn-gradient btn-gradient-one btn-icon icon-right"> Continue </a>
               </div>
-            </div><!-- End: .card -->
-          </div><!-- ends: .blog-single -->
-          {% endfor %}
+            </div>
+          </div><!-- End: .card -->
         </div>
-        <div class="m-top-50">
-          <nav class="navigation pagination d-flex justify-content-center" role="navigation">
-            {% include 'includes/pagination.html' %}
-          </nav>
-        </div>
-      </div><!-- ends: .col-lg-8 -->
-      <div class="col-md-4 mt-5 mt-md-0">
-        <div class="sidebar">
-          <!-- search widget -->
-          <div class="widget-wrapper">
-            <div class="search-widget">
-              <form action="#">
-                <div class="input-group">
-                  <input class="fc--rounded" placeholder="Search" type="text">
-                  <button type="submit"><i class="la la-search"></i></button>
-                </div>
-              </form>
-            </div>
-          </div><!-- ends: .widget-wrapper -->
-
-
-          <!-- category widget -->
-          {% get_categories 5 %}
-          <!-- ends: .widget-wrapper -->
-
-          <!-- popular post -->
-          {% get_popular_posts %}
-          <!-- ends: .widget-wrapper -->
-
-          <!-- popular post -->
-          {% get_popular_business %}
-          <!-- ends: .widget-wrapper -->
-
-
-          <!-- subscribe -->
-          <div class="widget-wrapper">
-            <div class="widget-default">
-              <div class="widget-header">
-                <h6 class="widget-title">Stay Updated</h6>
-              </div>
-              <div class="widget-content">
-                <div class="subscribe-widget">
-                  <form action="#">
-                    <input class="form-control m-bottom-20" placeholder="Enter email" type="email">
-                    <button class="btn btn-sm btn-primary shadow-none" type="submit">Subscribe</button>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div><!-- ends: .widget-wrapper -->
-          <!-- Social Connect -->
-          <div class="widget-wrapper">
-            <div class="widget-default">
-              <div class="widget-header">
-                <h6 class="widget-title">Connect &amp; Follow</h6>
-              </div>
-              <div class="widget-content">
-                <div class="social social--small">
-                  <ul class="d-flex flex-wrap">
-                    <li><a class="facebook" href="#"><span class="fab fa-facebook-f"></span></a></li>
-                    <li><a class="twitter" href="#"><span class="fab fa-twitter"></span></a></li>
-                    <li><a class="linkedin" href="#"><span class="fab fa-linkedin-in"></span></a></li>
-                    <li><a class="gplus" href="#"><span class="fab fa-google-plus-g"></span></a></li>
-                  </ul>
-                </div><!-- ends: .social -->
-              </div>
-            </div>
-          </div><!-- ends: .widget-wrapper -->
-        </div><!-- ends: .sidebar -->
       </div><!-- ends: .col-lg-4 -->
+      {% endfor %}
     </div>
+
+    <!--pagination-->
+    <div class="m-top-20">
+      <nav class="navigation pagination d-flex justify-content-center" role="navigation">
+        {% include 'includes/pagination.html' %}
+      </nav>
+    </div>
+    <!--end pagination-->
+
   </div>
 </section><!-- ends: .blog-area -->
+
 {% endblock %}

@@ -256,7 +256,7 @@ IMPORT_EXPORT_USE_TRANSACTIONS = True
 # LOGOUT_REDIRECT_URL = 'accounts:login'
 LOGOUT_REDIRECT_URL = 'account_login'
 LOGIN_REDIRECT_URL = 'accounts:dashboard'
-
+#
 # STATICFILES_DIRS = (
 #     os.path.join(BASE_DIR, 'static/'),
 # )

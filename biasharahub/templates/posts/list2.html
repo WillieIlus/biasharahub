@@ -6,9 +6,9 @@
 
 {% block head %}
 {{ post.get_meta_description|truncatechars:254 }}
-<meta content=" Business,online, directory, biashara, money, opportunity, google my business, business news, income,
+  <meta content=" Business,online, directory, biashara, money, opportunity, google my business, business news, income,
   small business ideas, small business, online business, starting a business, business proposal, business times "
-      name="keywords">
+        name="keywords">
 {{ post.get_meta_author }}
 {{ post.get_meta_copyright }}
 
@@ -22,8 +22,8 @@
 {% endblock %}
 
 {% block page-title %}
-<h1 class="page-title">{% if post.choices.count > 1 %}
-  {{ post.choices.count }} {% endif %} {{ post.name }} </h1>
+<h1 class="page-title">{% if post.anonymous %} Anonymous {% else %} {{ post.user.first_name|capfirst }} {% endif %}
+  wrote a post </h1>
 {% endblock %}
 
 {% block breadcrumb_item %}
@@ -37,169 +37,97 @@
 {% endblock %}
 
 {% block content %}
+
+
 <section class="blog-area section-padding-strict border-bottom">
   <div class="container">
     <div class="row">
       <div class="col-md-8">
-        <div class="post-details ">
+        <div class="post-details">
           <div class="post-head">
-            <img src='{{ post.image.url }}' alt="{% if post.choices.count > 1 %}
-                                  {{ post.choices.count }} {% endif %} {{ post.name }}">
+            <img alt="" src='{% if post.featured_image %}
+                {{ post.featured_image }} {% else %} {% static "img/breadcrumb1.jpg" %}{% endif %}'>
           </div>
           <div class="post-content">
             <div class="post-header">
-              <h2>{% if post.choices.count > 1 %} {{ post.choices.count }} {% endif %} {{ post.name }}</h2>
+              <h3>{{ post.user.first_name|capfirst }}</h3>
               <ul class="list-unstyled">
-                <li>{% if post.publish > today %}{{ post.publish|date }} {% else %}
-                  {{ post.publish|timesince }} ago {% endif %}
-                </li>
-                <li>in <a href="{{ post.category.first.get_absolute_url }}">
-                  <i class="{{ post.category.first.icon }}"></i> {{ post.category.first.name }}</a></li>
-                <li><i class="far fa-comments"></i> {{ post.comments.count }} Comments</i></li>
-                <li><i class="fas fa-poll"></i> {{ post.get_vote_count }} Votes</i></li>
+                <li>{{ post.publish|date }}</li>
+                <li>By <a href="{{ post.user.get_absolute_url }} ">
+                   {{ post.user.first_name|capfirst }} </a></li>
+                <li>In <a href="{{ post.content_object.get_absolute_url }}">{{ post.name }}</a></li>
+                <li><a href="#">{{ post.comments.count }} Comment{{ post.comments.count|pluralize }}</a></li>
               </ul>
             </div>
             <div class="post-body">
-              <p>{{ post.description|linebreaks }}</p>
-
+              <p>{{ post.description }}</p>
             </div>
           </div>
         </div><!-- ends: .post-details -->
-        {% for choices in page_obj %}
-        <div class="card post--card post--card2 border">
-          {% if choices.image %}
-          <figure>
-            <a href="">
-            <img src='{{ choices.image.url }}' alt="{{ post.name }}"></a>
-            <figcaption>
-              <a href=""><i class="la la-image"></i></a>
-            </figcaption>
-          </figure>
-          {% endif %}
-          <div class="card-body">
-            <h3><a href="">{{ forloop.counter }}: {{ choices.name }}</a></h3>
-            <p>{{ choices.description|linebreaks }}</p>
-          </div>
-          <div class="card-footer">
-            <div class="pull-right">
-              <a class=" btn btn-xs btn-primary rounded-pill" href="{% url 'post:vote_up' slug=choices.slug %}"></span>
-              <i class="far fa-thumbs-up"></i>
-              </a>
-              <span>{{ choices.votes.likes.count }} vote{{ choices.votes.likes|pluralize:"s" }}</span>
-            </div>
-            {% if not choices.user == choice.poll.user %}
-            <div>Added by: {{ choices.user.first_name }}</div>
-            {% endif %}
-          </div>
-        </div>&nbsp;
-        {% endfor %}
-        <div class="">
-              <div class="pull-right">
-                <a class=" btn btn-xs btn-secondary rounded-pill" href="{% url 'post:add_choice' slug=post.slug %}"></span>
-              <i class="fas fa-plus"></i> Add yours
-                </a>
-              </div>
-            </div>
         <div class="post-bottom d-flex justify-content-between">
-          <div class="tags">
-            <ul class="d-flex list-unstyled">
-              {% for tag in post.tags.all %}
-              <li><a href="">{{ tag }}</a></li>
-              {% endfor %}
-            </ul>
-          </div>
+
           <div class="social-share d-flex align-items-center">
-            <span class="m-right-15">Share Post: </span>
+            <span class="m-right-15">Share this post: </span>
             <ul class="social-share list-unstyled">
               <li>
                 <div>
-                  {% post_to_facebook object_or_url "<i class='fab fa-facebook-f'></i>" %}
+                  {% post_to_facebook object_or_url "F" %}
                 </div>
               </li>
               <li>
                 <div>
-                  {% post_to_twitter "{{post.title}}. Check it out!" object_or_url "<i class='fab fa-twitter'></i>" %}
-
+                  {% post_to_twitter "New Biashara: {{post.title}}. Check it out!" object_or_url "T" %}
                 </div>
               </li>
               <li>
                 <div>
-                  {% post_to_whatsapp object_or_url "<i class='fab fa-whatsapp'></i>" %}
-                </div>
-              </li>
-              <li>
-                <div>
-                  {% post_to_linkedin object_or_url "" "<i class='fab fa-linkedin'></i>" %}
+                  {% post_to_whatsapp object_or_url "W" %}
                 </div>
               </li>
             </ul>
           </div>
         </div><!-- ends: .post-bottom -->
-                {% comment %}
+        {% for choices in page_obj %}
+          <h5>{{ forloop.counter }}: {{ choices.name }}</h5><br/>
+          <p>{{ choices.description }}</p>
+                  <div class="action_button pull-left">
+            <a class=" btn btn-xs btn-secondary" href="{% url 'post:vote_up' slug=choices.slug %}"></span>
+              Vote |
+              <span> {{ choices.votes.likes.count }}</span></a>
+          </div>
+          <p><small>  {{ choices.user }}</small></p>
+          {% endfor %}
+
+        {% if post.anonymous == False %}
         <div class="post-author cardify border">
           <div class="author-thumb">
-            <img src="img/auth1.png" alt="" class="rounded-circle">
+            <img alt="" class="rounded-circle" src="img/auth1.png">
           </div>
           <div class="author-info">
-            <h5>About <span>Aazztech</span></h5>
-            <p>Business and Finance Sequitur mutatin onem consuetudium. Investiga tiones demonstr aver unt lectores
-              legere me lius quod kqua legunt saepius. Claritas est etiam pro cessus averus.</p>
+            <h5>About <span>{{ post.user.get_full_name  }}</span></h5>
+            {% if post.user.bio %}
+            <p>{{ post.user.bio }}</p>
+            {% else %}
+            <P>{{ post.user.get_full_name }} has decided to put a wall of heightened hysteria around them </P>
+            {% endif %}
             <ul class="list-unstyled social-basic">
-              <li><a href=""><i class="fab fa-facebook-f"></i></a></li>
-              <li><a href=""><i class="fab fa-twitter"></i></a></li>
-              <li><a href=""><i class="fab fa-linkedin-in"></i></a></li>
-              <li><a href=""><i class="fab fa-google-plus-g"></i></a></li>
+              {% for network in post.user.network.all %}
+              <li>
+                <a href="{{ network.url }}"><i class="{{ network.network.icon }}"></i></a>
+              </li>
+              <span class="custom-tooltip">{{ network.name }}</span>
+              {% endfor %}
             </ul>
           </div>
         </div><!-- ends: .post-author -->
-        <div class="post-pagination">
-          <div class="prev-post">
-            <span>Previous Post:</span>
-            <a href="" class="title">How to Run a Successful Business Meeting</a>
-            <p><span>Aug 12, 2019</span> - In <a href="">Industry</a></p>
-          </div>
-          <div class="next-post">
-            <span>Next Post:</span>
-            <a href="" class="title">Exciting New Technologies Business</a>
-            <p><span>Aug 12, 2019</span> - In <a href="">Industry</a></p>
-          </div>
-        </div><!-- ends: .post-pagination -->
-        {% endcomment %}
-        <div class="related-post m-top-60">
-          <div class="related-post--title">
-            <h3>Related Post</h3>
-          </div>
-          <div class="row">
-            <div class="col-lg-4 col-sm-6">
-              <div class="single-post">
-                <img src="img/e4.jpg" alt="">
-                <h6><a href="">Tizara Starts Solutions Alliance Program</a></h6>
-                <p><span>Aug 12, 2019</span> - In <a href="">Industry</a></p>
-              </div>
-            </div>
-            <div class="col-lg-4 col-sm-6">
-              <div class="single-post">
-                <img src="img/e5.jpg" alt="">
-                <h6><a href="">How to Run a Successful Business Meeting</a></h6>
-                <p><span>Aug 12, 2019</span> - In <a href="">Industry</a></p>
-              </div>
-            </div>
-            <div class="col-lg-4 col-sm-6">
-              <div class="single-post">
-                <img src="img/e6.jpg" alt="">
-                <h6><a href="">Global Market Grows to $600 Billion</a></h6>
-                <p><span>Aug 12, 2019</span> - In <a href="">Industry</a></p>
-              </div>
-            </div>
-          </div>
-        </div><!-- ends: .related-post -->
-                <div class="comments-area m-top-60">
+        {% endif %}
+        <div class="comments-area m-top-60">
           <div class="comment-title">
             <h3>{{ post.comments.count }} Comment{{ post.comments.count|pluralize }}</h3>
           </div>
           <div class="comment-lists">
             <ul class="media-list list-unstyled">
-              {% for comment in post.comments.all %}
+              {% for comment in page_obj %}
               <li class="depth-1">
                 <div class="media">
                   <div>
@@ -250,8 +178,7 @@
               {% endfor %}
             </ul><!-- ends: .media-list -->
           </div><!-- ends: .comment-lists -->
-          <div class="text-center m-top-50">
-          </div>
+
         </div><!-- ends: .comment-area -->
         <div class="comment-form cardify m-top-60 margin-md-60 border">
           <div class="comment-title">
@@ -260,17 +187,16 @@
                 class="color-primary">*</span></span>
           </div>
           <div class="comment_form_wrapper m-top-40">
-            <form action="{% url 'comments:poll_comment' post.slug %}" class="form-ad" enctype="multipart/form-data"
+            <form action="" class="form-ad" enctype="multipart/form-data"
                   method="post">
               <div class="form-group is-empty">
                 {% csrf_token %}
-                {% crispy comment_form %}
+                {% crispy form %}
               </div>
             </form>
           </div>
         </div><!-- ends: .comment-form -->
       </div><!-- ends: .col-lg-8 -->
-
       <div class="col-md-4 mt-5 mt-md-0">
         <div class="sidebar">
           <!-- search widget -->
@@ -289,7 +215,7 @@
           <!-- ends: .widget-wrapper -->
 
           <!-- popular post -->
-          {% get_popular_reviews %}
+          {% get_popular_posts %}
           <!-- ends: .widget-wrapper -->
 
           <!-- popular post -->
@@ -335,4 +261,5 @@
     </div>
   </div>
 </section><!-- ends: .blog-area -->
+
 {% endblock %}

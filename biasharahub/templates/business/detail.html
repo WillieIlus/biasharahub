@@ -7,6 +7,8 @@
 {% load social_share %}
 {% load hitcount_tags %}
 {% load tz %}
+{% load markdown_deux_tags %}
+
 {% block head %}
 {{ business.get_meta_description|truncatechars:254 }}
 
@@ -243,7 +245,7 @@
             <p>{{ business.services.all|join:", " }}</p>
             <hr/>
             {% endcomment %}
-            <p>{{ business.get_markdown }}</p>
+            <p>{{ business.description|markdown|linebreaks }}</p>
             {% if request.user == business.user %}
             <hr/>
             <a href="{% url 'business:edit' business.slug %}" class="btn btn-gradient btn-gradient-two">

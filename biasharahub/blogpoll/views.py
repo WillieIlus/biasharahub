@@ -1,5 +1,8 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Sum, Count
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.encoding import uri_to_iri
@@ -9,6 +12,7 @@ from django.views.generic.detail import SingleObjectMixin
 from accounts.decorators import UserRequiredMixin
 from biasharahub import settings
 from comments.forms import CommentForm
+from favourites.models import Vote
 from hitcount.utils import get_hitcount_model
 from hitcount.views import HitCountMixin
 from .forms import PostPollForm, PollChoiceFormSet, PostChoiceForm
@@ -91,11 +95,11 @@ class PostPollList(ListView):
     model = PostPoll
     context_object_name = 'post'
     template_name = 'posts/list.html'
-    paginate_by = 10
+    paginate_by = 9
 
 
 class PostPollDetail(SingleObjectMixin, HitCountMixin, ListView):
-    model = PostPoll
+    # model = PostPoll
     paginate_by = 10
     context_object_name = 'post'
     template_name = 'posts/detail.html'
@@ -106,17 +110,19 @@ class PostPollDetail(SingleObjectMixin, HitCountMixin, ListView):
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
-        return self.object.choices.all()
+        return self.object.choices.annotate(num_likes=Count('votes')).order_by('-num_likes')
+            # .all().order_by('votes') #order_by('-votes__vote')
 
     def get_object(self, **kwargs):
         slug = self.kwargs.get('slug')
         return get_object_or_404(PostPoll, slug=uri_to_iri(slug))
 
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = PostChoiceForm()
         context['comment_form'] = CommentForm()
-        context['related_business'] = self.object.services.similar_objects()
+        context['related_posts'] = self.object.tags.similar_objects()
         context['timezone'] = settings.TIME_ZONE
 
         if self.object:
@@ -136,7 +142,7 @@ class PostPollDetail(SingleObjectMixin, HitCountMixin, ListView):
         return context
 
 
-class PostChoicesView(LoginRequiredMixin, UserRequiredMixin, CreateView):
+class PostChoicesView(LoginRequiredMixin, CreateView):
     model = PostChoice
     form_class = PostChoiceForm
     template_name = 'includes/form.html'
@@ -158,9 +164,57 @@ class PostChoicesView(LoginRequiredMixin, UserRequiredMixin, CreateView):
 
 
 class UserPostPolls(ListView):
-    context_object_name = 'review'
+    context_object_name = 'post'
     template_name = 'posts/user_posts.html'
 
     def get_queryset(self):
         user = self.request.user
         return PostPoll.objects.filter(user=user).order_by('-publish')
+
+
+@login_required
+def vote_up(request, slug):
+    user = request.user
+    model = get_object_or_404(PostChoice, slug=slug)
+    vote_up = model.votes.filter(user=user, vote=Vote.LIKE).first()
+    vote_down = model.votes.filter(user=user, vote=Vote.DISLIKE).first()
+    if vote_up is not None:
+        vote_up.delete()
+    elif vote_down is not None and vote_up is None:
+        vote_down.delete()
+        vote_up = Vote()
+        vote_up.user = request.user
+        vote_up.content_object = model
+        vote_up.vote = Vote.LIKE
+        vote_up.save()
+    else:
+        vote_up = Vote()
+        vote_up.user = request.user
+        vote_up.content_object = model
+        vote_up.vote = Vote.LIKE
+        vote_up.save()
+    return HttpResponseRedirect(model.poll.get_url_path())
+
+
+@login_required
+def vote_down(request, slug):
+    user = request.user
+    model = get_object_or_404(PostChoice, slug=slug)
+    vote_up = model.votes.filter(user=user, vote=Vote.LIKE).first()
+    vote_down = model.votes.filter(user=user, vote=Vote.DISLIKE).first()
+    if vote_down is not None:
+        vote_down.delete()
+    elif vote_up is not None and vote_down is None:
+        vote_up.delete()
+        vote_down = Vote()
+        vote_down.user = request.user
+        vote_down.content_object = model
+        vote_down.vote = Vote.DISLIKE
+        vote_down.save()
+    else:
+        vote_down = Vote()
+        vote_down.user = request.user
+        vote_down.content_object = model
+        vote_down.vote = Vote.DISLIKE
+        vote_down.save()
+    return HttpResponseRedirect(model.poll.get_url_path())

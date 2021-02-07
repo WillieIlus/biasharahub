@@ -73,7 +73,7 @@ def get_recent_comments(number=5):
 def get_popular_business(number=7):
     return {'popular_business': Business.objects.annotate(avg_reviews=Avg('reviews__rating'),
                                                           num_reviews=Count('reviews')).order_by(
-        '-num_reviews', '-avg_reviews', 'hit_count', '-publish')[:number]}
+        'hit_count', '-num_reviews', '-avg_reviews', '-publish')[:number]}
 
 
 @register.inclusion_tag('tags/reviews_popular.html')

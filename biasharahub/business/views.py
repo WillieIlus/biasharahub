@@ -185,6 +185,7 @@ def add_photos(request, slug):
 
 
 class BusinessDetail(SingleObjectMixin, HitCountMixin, ListView):
+    """ this is equivalent to DetailView for Business with pagination for reviews """
     model = Business
     template_name = 'business/detail.html'
     context_object_name = 'business'

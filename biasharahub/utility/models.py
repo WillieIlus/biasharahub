@@ -21,7 +21,7 @@ class Common(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ['publish', 'name']
+        ordering = ['-publish', 'name']
 
     _metadata = {
         'title': 'name',

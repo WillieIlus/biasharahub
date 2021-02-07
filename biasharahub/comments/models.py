@@ -4,11 +4,10 @@ from django.db import models
 from django.db.models.signals import pre_save
 
 from accounts.models import User
-
 from utility.models import MetaTagsMixin
 
 
-class Comment( MetaTagsMixin, models.Model):
+class Comment(MetaTagsMixin, models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
@@ -33,7 +32,6 @@ class Comment( MetaTagsMixin, models.Model):
         return True
 
 
-
 def pre_save_comment_receiver(sender, instance, *args, **kwargs):
     # if not instance.slug:
     #     instance.slug = create_slug(instance)
@@ -46,13 +44,9 @@ def pre_save_comment_receiver(sender, instance, *args, **kwargs):
             instance.meta_copyright = instance.user.first_name
         else:
             instance.meta_author = instance.user
-    if not instance.meta_keywords:
-        if instance.content_object:
-            instance.meta_keywords = instance.content_object
-
-
-
-
+    # if not instance.meta_keywords:
+    #     if instance.content_object:
+    #         instance.meta_keywords = instance.content_object
 
 
 pre_save.connect(pre_save_comment_receiver, sender=Comment)

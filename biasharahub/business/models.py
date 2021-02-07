@@ -41,7 +41,7 @@ class Business(Common, UrlMixin, MetaTagsMixin, HitCountMixin):
     verified = models.BooleanField(default=False)
     featured = models.BooleanField(default=False)
     hide_mail = models.BooleanField(default=True)
-    hide_phone = models.BooleanField(default=True)
+    hide_phone = models.BooleanField(default=False)
 
     reviews = GenericRelation(Review, related_query_name='reviews')
     bookmark = GenericRelation(Bookmark, related_query_name='bookmarks')

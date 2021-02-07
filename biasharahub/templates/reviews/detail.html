@@ -72,7 +72,9 @@
               Dislike |
               <span>{{ review.votes.dislikes.count }}</span></a>
           </div>
-
+          {% comment %}
+{{ review.votes.sum_rating() }}
+          {% endcomment %}
           <div class="social-share d-flex align-items-center">
             <span class="m-right-15">Share this Review: </span>
             <ul class="social-share list-unstyled">

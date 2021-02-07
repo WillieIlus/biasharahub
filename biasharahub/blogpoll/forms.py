@@ -58,12 +58,10 @@ class PostChoiceForm(ModelForm):
         self.helper.field_class = 'col-lg-8'
         self.helper.form_method = 'post'
         self.helper.layout = Layout(
-            Row(
                 "name",
                 "description",
                 'image',
-                'url'
-            ),
+                'url',
             Submit('submit', 'Submit', css_class='btn btn-sm btn-secondary')
 
         )
