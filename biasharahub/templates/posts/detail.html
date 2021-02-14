@@ -18,7 +18,7 @@
 {% block title %} {% if post.anonymous %} Anonymous {% else %} {{ post.user.first_name|capfirst }} {% endif %}wrote a post | {{ block.super }} {% endblock %}
 
 {% block bg-image-holder %}
-<div class="bg_image_holder"><img alt="" src='{% static "img/breadcrumb1.jpg" %}'></div>
+<div class="bg_image_holder"><img alt="" src='{% if post.image %}{{ post.image.url }} {% else %}{% static "img/breadcrumb1.jpg" %}{% endif %}'></div>
 {% endblock %}
 
 {% block page-title %}
@@ -43,7 +43,7 @@
       <div class="col-md-8">
         <div class="post-details ">
           <div class="post-head">
-            <img src='{{ post.image.url }}' alt="{% if post.choices.count > 1 %}
+            <img src='{% if post.image %}{{ post.image.url }}{% endif %}' alt="{% if post.choices.count > 1 %}
                                   {{ post.choices.count }} {% endif %} {{ post.name }}">
           </div>
           <div class="post-content">
