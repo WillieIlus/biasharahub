@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum, Count
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.encoding import uri_to_iri
 from django.views.generic import ListView, CreateView, UpdateView
@@ -92,7 +92,7 @@ class PostPollEdit(LoginRequiredMixin, UserRequiredMixin, UpdateView):
 
 
 class PostPollList(ListView):
-    model = PostPoll
+    queryset = PostPoll.published.all()
     context_object_name = 'post'
     template_name = 'posts/list.html'
     paginate_by = 9
@@ -106,12 +106,11 @@ class PostPollDetail(SingleObjectMixin, HitCountMixin, ListView):
     count_hit = True
 
     def get(self, request, *args, **kwargs):
-        self.object = self.get_object(queryset=PostPoll.objects.all())
+        self.object = self.get_object(queryset=PostPoll.published.all())
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
-        return self.object.choices.annotate(num_likes=Count('votes')).order_by('-num_likes')
-            # .all().order_by('votes') #order_by('-votes__vote')
+        return self.object.choices.annotate(num_likes=Count('votes')).order_by('-num_likes', '-rank')
 
     def get_object(self, **kwargs):
         slug = self.kwargs.get('slug')
@@ -122,7 +121,7 @@ class PostPollDetail(SingleObjectMixin, HitCountMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['form'] = PostChoiceForm()
         context['comment_form'] = CommentForm()
-        context['related_posts'] = self.object.tags.similar_objects()
+        context['related_posts'] = self.object.tags.similar_objects()[:3]
         context['timezone'] = settings.TIME_ZONE
 
         if self.object:
@@ -150,7 +149,7 @@ class PostChoicesView(LoginRequiredMixin, CreateView):
     # success_message = "updated successfully"
 
     def get_success_url(self):
-        messages.success(self.request, 'Your choice was successful, and will be approved by an admin')
+        messages.success(self.request, 'Your choice was successful')
         return reverse('post:detail', kwargs={'slug': self.object.poll.slug})
 
     def form_valid(self, form):
@@ -172,28 +171,35 @@ class UserPostPolls(ListView):
         return PostPoll.objects.filter(user=user).order_by('-publish')
 
 
+
 @login_required
 def vote_up(request, slug):
     user = request.user
     model = get_object_or_404(PostChoice, slug=slug)
     vote_up = model.votes.filter(user=user, vote=Vote.LIKE).first()
     vote_down = model.votes.filter(user=user, vote=Vote.DISLIKE).first()
-    if vote_up is not None:
-        vote_up.delete()
-    elif vote_down is not None and vote_up is None:
-        vote_down.delete()
-        vote_up = Vote()
-        vote_up.user = request.user
-        vote_up.content_object = model
-        vote_up.vote = Vote.LIKE
-        vote_up.save()
+    if model.poll.active:
+        if vote_up is not None:
+            vote_up.delete()
+        elif vote_down is not None and vote_up is None:
+            vote_down.delete()
+            vote_up = Vote()
+            vote_up.user = request.user
+            vote_up.content_object = model
+            vote_up.vote = Vote.LIKE
+            vote_up.save()
+            messages.success(request, 'OK! you successfully removed your vote.')
+        else:
+            vote_up = Vote()
+            vote_up.user = request.user
+            vote_up.content_object = model
+            vote_up.vote = Vote.LIKE
+            vote_up.save()
+            messages.success(request, 'Hurrah! your vote was successful')
+        return HttpResponseRedirect(model.poll.get_url_path())
     else:
-        vote_up = Vote()
-        vote_up.user = request.user
-        vote_up.content_object = model
-        vote_up.vote = Vote.LIKE
-        vote_up.save()
-    return HttpResponseRedirect(model.poll.get_url_path())
+        messages.warning(request, "Oops! You can't vote now. Voting for this post has been closed")
+        return HttpResponseRedirect(model.poll.get_url_path())
 
 
 @login_required
@@ -218,3 +224,19 @@ def vote_down(request, slug):
         vote_down.vote = Vote.DISLIKE
         vote_down.save()
     return HttpResponseRedirect(model.poll.get_url_path())
+
+
+
+
+@login_required
+def endpoll(request, slug):
+    poll = get_object_or_404(PostPoll, slug=slug)
+    if request.user != poll.user:
+        return redirect('home')
+
+    if poll.active is True:
+        poll.active = False
+        poll.save()
+        return HttpResponseRedirect(poll.get_url_path())
+    else:
+        return HttpResponseRedirect(poll.get_url_path())

@@ -55,9 +55,12 @@
                 {{ choice_form.non_form_errors }}
                 {% for form in choice_form %}
                 {{ form.id }}
+                <div class="mt-10 form-group mb-0">
+                    {{ form.name|as_crispy_field }}
+                  </div>&nbsp;
                 <div class="form-row">
                   <div class="mt-10 form-group col-md-5 mb-0">
-                    {{ form.name|as_crispy_field }}
+                    {{ form.image|as_crispy_field }}
                   </div>
                   <div class="mt-10 form-group col-md-5 mb-0">
                     {{ form.url|as_crispy_field }}

@@ -6,11 +6,11 @@
 {% load openinghours_tags %}
 
 {% block head %}
-  <meta content="Top {{ category.company.count }} biasharas added in {{ category.name }} category">
+<meta content="Top {{ category.company.count }} {{ category.name }} business in  Kenya">
 
 <meta content=" Business,online, directory, biashara, money,  google my business, business news, income,
   small business ideas, small business, online business "
-        name="keywords">
+      name="keywords">
 
 {{ cateogy.get_meta_author }}
 {{ cateogy.get_meta_copyright }}
@@ -35,6 +35,7 @@
         height: 220px;
       }
 
+
 </style>
 
 {% block title %}  {{ category.name }}  | {{ block.super }} {% endblock %}
@@ -50,7 +51,7 @@
 
 {% block breadcrumb_item %}
 <li class="breadcrumb-item"><a href='{% url "categories:list" %}'><i class="fa fa-plus"></i> list</a></li>
-<li aria-current="page" class="breadcrumb-item active"> {{ category.name }} </li>
+<li aria-current="page" class="breadcrumb-item active"> {{ category.name }}</li>
 <li class="breadcrumb-item"><a href='{% url "categories:edit" category.slug %}'><i class="fa fa-plus"></i> Edit</a></li>
 {% endblock %}
 
@@ -70,11 +71,11 @@
             <div class="atbdb_content_module_contents">
               <p>{{ category.description }}</p>
             </div>
-                      <div class="atbd_listing_bottom_content">
-                        <h5>Top {{ category.company.count }} biasharas added in {{ category.name }} category</h5>
-             <a class="btn btn-primary" href="{% url 'business:new' %}">
-              <span class="la la-plus"></span>Add yours</a>
-          </div>
+            <div class="atbd_listing_bottom_content">
+              <h5>Top {{ category.company.count }} {{ category.name }} businesses in Kenya</h5>
+              <a class="btn btn-primary" href="{% url 'business:new' %}">
+                <span class="la la-plus"></span>Add yours</a>
+            </div>
           </div>
         </div><!-- ends: .atbd_author_module -->
       </div><!-- ends: .col-md-8 -->

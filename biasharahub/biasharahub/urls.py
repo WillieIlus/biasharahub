@@ -28,14 +28,16 @@ from reviews.sitemaps import ReviewSitemap
 from accounts.sitemaps import AccountsSitemap
 from categories.sitemaps import CategorySitemap
 from locations.sitemaps import LocationSitemap
+from blogpoll.sitemaps import PostSitemap
 
 
 sitemaps = {
-    'business': BusinessSitemap,
-    'review': ReviewSitemap,
     'account': AccountsSitemap,
+    'business': BusinessSitemap,
     'category': CategorySitemap,
     'location': LocationSitemap,
+    'post':PostSitemap,
+    'review': ReviewSitemap,
 
 }
 

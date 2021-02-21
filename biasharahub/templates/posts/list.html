@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% load crispy_forms_tags %}
+{% load hitcount_tags %}
 {% load biasharahub %}
 
 
@@ -53,14 +54,17 @@
                 </li>
                 <li>in <a href="{{ post.category.first.get_absolute_url }}">
                   <i class="{{ post.category.first.icon }}"></i></a></li>
-                <li><i class="far fa-comments"></i> {{ post.comments.count }} </i></li>
-                <li><i class="fas fa-poll"></i> {{ post.get_vote_count }} </i></li>
+                <li><i class="far fa-comments"></i> {{ post.comments.count }} </i> Comments</li>
+                <li class="atbd_content_right"> {% get_hit_count for post %}
+                  <i class="la la-eye"></i>
+                </li>
               </ul>
               <p>{{ post.description|truncatechars:100 }}</p>
             </div>
             <div class="card-footer">
               <div class="pull_right">
-                <a href="" class="btn btn-gradient btn-gradient-one btn-icon icon-right"> Continue </a>
+                <a href="{{ post.get_absolute_url }}" class="btn btn-gradient btn-gradient-one btn-icon icon-right">
+                  Continue </a>
               </div>
             </div>
           </div><!-- End: .card -->

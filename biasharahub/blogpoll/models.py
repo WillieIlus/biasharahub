@@ -22,6 +22,18 @@ class SameTags(TaggedItemBase):
     content_object = models.ForeignKey('PostPoll', on_delete=models.PROTECT)
 
 
+class PublishedManager(models.Manager):
+
+    def get_queryset(self):
+        return super(PublishedManager, self).get_queryset().filter(status='published')
+
+
+STATUS_CHOICES = (
+    ('draft', 'Draft'),
+    ('published', 'Published'),
+)
+
+
 class PostPoll(Common, UrlMixin, MetaTagsMixin, HitCountMixin):
     """
     post
@@ -30,36 +42,30 @@ class PostPoll(Common, UrlMixin, MetaTagsMixin, HitCountMixin):
     image = models.ImageField(upload_to="PostPoll/images", blank=True, null=True)
     category = models.ManyToManyField(Category, related_name="category_poll", blank=True)
     tags = TaggableManager(through=SameTags, blank=True, verbose_name='tags')
-
+    rank = models.PositiveIntegerField(blank=True, null=True, )
+    conclusion = models.TextField(blank=True, null=True)
     comments = GenericRelation(Comment)
     hit_count = GenericRelation(HitCount, object_id_field='object_pk', related_query_name='hit_count_generic_relation')
     active = models.BooleanField(default=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="draft")
 
-    def user_can_vote(self, user):
-        """
-        Return False if user already voted
-        """
-        user_votes = user.choices.all()
-        qs = user_votes.filter(post_poll=self)
-        if qs.exists():
-            return False
-        return True
-
-    @property
-    def get_vote_count(self):
-        return self.choices.count()
+    objects = models.Manager()
+    published = PublishedManager()
 
     def __str__(self):
-        return self.name
-
-    def get_meta_image(self):
-        if self.image:
-            return self.image.url
+        return '%s: %s' % (self.name, self.get_status_display())
 
     class Meta:
+        """
+                Blogpost's meta informations.
+                """
         verbose_name = "post poll"
         verbose_name_plural = "post polls"
-        ordering = ['-publish', 'name']
+        ordering = ['-rank', '-publish', 'name']
+        get_latest_by = '-publish'
+        permissions = (('can_view_all', 'Can view all entries'),
+                       ('can_change_status', 'Can change status'),
+                       ('can_change_author', 'Can change author(s)'), )
 
     def get_absolute_url(self):
         return reverse('post:detail', kwargs={'slug': self.slug})
@@ -71,6 +77,28 @@ class PostPoll(Common, UrlMixin, MetaTagsMixin, HitCountMixin):
         description = self.description
         markdown_text = markdown(description)
         return mark_safe(markdown_text)
+
+    @property
+    def get_vote_count(self):
+        pass
+
+    def get_meta_image(self):
+        if self.image:
+            return self.image.url
+
+    @property
+    def previous_entry(self):
+        """
+        Returns the previous published post if exists.
+        """
+        return self.get_previous_by_publish()
+
+    @property
+    def next_entry(self):
+        """
+        Returns the next published post if exists.
+        """
+        return self.get_next_by_publish()
 
 
 def pre_save_postpoll_receiver(sender, instance, *args, **kwargs):
@@ -97,12 +125,13 @@ class PostChoice(Common):
     user = models.ForeignKey(User, related_name='choice_by', blank=True, null=True, on_delete=models.PROTECT)
     image = models.ImageField(upload_to="Postchoice/images", blank=True, null=True)
     url = models.URLField(max_length=500, blank=True, null=True)
+    rank = models.PositiveIntegerField(blank=True, null=True, )
     comments = GenericRelation(Comment)
 
-    #
-    # @property
-    # def get_vote_count(self):
-    #     return self.vote_set.count()
+    @property
+    def get_vote_count(self):
+        return self.vote_set.count()
+
     #
     def __str__(self):
         return f"{self.poll.name[:25]} - {self.description[:25]}"

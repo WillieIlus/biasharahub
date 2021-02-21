@@ -12,7 +12,7 @@ class PostChoiceInline(admin.TabularInline):
 
 
 class PostPollAdmin(ImportExportModelAdmin):
-    list_display = ['id', 'name', 'publish']
+    list_display = ['id', 'name', 'publish', 'status', 'active']
     list_display_links = ['name']
     # list_editable = ['publish']
     list_filter = ['publish', 'updated']

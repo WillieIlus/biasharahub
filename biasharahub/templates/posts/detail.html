@@ -2,23 +2,24 @@
 {% load staticfiles %}
 {% load crispy_forms_tags %}
 {% load social_share %}
+{% load hitcount_tags %}
 {% load biasharahub %}
 
 {% block head %}
 {{ post.get_meta_description|truncatechars:254 }}
-<meta content=" Business,online, directory, biashara, money, opportunity, google my business, business news, income,
-  small business ideas, small business, online business, starting a business, business proposal, business times "
-      name="keywords">
+<meta content=" {% if post.choices.count > 1 %} {{ post.choices.count }} {% endif %} {{ post.name }},
+top, best, Nairobi, Mombasa, {{ post.tags.all|join:', ' }} "  name="keywords">
 {{ post.get_meta_author }}
 {{ post.get_meta_copyright }}
-
-
 {% endblock %}
 
-{% block title %} {% if post.anonymous %} Anonymous {% else %} {{ post.user.first_name|capfirst }} {% endif %}wrote a post | {{ block.super }} {% endblock %}
+{% block title %} {{ post.name|capfirst }} | {{ block.super }} {% endblock %}
 
 {% block bg-image-holder %}
-<div class="bg_image_holder"><img alt="" src='{% if post.image %}{{ post.image.url }} {% else %}{% static "img/breadcrumb1.jpg" %}{% endif %}'></div>
+<div class="bg_image_holder">
+  <img alt="{{ post.name }}"
+                                  src='{% if post.image %}{{ post.image.url }} {% else %}{% static "img/breadcrumb1.jpg" %}{% endif %}'>
+</div>
 {% endblock %}
 
 {% block page-title %}
@@ -28,8 +29,8 @@
 
 {% block breadcrumb_item %}
 <li class="breadcrumb-item"><a href='{% url "post:list" %}'><i class="fa fa-list"></i> List</a></li>
-<li aria-current="page" class="breadcrumb-item active">{% if post.anonymous %} Anonymous {% else %}
-  {{ post.user.first_name|capfirst }} {% endif %}
+<li aria-current="page" class="breadcrumb-item active">
+  {{ post.name }}
 </li>
 {% if post.user == request.user %}
 <li class="breadcrumb-item"><a href='{% url "post:edit" post.slug %}'><i class="fa fa-plus"></i>Edit</a></li>
@@ -53,10 +54,14 @@
                 <li>{% if post.publish > today %}{{ post.publish|date }} {% else %}
                   {{ post.publish|timesince }} ago {% endif %}
                 </li>
+                <li>by<a href="{{ post.user.get_absolute_url }}">
+                  <i class="{{ post.category.first.icon }}"></i> {{ post.user.first_name }}</a></li>
                 <li>in <a href="{{ post.category.first.get_absolute_url }}">
                   <i class="{{ post.category.first.icon }}"></i> {{ post.category.first.name }}</a></li>
                 <li><i class="far fa-comments"></i> {{ post.comments.count }} Comments</i></li>
-                <li><i class="fas fa-poll"></i> {{ post.get_vote_count }} Votes</i></li>
+                <li class="atbd_content_right"> {% get_hit_count for post %}
+                  <i class="la la-eye"></i> Views
+                </li>
               </ul>
             </div>
             <div class="post-body">
@@ -70,7 +75,7 @@
           {% if choices.image %}
           <figure>
             <a href="">
-            <img src='{{ choices.image.url }}' alt="{{ post.name }}"></a>
+              <img src='{{ choices.image.url }}' alt="{{ post.name }}"></a>
             <figcaption>
               <a href=""><i class="la la-image"></i></a>
             </figcaption>
@@ -82,9 +87,11 @@
           </div>
           <div class="card-footer">
             <div class="pull-right">
+              {% if poll.active %}
               <a class=" btn btn-xs btn-primary rounded-pill" href="{% url 'post:vote_up' slug=choices.slug %}"></span>
-              <i class="far fa-thumbs-up"></i>
+                <i class="far fa-thumbs-up"></i>
               </a>
+              {% endif %}
               <span>{{ choices.votes.likes.count }} vote{{ choices.votes.likes|pluralize:"s" }}</span>
             </div>
             {% if not choices.user == choice.poll.user %}
@@ -93,13 +100,21 @@
           </div>
         </div>&nbsp;
         {% endfor %}
+        {% if poll.active %}
         <div class="">
-              <div class="pull-right">
-                <a class=" btn btn-xs btn-secondary rounded-pill" href="{% url 'post:add_choice' slug=post.slug %}"></span>
+          <div class="pull-right">
+            <a class=" btn btn-xs btn-secondary rounded-pill" href="{% url 'post:add_choice' slug=post.slug %}"></span>
               <i class="fas fa-plus"></i> Add yours
-                </a>
-              </div>
-            </div>
+            </a>
+          </div>
+        </div>
+        {% endif %}
+        {% if post.conclusion %}
+        <h3> Conclusion</h3>
+        <p>
+          {{ post.conclusion }}
+        </p>
+        {% endif %}
         <div class="post-bottom d-flex justify-content-between">
           <div class="tags">
             <ul class="d-flex list-unstyled">
@@ -135,10 +150,9 @@
             </ul>
           </div>
         </div><!-- ends: .post-bottom -->
-                {% comment %}
         <div class="post-author cardify border">
           <div class="author-thumb">
-            <img src="img/auth1.png" alt="" class="rounded-circle">
+            <img src="img/auth1.png" alt="{{ post.user.first_name }}" class="rounded-circle">
           </div>
           <div class="author-info">
             <h5>About <span>Aazztech</span></h5>
@@ -153,47 +167,48 @@
           </div>
         </div><!-- ends: .post-author -->
         <div class="post-pagination">
+          {% if post.previous_entry %}
           <div class="prev-post">
             <span>Previous Post:</span>
-            <a href="" class="title">How to Run a Successful Business Meeting</a>
-            <p><span>Aug 12, 2019</span> - In <a href="">Industry</a></p>
+            <a href="{{ post.previous_entry.get_absolute_url }}" class="title">
+              {{ post.previous_entry.name|capfirst }}</a>
+            <p><span>{{ post.previous_entry.publish|date }}</span>{% if post.previous_entry.category %} - In
+              <a href="{{ post.previous_entry.category.first.get_absolute_url }}">
+                {{ post.previous_entry.category.first.name|capfirst}}</a>{% endif %}
+            </p>
           </div>
+          {% endif %}
+          {% if post.next_entry %}
           <div class="next-post">
             <span>Next Post:</span>
-            <a href="" class="title">Exciting New Technologies Business</a>
-            <p><span>Aug 12, 2019</span> - In <a href="">Industry</a></p>
+            <a href="{{ post.next_entry.get_absolute_url }}" class="title">{{ post.next_entry.name|capfirst }}</a>
+            <p><span>{{ post.next_entry.publish|date }}</span>{% if post.previous_entry.category %}  - In
+               <a href="{{ post.next_entry.category.first.get_absolute_url }}">
+               {{ post.next_entry.category.first.name|capfirst }}</a>{% endif %}
+            </p>
           </div>
+          {% endif %}
         </div><!-- ends: .post-pagination -->
-        {% endcomment %}
         <div class="related-post m-top-60">
           <div class="related-post--title">
             <h3>Related Post</h3>
           </div>
           <div class="row">
+            {% for post in related_posts %}
             <div class="col-lg-4 col-sm-6">
               <div class="single-post">
-                <img src="img/e4.jpg" alt="">
-                <h6><a href="">Tizara Starts Solutions Alliance Program</a></h6>
-                <p><span>Aug 12, 2019</span> - In <a href="">Industry</a></p>
+                {% if post.image %}
+                <img src="{{ post.image.url }}" alt="post.name">
+                {% endif %}
+                <h6><a href="{{ post.get_absolute_url }}">{{ post.name }}</a></h6>
+                <p><span>{{ post.publish|date }}</span> - In
+                  <a href="{{ post.category.first.get_absolute_url}}">{{ post.category.first.name }}</a></p>
               </div>
             </div>
-            <div class="col-lg-4 col-sm-6">
-              <div class="single-post">
-                <img src="img/e5.jpg" alt="">
-                <h6><a href="">How to Run a Successful Business Meeting</a></h6>
-                <p><span>Aug 12, 2019</span> - In <a href="">Industry</a></p>
-              </div>
-            </div>
-            <div class="col-lg-4 col-sm-6">
-              <div class="single-post">
-                <img src="img/e6.jpg" alt="">
-                <h6><a href="">Global Market Grows to $600 Billion</a></h6>
-                <p><span>Aug 12, 2019</span> - In <a href="">Industry</a></p>
-              </div>
-            </div>
+            {% endfor %}
           </div>
         </div><!-- ends: .related-post -->
-                <div class="comments-area m-top-60">
+        <div class="comments-area m-top-60">
           <div class="comment-title">
             <h3>{{ post.comments.count }} Comment{{ post.comments.count|pluralize }}</h3>
           </div>
@@ -204,7 +219,7 @@
                 <div class="media">
                   <div>
                     <a class="cmnt_avatar" href="{{ comment.user.get_absolute_url }}">
-                      <img alt="" class="media-object rounded-circle" src="img/auth2.png">
+                      <img alt="{{ comment.user.first_name }}" class="media-object rounded-circle" src="img/auth2.png">
                     </a>
                   </div>
                   <div class="media-body">
@@ -284,14 +299,6 @@
               </form>
             </div>
           </div><!-- ends: .widget-wrapper -->
-          <!-- category widget -->
-          {% get_categories 5 %}
-          <!-- ends: .widget-wrapper -->
-
-          <!-- popular post -->
-          {% get_popular_reviews %}
-          <!-- ends: .widget-wrapper -->
-
           <!-- popular post -->
           {% get_popular_business %}
           <!-- ends: .widget-wrapper -->

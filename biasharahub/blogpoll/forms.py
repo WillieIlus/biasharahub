@@ -22,12 +22,12 @@ class PostPollNameForm(ModelForm):
 class PostPollForm(ModelForm):
     image = forms.ImageField(required=False, widget=forms.FileInput())
 
-    category = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple(), required=False,
-                                              queryset=Category.objects.all(), )
+    # category = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple(), required=False,
+    #                                           queryset=Category.objects.all(), )
 
     class Meta:
         model = PostPoll
-        fields = ("name", "description", "image", "category", "tags",)
+        fields = ("name", "description", "image", "active", "category", "tags", "conclusion")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -40,15 +40,17 @@ class PostPollForm(ModelForm):
             'name',
             'image',
             'description',
+            'active',
             'category',
             'tags',
+            'conclusion'
         )
 
 
 class PostChoiceForm(ModelForm):
     class Meta:
         model = PostChoice
-        fields = ("name", "description", 'image', 'url')
+        fields = ("name", "description", 'image', 'url', 'rank')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -62,6 +64,7 @@ class PostChoiceForm(ModelForm):
                 "description",
                 'image',
                 'url',
+            'rank',
             Submit('submit', 'Submit', css_class='btn btn-sm btn-secondary')
 
         )
@@ -83,5 +86,5 @@ class PostChoiceFormBaseFormset(BaseFormSet):
 
 
 PollChoiceFormSet = inlineformset_factory(PostPoll, PostChoice,  # formset=PostChoiceFormBaseFormset,
-                                          fields=["name", "description", "image", 'url'], can_delete=True, extra=3,
-                                          max_num=20)
+                                          fields=["name", "description", "image", 'url', 'rank'], can_delete=True, extra=8,
+                                          max_num=60)
